@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    // Registra los materiales disponibles y sus existencias.
+    public function up(): void
+    {
+        Schema::create('recursos_materiales', function (Blueprint $table) {
+            $table->id();
+            $table->text('descripcion')->nullable();
+            $table->string('nombre_recurso', 150);
+            $table->unsignedInteger('cantidad_stock')->default(0);
+            // Laravel registra aquí las fechas de creación y última actualización.
+            $table->timestamps();
+        });
+    }
+
+    // Elimina esta tabla al revertir la migración; Laravel revierte primero sus dependencias.
+    public function down(): void
+    {
+        Schema::dropIfExists('recursos_materiales');
+    }
+};
