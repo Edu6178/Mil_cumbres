@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -14,7 +13,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Campos que se pueden guardar; se conservan los nombres de la tabla users de Laravel.
      *
      * @var list<string>
      */
@@ -25,7 +24,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Datos que se ocultan al convertir una cuenta a un arreglo o respuesta JSON.
      *
      * @var list<string>
      */
@@ -35,7 +34,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Convierte las fechas y protege la contraseña con un hash al guardarla.
      *
      * @return array<string, string>
      */
