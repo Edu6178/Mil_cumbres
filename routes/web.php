@@ -19,3 +19,7 @@ Route::view('/mi-cuenta', 'autenticacion.cuenta')
     ->middleware(['auth', 'cache.headers:no_store;private;max_age=0'])
     ->name('cuenta');
 Route::post('/salir', [AutenticacionController::class, 'salir'])->name('salir');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
