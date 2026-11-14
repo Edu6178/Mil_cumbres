@@ -23,3 +23,6 @@ Route::post('/salir', [AutenticacionController::class, 'salir'])->name('salir');
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// El módulo administrativo mantiene sus rutas separadas del flujo de autenticación.
+require __DIR__.'/administracion.php';

@@ -18,5 +18,8 @@
     </div>
     <div class="cuenta-propuesta"><x-icono nombre="ruta" /><div><h3>Un nuevo comienzo, al aire libre.</h3><p>El catálogo sigue tomando forma. Mientras tanto, conoce nuestra propuesta y lo que nos mueve.</p></div></div>
     <a class="boton boton-bosque boton-formulario" href="{{ route('inicio') }}#experiencias">Explorar Mil Cumbres <x-icono nombre="flecha" /></a>
+    @can('administrar')
+        <a class="boton boton-tierra boton-formulario" href="{{ route('administracion.inicio') }}">Entrar a administración <x-icono nombre="panel" /></a>
+    @endcan
     <form method="POST" action="{{ route('salir') }}" class="formulario-salir">@csrf<button type="submit" class="enlace-salir">Cerrar sesión <x-icono nombre="salir" /></button></form>
 @endsection
