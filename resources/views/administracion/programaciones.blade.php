@@ -1,0 +1,10 @@
+@extends('administracion.layout')
+@section('titulo', 'Asignación de guías')
+
+@section('contenido')
+    <div class="adm-encabezado"><div><p class="adm-antetitulo">Cada recorrido, bien acompañado</p><h1>Personas y fechas,<br><em>en sintonía.</em></h1><p>Asigna uno o varios guías a una programación y revisa sus horarios.</p></div><span class="adm-insignia adm-insignia-verde"><x-icono nombre="correcto" /> Validación de traslapes</span></div>
+    <section class="adm-panel adm-revelar"><div class="adm-panel-titulo"><div><h2>Programaciones registradas</h2><p>{{ $programaciones->total() }} actividades en la agenda.</p></div><x-icono nombre="calendario" /></div>
+        @if($programaciones->isEmpty())<x-administracion.vacio titulo="Todo encuentro empieza con una fecha" descripcion="Todavía no hay programaciones. Cuando se creen actividades, aquí podrás revisar sus horarios y asignar al equipo de guías." icono="calendario" />
+        @else<div class="adm-tabla-contenedor"><table class="adm-tabla"><thead><tr><th>Actividad</th><th>Inicio</th><th>Fin</th><th>Guías</th><th>Estado</th><th class="adm-alinear-derecha">Acciones</th></tr></thead><tbody>@foreach($programaciones as $actividad)<tr><td><strong>{{ $actividad->nombre_servicio }}</strong><small>{{ $actividad->nombre_region }}</small></td><td>{{ \Carbon\Carbon::parse($actividad->fecha_inicio)->format('d/m/Y') }}<small>{{ \Carbon\Carbon::parse($actividad->fecha_inicio)->format('H:i') }}</small></td><td>{{ \Carbon\Carbon::parse($actividad->fecha_fin)->format('d/m/Y') }}<small>{{ \Carbon\Carbon::parse($actividad->fecha_fin)->format('H:i') }}</small></td><td><span class="adm-insignia {{ $actividad->numero_guias ? 'adm-insignia-verde' : '' }}">{{ $actividad->numero_guias }} {{ $actividad->numero_guias == 1 ? 'guía' : 'guías' }}</span></td><td>{{ ucfirst($actividad->estado) }}</td><td class="adm-alinear-derecha"><a class="adm-enlace" href="{{ route('administracion.asignacion.editar', $actividad->id) }}">Asignar guías <x-icono nombre="flecha" /></a></td></tr>@endforeach</tbody></table></div><x-administracion.paginacion :registros="$programaciones" />@endif
+    </section>
+@endsection

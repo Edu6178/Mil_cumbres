@@ -3,6 +3,24 @@
 {{-- Iconos locales reutilizables: heredan el color y no necesitan bibliotecas externas. --}}
 <svg {{ $attributes->class(['icono']) }} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
     @switch($nombre)
+        @case('panel')
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            @break
+        @case('carpetas')
+            <path d="M3 7V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Zm0 2h18"/>
+            @break
+        @case('lista')
+            <path d="m3 6 1.5 1.5L7 4m-4 9 1.5 1.5L7 11m-4 9 1.5 1.5L7 18M11 6h10m-10 7h10m-10 7h10"/>
+            @break
+        @case('correcto')
+            <path d="m5 12 4 4L19 6"/>
+            @break
+        @case('buscar')
+            <circle cx="10" cy="10" r="6.5"/><path d="m15 15 6 6"/>
+            @break
+        @case('atras')
+            <path d="M20 12H4m6-6-6 6 6 6"/>
+            @break
         @case('ojo')
             <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>
             @break
