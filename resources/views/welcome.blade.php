@@ -134,6 +134,182 @@
                         <span class="etiqueta-proximamente">Calendario próximamente <x-icono nombre="sol" /></span>
                     </aside>
                 </div>
+                <section class="formulario-prereserva" id="pre-reservacion">
+                    <div class="encabezado-seccion">
+                        <div>
+                            <p class="antetitulo"><span></span> Planea tu visita</p>
+                            <h2>Comienza tu próxima <em>experiencia.</em></h2>
+                        </div>
+                        <p>Comparte tus datos y los de tu grupo para solicitar una pre-reservación.</p>
+                    </div>
+
+                    @if (session('success'))
+                        <div role="status">
+                            <strong>{{ session('success') }}</strong>
+                            @if (session('folio'))
+                                <p>Tu folio de solicitud es:
+                                    <strong>{{ session('folio') }}</strong>
+                                </p>
+                            @endif
+                        </div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div role="alert">
+                            <strong>Revisa los siguientes datos:</strong>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    @if ($programaciones->isNotEmpty())
+                        <form action="{{ route('pre-reservaciones.guardar') }}"
+                            method="POST">
+                            @csrf
+
+                            <fieldset>
+                                <legend>Experiencia y grupo</legend>
+
+                                <label for="programacion_id">Experiencia y fecha</label>
+                                <select id="programacion_id" name="programacion_id" required>
+                                    <option value="">Selecciona una experiencia</option>
+                                    @foreach ($programaciones as $programacion)
+                                        <option value="{{ $programacion->id }}"
+                                            data-cupos="{{ $programacion->cupos_disponibles }}"
+                                            @selected(old('programacion_id') == $programacion->id)>
+                                            {{ $programacion->servicioRegion?->servicio?->nombre_servicio ?? 'Experiencia' }}
+                                            · {{ \Carbon\Carbon::parse($programacion->fecha_inicio)->format('d/m/Y') }}
+                                            · {{ $programacion->cupos_disponibles }} cupos
+                                        </option>
+                                    @endforeach
+                                </select>
+
+                                <label for="numero_personas">Número total de personas</label>
+                                <input type="number" id="numero_personas"
+                                    name="numero_personas" min="1"
+                                    max="{{ $programaciones->max('cupos_disponibles') }}"
+                                    value="{{ old('numero_personas', 1) }}" required>
+                                <small>Incluye a la persona responsable de la solicitud.</small>
+
+                                <label for="tipo_grupo">Tipo de grupo</label>
+                                <select id="tipo_grupo" name="tipo_grupo">
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="Familiar">Familiar</option>
+                                    <option value="Amigos">Amigos</option>
+                                    <option value="Escolar">Escolar</option>
+                                    <option value="Empresarial">Empresarial</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend>Datos de la persona responsable</legend>
+
+                                <label for="nombre">Nombre(s)</label>
+                                <input id="nombre" name="nombre" value="{{ old('nombre') }}" required>
+
+                                <label for="apellido_paterno">Apellido paterno</label>
+                                <input id="apellido_paterno" name="apellido_paterno"
+                                    value="{{ old('apellido_paterno') }}" required>
+
+                                <label for="apellido_materno">Apellido materno</label>
+                                <input id="apellido_materno" name="apellido_materno"
+                                    value="{{ old('apellido_materno') }}">
+
+                                <label for="telefono">Teléfono</label>
+                                <input id="telefono" name="telefono" type="tel"
+                                    inputmode="tel" minlength="10" maxlength="20"
+                                    value="{{ old('telefono') }}" required>
+
+                                <label for="correo">Correo electrónico</label>
+                                <input id="correo" name="correo" type="email"
+                                    value="{{ old('correo') }}" required>
+
+                                <label for="fecha_nacimiento">Fecha de nacimiento</label>
+                                <input id="fecha_nacimiento" name="fecha_nacimiento"
+                                    type="date" max="{{ today()->subDay()->format('Y-m-d') }}"
+                                    value="{{ old('fecha_nacimiento') }}" required>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend>Datos de acompañantes</legend>
+                                <p>Registra a las demás personas del grupo.</p>
+                                <div id="contenedor-acompanantes"></div>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend>Detalles de la visita</legend>
+
+                                <label for="proposito_visita">Propósito de la visita</label>
+                                <textarea id="proposito_visita" name="proposito_visita">{{ old('proposito_visita') }}</textarea>
+
+                                <label for="personalizacion">Comentarios o necesidades especiales</label>
+                                <textarea id="personalizacion" name="personalizacion">{{ old('personalizacion') }}</textarea>
+                            </fieldset>
+
+                            <button type="submit" class="boton boton-bosque">
+                                Enviar solicitud de pre-reservación
+                            </button>
+                        </form>
+                    @else
+                        <div class="catalogo-vacio">
+                            <h3>Estamos preparando las próximas experiencias.</h3>
+                            <p>Por el momento no hay fechas disponibles para solicitar una pre-reservación.</p>
+                        </div>
+                    @endif
+                </section>
+
+                <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const cantidad = document.getElementById('numero_personas');
+                    const programacion = document.getElementById('programacion_id');
+                    const contenedor = document.getElementById('contenedor-acompanantes');
+
+                    if (!cantidad || !programacion || !contenedor) return;
+
+                    function actualizarAcompanantes() {
+                        const opcion = programacion.selectedOptions[0];
+                        const cupos = Number(opcion?.dataset.cupos || 0);
+                        const total = Number(cantidad.value || 1);
+
+                        cantidad.max = cupos || 1;
+
+                        if (total > cupos && cupos > 0) {
+                            cantidad.setCustomValidity('La cantidad supera los cupos disponibles.');
+                        } else {
+                            cantidad.setCustomValidity('');
+                        }
+
+                        contenedor.innerHTML = '';
+
+                        for (let i = 0; i < Math.max(0, total - 1); i++) {
+                            const grupo = document.createElement('fieldset');
+                            grupo.innerHTML = `
+                                <legend>Acompañante ${i + 1}</legend>
+                                <label>Nombre(s)</label>
+                                <input name="acompanantes[${i}][nombre]" required>
+                                <label>Apellido paterno</label>
+                                <input name="acompanantes[${i}][apellido_paterno]" required>
+                                <label>Apellido materno</label>
+                                <input name="acompanantes[${i}][apellido_materno]">
+                                <label>Fecha de nacimiento</label>
+                                <input type="date"
+                                    name="acompanantes[${i}][fecha_nacimiento]"
+                                    max="${new Date(Date.now() - 86400000).toISOString().slice(0, 10)}"
+                                    required>
+                            `;
+                            contenedor.appendChild(grupo);
+                        }
+                    }
+
+                    cantidad.addEventListener('input', actualizarAcompanantes);
+                    programacion.addEventListener('change', actualizarAcompanantes);
+                    actualizarAcompanantes();
+                });
+                </script>
             </div>
         </section>
 
