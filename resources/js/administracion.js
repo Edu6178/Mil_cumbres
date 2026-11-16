@@ -2,7 +2,7 @@
 document.body.classList.add('adm-con-js');
 const boton = document.querySelector('.adm-menu-boton');
 const menu = document.querySelector('#menu-administracion');
-const pantalla = window.matchMedia('(max-width: 1000px)');
+const pantalla = window.matchMedia('(max-width: 860px)');
 
 function cambiarMenu(abierto) {
     document.body.classList.toggle('adm-menu-abierto', abierto);
@@ -21,6 +21,38 @@ document.addEventListener('keydown', (evento) => {
         cambiarMenu(false);
         boton.focus();
     }
+});
+
+// El menú de la cuenta se cierra al salir de él o al pulsar Escape.
+const perfil = document.querySelector('.adm-menu-perfil');
+document.addEventListener('click', (evento) => {
+    if (perfil?.open && !perfil.contains(evento.target)) perfil.open = false;
+});
+document.addEventListener('keydown', (evento) => {
+    if (evento.key === 'Escape' && perfil?.open) {
+        perfil.open = false;
+        perfil.querySelector('summary')?.focus();
+    }
+});
+
+// La vista previa usa solo el archivo elegido; la foto se guarda al enviar el formulario.
+const archivoFoto = document.querySelector('[data-archivo-foto]');
+const vistaFoto = document.querySelector('[data-vista-foto]');
+const nombreFoto = document.querySelector('[data-nombre-foto]');
+let vistaTemporal;
+archivoFoto?.addEventListener('change', () => {
+    if (vistaTemporal) URL.revokeObjectURL(vistaTemporal);
+    archivoFoto.setCustomValidity('');
+    const archivo = archivoFoto.files?.[0];
+    if (nombreFoto) nombreFoto.textContent = archivo?.name || 'Ningún archivo seleccionado';
+    if (!archivo) return;
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(archivo.type) || archivo.size > 2 * 1024 * 1024) {
+        archivoFoto.setCustomValidity('Elige una foto JPG, PNG o WebP de hasta 2 MB.');
+        archivoFoto.reportValidity();
+        return;
+    }
+    vistaTemporal = URL.createObjectURL(archivo);
+    if (vistaFoto) vistaFoto.src = vistaTemporal;
 });
 
 // Desactiva únicamente el botón durante el envío y lo restaura al volver con el historial.

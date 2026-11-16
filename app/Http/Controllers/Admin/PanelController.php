@@ -13,6 +13,11 @@ class PanelController extends Controller
 {
     public function index(): View
     {
+        $estadosReservacion = DB::table('estado_reservaciones as estados')
+            ->leftJoin('reservaciones', 'reservaciones.estado_reservacion_id', '=', 'estados.id')
+            ->select('estados.id', 'estados.nombre_estado')->selectRaw('COUNT(reservaciones.id) as total')
+            ->groupBy('estados.id', 'estados.nombre_estado')->orderBy('estados.id')->get();
+
         // Los indicadores provienen de registros reales; una falla de conexión no se presenta como cero.
         return view('administracion.inicio', [
             'indicadores' => [
@@ -20,7 +25,10 @@ class PanelController extends Controller
                 'categorias' => Categoria::count(),
                 'guias' => AgendaGuias::guias()->count(),
                 'programaciones' => DB::table('programaciones')->count(),
+                'reservaciones' => DB::table('reservaciones')->count(),
             ],
+            'estadosReservacion' => $estadosReservacion,
+            'serviciosOcultos' => Servicio::where('estado_servicio', 'oculto')->count(),
             'serviciosRecientes' => Servicio::with('categoria')->latest()->limit(5)->get(),
             'programacionesProximas' => AgendaGuias::programaciones()
                 ->where('fecha_fin', '>=', now())->orderBy('fecha_inicio')->limit(4)->get(),

@@ -15,7 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trimStrings(except: ['contrasena', 'contrasena_confirmation']);
         $middleware->redirectGuestsTo(fn (Request $request) => route('acceso'));
-        $middleware->redirectUsersTo(fn (Request $request) => route('cuenta'));
+        $middleware->redirectUsersTo(fn (Request $request) => route(
+            $request->user()?->can('administrar') ? 'administracion.inicio' : 'cuenta'
+        ));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Los nombres de los campos están en español; sus contraseñas tampoco deben guardarse en mensajes de sesión.
