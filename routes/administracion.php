@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoriaController;
 use App\Http\Controllers\Admin\GuiaController;
 use App\Http\Controllers\Admin\PanelController;
+use App\Http\Controllers\Admin\PerfilController;
 use App\Http\Controllers\Admin\ServicioController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,6 +12,9 @@ Route::prefix('administracion')->name('administracion.')
     ->middleware(['auth', 'can:administrar', 'cache.headers:no_store;private;max_age=0'])
     ->group(function () {
         Route::get('/', [PanelController::class, 'index'])->name('inicio');
+        Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil');
+        Route::post('/perfil/foto', [PerfilController::class, 'guardarFoto'])->name('perfil.guardar-foto');
+        Route::get('/perfil/foto', [PerfilController::class, 'foto'])->name('perfil.foto');
         Route::get('/servicios', [ServicioController::class, 'index'])->name('servicios.indice');
         Route::get('/servicios/crear', [ServicioController::class, 'crear'])->name('servicios.crear');
         Route::post('/servicios', [ServicioController::class, 'guardar'])->name('servicios.guardar');

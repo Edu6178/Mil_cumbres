@@ -27,6 +27,12 @@
         @case('usuario')
             <circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>
             @break
+        @case('camara')
+            <path d="M8 5l2-2h4l2 2h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4Z"/><circle cx="12" cy="13" r="4"/>
+            @break
+        @case('chevron')
+            <path d="m7 10 5 5 5-5"/>
+            @break
         @case('salir')
             <path d="M9 4H4v16h5m4-13 5 5-5 5M8 12h13"/>
             @break

@@ -9,6 +9,7 @@ use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -55,7 +56,10 @@ class AutenticacionController extends Controller
         RateLimiter::clear($clave);
         $request->session()->regenerate();
 
-        return redirect()->intended(route('cuenta', absolute: false));
+        // Las cuentas autorizadas entran al panel; las cuentas personales conservan su propia pantalla.
+        $destino = Gate::allows('administrar') ? 'administracion.inicio' : 'cuenta';
+
+        return redirect()->intended(route($destino, absolute: false));
     }
 
     // Crea únicamente una cuenta personal en users; no asigna permisos administrativos ni inventa clientes.
