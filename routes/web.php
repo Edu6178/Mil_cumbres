@@ -1,10 +1,16 @@
 <?php
 
 use App\Http\Controllers\AutenticacionController;
+use App\Http\Controllers\Cliente\PreReservacionController;
 use Illuminate\Support\Facades\Route;
 
-// La presentación pública funciona sin consultar la base mientras se prepara el catálogo.
-Route::view('/', 'welcome')->name('inicio');
+// Página pública con acceso a las programaciones disponibles.
+Route::get('/', [PreReservacionController::class, 'inicio'])
+    ->name('inicio');
+
+// Registro público de solicitudes de pre-reservación.
+Route::post('/pre-reservaciones', [PreReservacionController::class, 'guardar'])
+    ->name('pre-reservaciones.guardar');
 
 // Los formularios públicos solo se muestran a visitantes sin una sesión iniciada.
 Route::middleware(['guest', 'cache.headers:no_store;private;max_age=0'])->group(function () {
