@@ -15,44 +15,45 @@ use Illuminate\Validation\ValidationException;
 class PreReservacionController extends Controller
 {
     /**
-     * Mostrar la página pública con las fechas disponibles.
+     * Mostrar la página pública con las fechas disponibles (RF-02).
      */
-    
-public function inicio()
-{
-    $programaciones = Programacion::with([
-        'servicioRegion.servicio',
-        'reservaciones.estado',
-    ])
-        ->whereIn('estado', ['activo', 'programada'])
-        ->whereDate('fecha_inicio', '>=', today())
-        ->orderBy('fecha_inicio')
-        ->get()
-        ->map(function ($programacion) {
-            $ocupados = $programacion->reservaciones
-                ->filter(function ($reservacion) {
-                    return in_array(
-                        $reservacion->estado?->nombre_estado,
-                        ['Pre-reserva', 'Confirmada']
-                    );
-                })
-                ->sum('numero_personas');
+    public function inicio()
+    {
+        $programaciones = Programacion::with([
+            'servicioRegion.servicio',
+            'servicioRegion.region',
+            'reservaciones.estado',
+        ])
+            ->whereIn('estado', ['activo', 'programada'])
+            ->whereHas('servicioRegion.region', fn ($q) => $q->where('disponibilidad', true))
+            ->whereDate('fecha_inicio', '>=', today())
+            ->orderBy('fecha_inicio')
+            ->get()
+            ->map(function ($programacion) {
+                $ocupados = $programacion->reservaciones
+                    ->filter(function ($reservacion) {
+                        return in_array(
+                            $reservacion->estado?->nombre_estado,
+                            ['Pre-reserva', 'Confirmada']
+                        );
+                    })
+                    ->sum('numero_personas');
 
-            $programacion->cupos_disponibles = max(
-                0,
-                $programacion->cupo_maximo - $ocupados
-            );
+                $programacion->cupos_disponibles = max(
+                    0,
+                    $programacion->cupo_maximo - $ocupados
+                );
 
-            return $programacion;
-        })
-        ->filter(fn ($programacion) => $programacion->cupos_disponibles > 0)
-        ->values();
+                return $programacion;
+            })
+            ->filter(fn ($programacion) => $programacion->cupos_disponibles > 0)
+            ->values();
 
-    return view('welcome', compact('programaciones'));
-}
+        return view('welcome', compact('programaciones'));
+    }
 
     /**
-     * Registrar una solicitud pública de pre-reservación.
+     * Registrar una solicitud pública de pre-reservación con doble validación de cupo (RF-02 / RF-03).
      */
     public function guardar(Request $request)
     {
@@ -62,13 +63,11 @@ public function inicio()
                 'integer',
                 'exists:programaciones,id',
             ],
-
             'numero_personas' => [
                 'required',
                 'integer',
                 'min:1',
             ],
-
             'nombre' => ['required', 'string', 'max:255'],
             'apellido_paterno' => ['required', 'string', 'max:255'],
             'apellido_materno' => ['nullable', 'string', 'max:255'],
@@ -83,7 +82,6 @@ public function inicio()
                 'date',
                 'before:today',
             ],
-
             'acompanantes' => ['array'],
             'acompanantes.*.nombre' => [
                 'required',
@@ -105,7 +103,6 @@ public function inicio()
                 'date',
                 'before:today',
             ],
-
             'tipo_grupo' => ['nullable', 'string', 'max:100'],
             'proposito_visita' => ['nullable', 'string'],
             'personalizacion' => ['nullable', 'string'],
@@ -122,14 +119,13 @@ public function inicio()
         }
 
         $reservacion = DB::transaction(function () use ($datos, $acompanantes) {
-
             $programacion = Programacion::whereKey($datos['programacion_id'])
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            if (!in_array($programacion->estado, ['activo', 'programada'])) {
+            if (!in_array($programacion->estado, ['activo', 'programada']) || !($programacion->servicioRegion?->region?->disponibilidad ?? true)) {
                 throw ValidationException::withMessages([
-                    'programacion_id' => 'Esta fecha no está disponible.',
+                    'programacion_id' => 'Esta fecha o territorio no está disponible actualmente.',
                 ]);
             }
 

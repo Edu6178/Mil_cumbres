@@ -26,9 +26,9 @@ Route::view('/mi-cuenta', 'autenticacion.cuenta')
     ->name('cuenta');
 Route::post('/salir', [AutenticacionController::class, 'salir'])->name('salir');
 
-Auth::routes();
+//Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 // El módulo administrativo mantiene sus rutas separadas del flujo de autenticación.
 require __DIR__.'/administracion.php';

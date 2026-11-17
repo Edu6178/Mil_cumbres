@@ -127,11 +127,36 @@
                         </div>
                     </div>
                     <aside class="proximas-salidas" aria-labelledby="titulo-salidas">
-                        <div class="salidas-icono"><x-icono nombre="calendario" /></div><span class="numero-seccion">Encuentra tu momento</span>
-                        <h3 id="titulo-salidas">Próximas<br><em>salidas.</em></h3><p>Los buenos encuentros también tienen su momento.</p>
-                        <div class="salidas-vacio"><span class="punto-estado"></span><p>Aún no hay fechas publicadas.</p></div>
-                        <p class="salidas-nota">Cuando se publiquen actividades, podrás conocer sus fechas, horarios y cupos aquí.</p>
-                        <span class="etiqueta-proximamente">Calendario próximamente <x-icono nombre="sol" /></span>
+                        <div class="salidas-icono"><x-icono nombre="calendario" /></div>
+                        <span class="numero-seccion">Encuentra tu momento</span>
+                        <h3 id="titulo-salidas">Próximas<br><em>salidas.</em></h3>
+                        <p>Los buenos encuentros también tienen su momento.</p>
+
+                        @if($programaciones->isEmpty())
+                            <div class="salidas-vacio"><span class="punto-estado"></span><p>Aún no hay fechas publicadas.</p></div>
+                            <p class="salidas-nota">Cuando se publiquen actividades, podrás conocer sus fechas, horarios y cupos aquí.</p>
+                            <span class="etiqueta-proximamente">Calendario próximamente <x-icono nombre="sol" /></span>
+                        @else
+                            <div style="margin-top: 22px; display: grid; gap: 12px;">
+                                @foreach($programaciones->take(4) as $salida)
+                                    <div style="padding-top: 12px; border-top: 1px solid #adb99e;">
+                                        <strong style="display: block; font-size: 12px; color: var(--bosque);">
+                                            {{ $salida->servicioRegion?->servicio?->nombre_servicio ?? 'Experiencia' }}
+                                        </strong>
+                                        <span style="display: block; font-size: 11px; color: #56694e;">
+                                            {{ \Carbon\Carbon::parse($salida->fecha_inicio)->format('d/m/Y · H:i') }} hrs
+                                            ({{ $salida->servicioRegion?->region?->nombre_region }})
+                                        </span>
+                                        <small style="display: inline-block; margin-top: 3px; font-weight: 600; color: var(--tierra); font-size: 10px;">
+                                            {{ $salida->cupos_disponibles }} {{ $salida->cupos_disponibles == 1 ? 'lugar disponible' : 'lugares disponibles' }}
+                                        </small>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <a class="enlace-texto" href="#pre-reservacion" style="margin-top: 20px; color: var(--bosque);">
+                                Seleccionar fecha y reservar <x-icono nombre="flecha" />
+                            </a>
+                        @endif
                     </aside>
                 </div>
                 <section class="formulario-prereserva" id="pre-reservacion">

@@ -16,32 +16,48 @@ class Programacion extends Model
         'cupo_maximo',
         'fecha_inicio',
         'fecha_fin',
-        'estado',
+        'estado', // Valores: 'programada', 'bloqueada', 'cancelada', 'finalizada'
     ];
 
-    // Relación con el servicio y región
+    protected $casts = [
+        'fecha_inicio' => 'datetime',
+        'fecha_fin' => 'datetime',
+    ];
+
     public function servicioRegion()
     {
         return $this->belongsTo(ServicioRegion::class, 'servicio_reg_id');
     }
 
-    // Relación con las reservaciones registradas
     public function reservaciones()
     {
         return $this->hasMany(Reservacion::class, 'programacion_id');
     }
 
-    // Método para obtener los cupos ocupados actualmente
-    public function getCuposOcupadosAttribute()
+    // Calcula los lugares ya ocupados excluyendo reservaciones canceladas
+    public function getCuposOcupadosAttribute(): int
     {
-        return $this->reservaciones()
-            ->whereIn('estado_reservacion_id', [1, 2]) // Adaptar según IDs de pre-reserva/confirmada
+        return (int) $this->reservaciones()
+            ->whereHas('estadoReservacion', function ($query) {
+                $query->whereNotIn('nombre_estado', ['Cancelada', 'Rechazada']);
+            })
             ->sum('numero_personas');
     }
 
-    // Método para obtener el cupo restante disponible
-    public function getCuposDisponiblesAttribute()
+    // Devuelve los lugares reales disponibles
+    public function getCuposDisponiblesAttribute(): int
     {
         return max(0, $this->cupo_maximo - $this->cupos_ocupados);
+    }
+
+    // Verifica si la programación está habilitada tanto por su estado como por la disponibilidad de su región
+    public function getEstaDisponibleAttribute(): bool
+    {
+        $regionActiva = $this->servicioRegion?->region?->disponibilidad ?? true;
+
+        return $this->estado === 'programada'
+            && $regionActiva
+            && $this->fecha_inicio->isFuture()
+            && $this->cupos_disponibles > 0;
     }
 }

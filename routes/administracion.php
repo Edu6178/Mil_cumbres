@@ -1,11 +1,12 @@
 <?php
-
+use App\Http\Controllers\Admin\CalendarioAdminController; 
 use App\Http\Controllers\Admin\CategoriaController;
 use App\Http\Controllers\Admin\GuiaController;
 use App\Http\Controllers\Admin\PanelController;
 use App\Http\Controllers\Admin\PerfilController;
 use App\Http\Controllers\Admin\ServicioController;
 use Illuminate\Support\Facades\Route;
+
 
 // Todas las lecturas y escrituras requieren la misma autorización del servidor.
 Route::prefix('administracion')->name('administracion.')
@@ -31,4 +32,12 @@ Route::prefix('administracion')->name('administracion.')
         Route::put('/programaciones/{programacion}/guias', [GuiaController::class, 'guardar'])->whereNumber('programacion')->name('asignacion.guardar');
         Route::get('/asistencia', [PanelController::class, 'asistencia'])->name('asistencia');
         Route::get('/asistencia/{programacion}', [PanelController::class, 'participantes'])->whereNumber('programacion')->name('participantes');
+        Route::get('/calendario', [CalendarioAdminController::class, 'index'])->name('calendario.indice');
+        Route::post('/calendario', [CalendarioAdminController::class, 'guardar'])->name('calendario.guardar');
+        Route::get('/calendario/{programacion}/editar', [CalendarioAdminController::class, 'editar'])->whereNumber('programacion')->name('calendario.editar');
+        Route::put('/calendario/{programacion}', [CalendarioAdminController::class, 'actualizar'])->whereNumber('programacion')->name('calendario.actualizar');
+        Route::patch('/calendario/{programacion}/bloquear', [CalendarioAdminController::class, 'alternarBloqueo'])->whereNumber('programacion')->name('calendario.bloquear');
+        Route::patch('/calendario/regiones/{region}/bloquear', [CalendarioAdminController::class, 'alternarBloqueoRegion'])->whereNumber('region')->name('calendario.region.bloquear');
+        Route::get('/canales-externos', [CalendarioAdminController::class, 'canalesExternos'])->name('canales.indice');
+        Route::post('/canales-externos', [CalendarioAdminController::class, 'registrarExterna'])->name('canales.guardar');
     });

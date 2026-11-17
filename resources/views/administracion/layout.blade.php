@@ -20,12 +20,15 @@
             <a href="{{ route('administracion.servicios.indice') }}" @if(request()->routeIs('administracion.servicios.*')) aria-current="page" @endif><x-icono nombre="brujula" /><span>Servicios y precios</span></a>
             <a href="{{ route('administracion.categorias.indice') }}" @if(request()->routeIs('administracion.categorias.*')) aria-current="page" @endif><x-icono nombre="carpetas" /><span>Categorías</span></a>
             <p class="adm-grupo">Operación</p>
+            <a href="{{ route('administracion.calendario.indice') }}" @if(request()->routeIs('administracion.calendario.*')) aria-current="page" @endif><x-icono nombre="calendario" /><span>Calendario y cupos</span></a>
+            <a href="{{ route('administracion.canales.indice') }}" @if(request()->routeIs('administracion.canales.*')) aria-current="page" @endif><x-icono nombre="brujula" /><span>Canales externos</span></a>
             <a href="{{ route('administracion.guias') }}" @if(request()->routeIs('administracion.guias')) aria-current="page" @endif><x-icono nombre="personas" /><span>Equipo de guías</span></a>
             <a href="{{ route('administracion.programaciones') }}" @if(request()->routeIs('administracion.programaciones', 'administracion.asignacion.*')) aria-current="page" @endif><x-icono nombre="calendario" /><span>Asignación de guías</span></a>
             <a href="{{ route('administracion.asistencia') }}" @if(request()->routeIs('administracion.asistencia', 'administracion.participantes')) aria-current="page" @endif><x-icono nombre="lista" /><span>Participantes</span><span class="adm-punto" title="Registro de asistencia pendiente"></span></a>
             <p class="adm-grupo">Mi espacio</p>
             <a href="{{ route('administracion.perfil') }}" @if(request()->routeIs('administracion.perfil*')) aria-current="page" @endif><x-icono nombre="usuario" /><span>Mi perfil</span></a>
             <a href="{{ route('inicio') }}"><x-icono nombre="flecha-diagonal" /><span>Ver página pública</span></a>
+            
         </nav>
         <div class="adm-lateral-pie">
             <a class="adm-usuario-lateral" href="{{ route('administracion.perfil') }}"><x-administracion.avatar /><span><strong>{{ auth()->user()->name }}</strong><small>Administración</small></span><x-icono nombre="chevron" /></a>
