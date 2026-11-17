@@ -22,15 +22,6 @@ class CalendarioAdminController extends Controller
             ->orderByDesc('fecha_inicio')
             ->paginate(12);
 
-        $programaciones->getCollection()->transform(function ($prog) {
-            $ocupados = $prog->reservaciones
-                ->filter(fn ($r) => in_array($r->estado?->nombre_estado, ['Pre-reserva', 'Confirmada']))
-                ->sum('numero_personas');
-            $prog->cupos_ocupados = $ocupados;
-            $prog->cupos_disponibles = max(0, $prog->cupo_maximo - $ocupados);
-            return $prog;
-        });
-
         $serviciosRegiones = ServicioRegion::with(['servicio', 'region'])
             ->whereHas('servicio', fn ($q) => $q->where('estado_servicio', 'activo'))
             ->get();
@@ -81,15 +72,6 @@ class CalendarioAdminController extends Controller
             ->orderByDesc('fecha_inicio')
             ->paginate(12);
 
-        $programaciones->getCollection()->transform(function ($prog) {
-            $ocupados = $prog->reservaciones
-                ->filter(fn ($r) => in_array($r->estado?->nombre_estado, ['Pre-reserva', 'Confirmada']))
-                ->sum('numero_personas');
-            $prog->cupos_ocupados = $ocupados;
-            $prog->cupos_disponibles = max(0, $prog->cupo_maximo - $ocupados);
-            return $prog;
-        });
-
         $serviciosRegiones = ServicioRegion::with(['servicio', 'region'])->get();
         $regiones = Region::orderBy('nombre_region')->get();
         $programacionEdicion = $programacion;
@@ -112,7 +94,25 @@ class CalendarioAdminController extends Controller
             'estado' => ['required', 'in:programada,bloqueada,cancelada'],
         ]);
 
-        $programacion->update($datos);
+        DB::transaction(function () use ($programacion, $datos) {
+            // El mismo bloqueo usado al reservar evita cambiar el cupo mientras entra una solicitud.
+            $actual = Programacion::whereKey($programacion->id)->lockForUpdate()->firstOrFail();
+            $territorio = ServicioRegion::whereKey($datos['servicio_reg_id'])->lockForUpdate()->firstOrFail();
+
+            if ($datos['cupo_maximo'] > $territorio->cupo_maximo) {
+                throw ValidationException::withMessages([
+                    'cupo_maximo' => "El cupo no puede superar el límite territorial ({$territorio->cupo_maximo} personas).",
+                ]);
+            }
+
+            if ($datos['cupo_maximo'] < $actual->cupos_ocupados) {
+                throw ValidationException::withMessages([
+                    'cupo_maximo' => 'El cupo no puede ser menor que las personas con una reservación vigente.',
+                ]);
+            }
+
+            $actual->update($datos);
+        });
 
         return redirect()->route('administracion.calendario.indice')
             ->with('correcto', 'Programación actualizada correctamente.');

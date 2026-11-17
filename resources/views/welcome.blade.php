@@ -132,7 +132,10 @@
                         <h3 id="titulo-salidas">Próximas<br><em>salidas.</em></h3>
                         <p>Los buenos encuentros también tienen su momento.</p>
 
-                        @if($programaciones->isEmpty())
+                        @if($disponibilidadInterrumpida ?? false)
+                            <div class="salidas-vacio" role="status"><p>No podemos consultar las fechas en este momento.</p></div>
+                            <p class="salidas-nota">Puedes seguir explorando la página y volver a consultar más tarde.</p>
+                        @elseif($programaciones->isEmpty())
                             <div class="salidas-vacio"><span class="punto-estado"></span><p>Aún no hay fechas publicadas.</p></div>
                             <p class="salidas-nota">Cuando se publiquen actividades, podrás conocer sus fechas, horarios y cupos aquí.</p>
                             <span class="etiqueta-proximamente">Calendario próximamente <x-icono nombre="sol" /></span>
@@ -190,7 +193,12 @@
                         </div>
                     @endif
 
-                    @if ($programaciones->isNotEmpty())
+                    @if ($disponibilidadInterrumpida ?? false)
+                        <div class="catalogo-vacio" role="status">
+                            <h3>La consulta de disponibilidad está temporalmente interrumpida.</h3>
+                            <p>Inténtalo más tarde. Mientras tanto, puedes conocer nuestra propuesta.</p>
+                        </div>
+                    @elseif ($programaciones->isNotEmpty())
                         <form action="{{ route('pre-reservaciones.guardar') }}"
                             method="POST">
                             @csrf
@@ -222,11 +230,9 @@
                                 <label for="tipo_grupo">Tipo de grupo</label>
                                 <select id="tipo_grupo" name="tipo_grupo">
                                     <option value="">Selecciona una opción</option>
-                                    <option value="Familiar">Familiar</option>
-                                    <option value="Amigos">Amigos</option>
-                                    <option value="Escolar">Escolar</option>
-                                    <option value="Empresarial">Empresarial</option>
-                                    <option value="Otro">Otro</option>
+                                    @foreach(['Familiar', 'Amigos', 'Escolar', 'Empresarial', 'Otro'] as $tipoGrupo)
+                                        <option value="{{ $tipoGrupo }}" @selected(old('tipo_grupo') === $tipoGrupo)>{{ $tipoGrupo }}</option>
+                                    @endforeach
                                 </select>
                             </fieldset>
 
@@ -249,9 +255,9 @@
                                     inputmode="tel" minlength="10" maxlength="20"
                                     value="{{ old('telefono') }}" required>
 
-                                <label for="correo">Correo electrónico</label>
+                                <label for="correo">Correo electrónico (opcional)</label>
                                 <input id="correo" name="correo" type="email"
-                                    value="{{ old('correo') }}" required>
+                                    value="{{ old('correo') }}">
 
                                 <label for="fecha_nacimiento">Fecha de nacimiento</label>
                                 <input id="fecha_nacimiento" name="fecha_nacimiento"
@@ -262,7 +268,17 @@
                             <fieldset>
                                 <legend>Datos de acompañantes</legend>
                                 <p>Registra a las demás personas del grupo.</p>
-                                <div id="contenedor-acompanantes"></div>
+                                @php
+                                    // Recupera los acompañantes después de una validación, sin insertar datos en la base.
+                                    $anteriores = old('acompanantes', []);
+                                    $anteriores = is_array($anteriores) ? array_slice(array_values($anteriores), 0, max(0, (int) $programaciones->max('cupos_disponibles') - 1)) : [];
+                                    $fechaMaxima = today()->subDay()->format('Y-m-d');
+                                @endphp
+                                <div id="contenedor-acompanantes" data-fecha-maxima="{{ $fechaMaxima }}">
+                                    @foreach($anteriores as $indice => $datosAcompanante)
+                                        <x-publico.acompanante :indice="$indice" :datos="is_array($datosAcompanante) ? $datosAcompanante : []" :fecha-maxima="$fechaMaxima" />
+                                    @endforeach
+                                </div>
                             </fieldset>
 
                             <fieldset>
@@ -287,54 +303,6 @@
                     @endif
                 </section>
 
-                <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const cantidad = document.getElementById('numero_personas');
-                    const programacion = document.getElementById('programacion_id');
-                    const contenedor = document.getElementById('contenedor-acompanantes');
-
-                    if (!cantidad || !programacion || !contenedor) return;
-
-                    function actualizarAcompanantes() {
-                        const opcion = programacion.selectedOptions[0];
-                        const cupos = Number(opcion?.dataset.cupos || 0);
-                        const total = Number(cantidad.value || 1);
-
-                        cantidad.max = cupos || 1;
-
-                        if (total > cupos && cupos > 0) {
-                            cantidad.setCustomValidity('La cantidad supera los cupos disponibles.');
-                        } else {
-                            cantidad.setCustomValidity('');
-                        }
-
-                        contenedor.innerHTML = '';
-
-                        for (let i = 0; i < Math.max(0, total - 1); i++) {
-                            const grupo = document.createElement('fieldset');
-                            grupo.innerHTML = `
-                                <legend>Acompañante ${i + 1}</legend>
-                                <label>Nombre(s)</label>
-                                <input name="acompanantes[${i}][nombre]" required>
-                                <label>Apellido paterno</label>
-                                <input name="acompanantes[${i}][apellido_paterno]" required>
-                                <label>Apellido materno</label>
-                                <input name="acompanantes[${i}][apellido_materno]">
-                                <label>Fecha de nacimiento</label>
-                                <input type="date"
-                                    name="acompanantes[${i}][fecha_nacimiento]"
-                                    max="${new Date(Date.now() - 86400000).toISOString().slice(0, 10)}"
-                                    required>
-                            `;
-                            contenedor.appendChild(grupo);
-                        }
-                    }
-
-                    cantidad.addEventListener('input', actualizarAcompanantes);
-                    programacion.addEventListener('change', actualizarAcompanantes);
-                    actualizarAcompanantes();
-                });
-                </script>
             </div>
         </section>
 

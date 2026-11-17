@@ -8,6 +8,7 @@ use App\Models\EstadoReservacion;
 use App\Models\Persona;
 use App\Models\Programacion;
 use App\Models\Reservacion;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -19,37 +20,28 @@ class PreReservacionController extends Controller
      */
     public function inicio()
     {
-        $programaciones = Programacion::with([
-            'servicioRegion.servicio',
-            'servicioRegion.region',
-            'reservaciones.estado',
-        ])
-            ->whereIn('estado', ['activo', 'programada'])
-            ->whereHas('servicioRegion.region', fn ($q) => $q->where('disponibilidad', true))
-            ->whereDate('fecha_inicio', '>=', today())
-            ->orderBy('fecha_inicio')
-            ->get()
-            ->map(function ($programacion) {
-                $ocupados = $programacion->reservaciones
-                    ->filter(function ($reservacion) {
-                        return in_array(
-                            $reservacion->estado?->nombre_estado,
-                            ['Pre-reserva', 'Confirmada']
-                        );
-                    })
-                    ->sum('numero_personas');
+        $programaciones = collect();
+        $disponibilidadInterrumpida = false;
 
-                $programacion->cupos_disponibles = max(
-                    0,
-                    $programacion->cupo_maximo - $ocupados
-                );
+        try {
+            $programaciones = Programacion::with([
+                'servicioRegion.servicio', 'servicioRegion.region', 'reservaciones.estado',
+            ])
+                ->whereIn('estado', ['activo', 'programada'])
+                ->whereHas('servicioRegion.servicio', fn ($query) => $query->where('estado_servicio', 'activo'))
+                ->whereHas('servicioRegion.region', fn ($query) => $query->where('disponibilidad', true))
+                ->where('fecha_inicio', '>', now())
+                ->orderBy('fecha_inicio')
+                ->get()
+                ->filter(fn ($programacion) => $programacion->cupos_disponibles > 0)
+                ->values();
+        } catch (QueryException $error) {
+            // La información pública permanece disponible, sin confundir una falla con un calendario vacío.
+            report($error);
+            $disponibilidadInterrumpida = true;
+        }
 
-                return $programacion;
-            })
-            ->filter(fn ($programacion) => $programacion->cupos_disponibles > 0)
-            ->values();
-
-        return view('welcome', compact('programaciones'));
+        return view('welcome', compact('programaciones', 'disponibilidadInterrumpida'));
     }
 
     /**
@@ -76,7 +68,7 @@ class PreReservacionController extends Controller
                 'string',
                 'regex:/^[0-9+\-\s()]{10,20}$/',
             ],
-            'correo' => ['required', 'email', 'max:255'],
+            'correo' => ['nullable', 'email', 'max:255'],
             'fecha_nacimiento' => [
                 'required',
                 'date',
@@ -123,22 +115,16 @@ class PreReservacionController extends Controller
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            if (!in_array($programacion->estado, ['activo', 'programada']) || !($programacion->servicioRegion?->region?->disponibilidad ?? true)) {
+            if (!in_array($programacion->estado, ['activo', 'programada'], true)
+                || !$programacion->fecha_inicio->isFuture()
+                || $programacion->servicioRegion?->servicio?->estado_servicio !== 'activo'
+                || !($programacion->servicioRegion?->region?->disponibilidad ?? false)) {
                 throw ValidationException::withMessages([
                     'programacion_id' => 'Esta fecha o territorio no está disponible actualmente.',
                 ]);
             }
 
-            $estadosQueOcupanCupo = ['Pre-reserva', 'Confirmada'];
-
-            $cuposOcupados = Reservacion::query()
-                ->where('programacion_id', $programacion->id)
-                ->whereHas('estado', function ($query) use ($estadosQueOcupanCupo) {
-                    $query->whereIn('nombre_estado', $estadosQueOcupanCupo);
-                })
-                ->sum('numero_personas');
-
-            $cuposDisponibles = $programacion->cupo_maximo - $cuposOcupados;
+            $cuposDisponibles = $programacion->cupos_disponibles;
 
             if ($cuposDisponibles < $datos['numero_personas']) {
                 throw ValidationException::withMessages([
@@ -153,7 +139,7 @@ class PreReservacionController extends Controller
                 'apellido_paterno' => $datos['apellido_paterno'],
                 'apellido_materno' => $datos['apellido_materno'] ?? null,
                 'telefono' => $datos['telefono'],
-                'correo' => $datos['correo'],
+                'correo' => $datos['correo'] ?? null,
                 'fecha_nacimiento' => $datos['fecha_nacimiento'],
             ]);
 
