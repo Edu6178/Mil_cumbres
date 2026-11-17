@@ -9,6 +9,8 @@ class Programacion extends Model
 {
     use HasFactory;
 
+    public const ESTADOS_CON_CUPO = ['Pre-reserva', 'Confirmada'];
+
     protected $table = 'programaciones';
 
     protected $fillable = [
@@ -34,12 +36,19 @@ class Programacion extends Model
         return $this->hasMany(Reservacion::class, 'programacion_id');
     }
 
-    // Calcula los lugares ya ocupados excluyendo reservaciones canceladas
+    // Comparte la misma regla de ocupación en la portada, el calendario y las solicitudes.
     public function getCuposOcupadosAttribute(): int
     {
+        if ($this->relationLoaded('reservaciones')) {
+            return (int) $this->reservaciones
+                ->filter(fn ($reservacion) => in_array(
+                    $reservacion->estado?->nombre_estado, self::ESTADOS_CON_CUPO, true
+                ))->sum('numero_personas');
+        }
+
         return (int) $this->reservaciones()
-            ->whereHas('estadoReservacion', function ($query) {
-                $query->whereNotIn('nombre_estado', ['Cancelada', 'Rechazada']);
+            ->whereHas('estado', function ($query) {
+                $query->whereIn('nombre_estado', self::ESTADOS_CON_CUPO);
             })
             ->sum('numero_personas');
     }

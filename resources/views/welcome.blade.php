@@ -26,12 +26,12 @@
                 <x-icono nombre="menu" /><span>Menú</span>
             </button>
             <nav class="navegacion" id="navegacion-principal" aria-label="Navegación principal">
-                <a href="#experiencias">Experiencias</a>
-                <a href="#esencia">Nuestra esencia</a>
-                <a href="#comunidades">Comunidades</a>
-                <a href="#guias">Guías</a>
+                <a href="{{ route('publico.catalogo') }}">Experiencias</a>
+                <a href="{{ route('publico.nosotros') }}">Nuestra esencia</a>
+                <a href="{{ route('publico.comunidades') }}">Comunidades</a>
+                <a href="{{ route('publico.guias') }}">Guías</a>
                 <a class="enlace-acceso" href="{{ route('cuenta') }}"><x-icono nombre="usuario" /> Mi cuenta</a>
-                <a class="boton boton-pequeno boton-bosque" href="#organizaciones">Para organizaciones <x-icono nombre="flecha-diagonal" /></a>
+                <a class="boton boton-pequeno boton-bosque" href="{{ route('publico.consultoria') }}">Para organizaciones <x-icono nombre="flecha-diagonal" /></a>
             </nav>
         </div>
     </header>
@@ -49,11 +49,11 @@
                     <p class="antetitulo antetitulo-claro"><span></span> Naturaleza. Comunidad. Propósito.</p>
                     <h1 id="titulo-portada">Volver a la tierra.<br>Conectar con<br><em>lo que importa.</em></h1>
                     <p class="portada-descripcion">Hay viajes que te llevan a un lugar.<br>Y otros que te acercan a una nueva forma de verlo.</p>
-                    <a class="boton boton-tierra" href="#experiencias">Descubre Mil Cumbres <x-icono nombre="flecha" /></a>
+                    <a class="boton boton-tierra" href="{{ route('publico.catalogo') }}">Descubre Mil Cumbres <x-icono nombre="flecha" /></a>
                 </div>
                 <div class="portada-pie">
                     <p><span>Una manera distinta de viajar</span>Operación turística y consultoría con sentido.</p>
-                    <a href="#esencia" class="enlace-bajar"><span>El camino empieza aquí</span><x-icono nombre="abajo" /></a>
+                    <a href="{{ route('publico.nosotros') }}" class="enlace-bajar"><span>El camino empieza aquí</span><x-icono nombre="abajo" /></a>
                 </div>
                 <div class="sello-portada" aria-hidden="true"><x-icono nombre="montana" /><span>Menos prisa.<br>Más conexión.</span></div>
             </div>
@@ -74,8 +74,8 @@
                     <p class="texto-destacado">Un encuentro con la naturaleza. Una conversación con el territorio. Una conexión que continúa después del viaje.</p>
                     <p>En Mil Cumbres, el turismo regenerativo es el punto de partida para pensar nuestra relación con los lugares que visitamos y con quienes los habitan.</p>
                     <div class="vertientes">
-                        <article><span class="numero-seccion">01 / Explorar</span><h3>Operadora turística</h3><p>Experiencias para acercarnos a la naturaleza y mirar el entorno con otros ojos.</p><a class="enlace-texto" href="#experiencias">Conocer la propuesta <x-icono nombre="flecha" /></a></article>
-                        <article><span class="numero-seccion">02 / Acompañar</span><h3>Consultoría</h3><p>Un espacio para impulsar proyectos junto a organizaciones y comunidades.</p><a class="enlace-texto" href="#organizaciones">Explorar esta vertiente <x-icono nombre="flecha" /></a></article>
+                        <article><span class="numero-seccion">01 / Explorar</span><h3>Operadora turística</h3><p>Experiencias para acercarnos a la naturaleza y mirar el entorno con otros ojos.</p><a class="enlace-texto" href="{{ route('publico.catalogo') }}">Conocer la propuesta <x-icono nombre="flecha" /></a></article>
+                        <article><span class="numero-seccion">02 / Acompañar</span><h3>Consultoría</h3><p>Un espacio para impulsar proyectos junto a organizaciones y comunidades.</p><a class="enlace-texto" href="{{ route('publico.consultoria') }}">Explorar esta vertiente <x-icono nombre="flecha" /></a></article>
                     </div>
                 </div>
             </div>
@@ -94,7 +94,7 @@
                     <div class="lista-lineas">
                         <details class="linea-servicio" open>
                             <summary><span class="numero-linea">01</span><span>Senderismo</span><x-icono nombre="mas" /></summary>
-                            <div class="detalle-linea"><p>Caminar, observar y reconectar con el entorno. Aquí presentaremos las distintas rutas, sus recorridos y la información para elegir tu experiencia.</p><a class="enlace-texto" href="#experiencias" data-ver-senderismo>Explorar las rutas <x-icono nombre="flecha" /></a></div>
+                            <div class="detalle-linea"><p>Caminar, observar y reconectar con el entorno. Aquí presentaremos las distintas rutas, sus recorridos y la información para elegir tu experiencia.</p><a class="enlace-texto" href="{{ route('publico.catalogo') }}" data-ver-senderismo>Explorar las rutas <x-icono nombre="flecha" /></a></div>
                         </details>
                         {{-- Son espacios de presentación, no registros del catálogo; los otros cuatro nombres están pendientes. --}}
                         @foreach (['02', '03', '04', '05'] as $numero)
@@ -132,7 +132,10 @@
                         <h3 id="titulo-salidas">Próximas<br><em>salidas.</em></h3>
                         <p>Los buenos encuentros también tienen su momento.</p>
 
-                        @if($programaciones->isEmpty())
+                        @if($disponibilidadInterrumpida ?? false)
+                            <div class="salidas-vacio" role="status"><p>No podemos consultar las fechas en este momento.</p></div>
+                            <p class="salidas-nota">Puedes seguir explorando la página y volver a consultar más tarde.</p>
+                        @elseif($programaciones->isEmpty())
                             <div class="salidas-vacio"><span class="punto-estado"></span><p>Aún no hay fechas publicadas.</p></div>
                             <p class="salidas-nota">Cuando se publiquen actividades, podrás conocer sus fechas, horarios y cupos aquí.</p>
                             <span class="etiqueta-proximamente">Calendario próximamente <x-icono nombre="sol" /></span>
@@ -190,7 +193,12 @@
                         </div>
                     @endif
 
-                    @if ($programaciones->isNotEmpty())
+                    @if ($disponibilidadInterrumpida ?? false)
+                        <div class="catalogo-vacio" role="status">
+                            <h3>La consulta de disponibilidad está temporalmente interrumpida.</h3>
+                            <p>Inténtalo más tarde. Mientras tanto, puedes conocer nuestra propuesta.</p>
+                        </div>
+                    @elseif ($programaciones->isNotEmpty())
                         <form action="{{ route('pre-reservaciones.guardar') }}"
                             method="POST">
                             @csrf
@@ -222,11 +230,9 @@
                                 <label for="tipo_grupo">Tipo de grupo</label>
                                 <select id="tipo_grupo" name="tipo_grupo">
                                     <option value="">Selecciona una opción</option>
-                                    <option value="Familiar">Familiar</option>
-                                    <option value="Amigos">Amigos</option>
-                                    <option value="Escolar">Escolar</option>
-                                    <option value="Empresarial">Empresarial</option>
-                                    <option value="Otro">Otro</option>
+                                    @foreach(['Familiar', 'Amigos', 'Escolar', 'Empresarial', 'Otro'] as $tipoGrupo)
+                                        <option value="{{ $tipoGrupo }}" @selected(old('tipo_grupo') === $tipoGrupo)>{{ $tipoGrupo }}</option>
+                                    @endforeach
                                 </select>
                             </fieldset>
 
@@ -249,9 +255,9 @@
                                     inputmode="tel" minlength="10" maxlength="20"
                                     value="{{ old('telefono') }}" required>
 
-                                <label for="correo">Correo electrónico</label>
+                                <label for="correo">Correo electrónico (opcional)</label>
                                 <input id="correo" name="correo" type="email"
-                                    value="{{ old('correo') }}" required>
+                                    value="{{ old('correo') }}">
 
                                 <label for="fecha_nacimiento">Fecha de nacimiento</label>
                                 <input id="fecha_nacimiento" name="fecha_nacimiento"
@@ -262,7 +268,17 @@
                             <fieldset>
                                 <legend>Datos de acompañantes</legend>
                                 <p>Registra a las demás personas del grupo.</p>
-                                <div id="contenedor-acompanantes"></div>
+                                @php
+                                    // Recupera los acompañantes después de una validación, sin insertar datos en la base.
+                                    $anteriores = old('acompanantes', []);
+                                    $anteriores = is_array($anteriores) ? array_slice(array_values($anteriores), 0, max(0, (int) $programaciones->max('cupos_disponibles') - 1)) : [];
+                                    $fechaMaxima = today()->subDay()->format('Y-m-d');
+                                @endphp
+                                <div id="contenedor-acompanantes" data-fecha-maxima="{{ $fechaMaxima }}">
+                                    @foreach($anteriores as $indice => $datosAcompanante)
+                                        <x-publico.acompanante :indice="$indice" :datos="is_array($datosAcompanante) ? $datosAcompanante : []" :fecha-maxima="$fechaMaxima" />
+                                    @endforeach
+                                </div>
                             </fieldset>
 
                             <fieldset>
@@ -287,54 +303,6 @@
                     @endif
                 </section>
 
-                <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const cantidad = document.getElementById('numero_personas');
-                    const programacion = document.getElementById('programacion_id');
-                    const contenedor = document.getElementById('contenedor-acompanantes');
-
-                    if (!cantidad || !programacion || !contenedor) return;
-
-                    function actualizarAcompanantes() {
-                        const opcion = programacion.selectedOptions[0];
-                        const cupos = Number(opcion?.dataset.cupos || 0);
-                        const total = Number(cantidad.value || 1);
-
-                        cantidad.max = cupos || 1;
-
-                        if (total > cupos && cupos > 0) {
-                            cantidad.setCustomValidity('La cantidad supera los cupos disponibles.');
-                        } else {
-                            cantidad.setCustomValidity('');
-                        }
-
-                        contenedor.innerHTML = '';
-
-                        for (let i = 0; i < Math.max(0, total - 1); i++) {
-                            const grupo = document.createElement('fieldset');
-                            grupo.innerHTML = `
-                                <legend>Acompañante ${i + 1}</legend>
-                                <label>Nombre(s)</label>
-                                <input name="acompanantes[${i}][nombre]" required>
-                                <label>Apellido paterno</label>
-                                <input name="acompanantes[${i}][apellido_paterno]" required>
-                                <label>Apellido materno</label>
-                                <input name="acompanantes[${i}][apellido_materno]">
-                                <label>Fecha de nacimiento</label>
-                                <input type="date"
-                                    name="acompanantes[${i}][fecha_nacimiento]"
-                                    max="${new Date(Date.now() - 86400000).toISOString().slice(0, 10)}"
-                                    required>
-                            `;
-                            contenedor.appendChild(grupo);
-                        }
-                    }
-
-                    cantidad.addEventListener('input', actualizarAcompanantes);
-                    programacion.addEventListener('change', actualizarAcompanantes);
-                    actualizarAcompanantes();
-                });
-                </script>
             </div>
         </section>
 
@@ -384,7 +352,7 @@
         </section>
 
         <section class="cierre" aria-labelledby="titulo-cierre">
-            <div class="contenedor cierre-interior"><x-icono nombre="montana" /><p class="antetitulo antetitulo-claro">Un lugar para volver a conectar</p><h2 id="titulo-cierre">A veces, para encontrarte,<br><em>solo hace falta salir.</em></h2><a class="boton boton-crema" href="#experiencias">Explorar la propuesta <x-icono nombre="flecha" /></a></div>
+            <div class="contenedor cierre-interior"><x-icono nombre="montana" /><p class="antetitulo antetitulo-claro">Un lugar para volver a conectar</p><h2 id="titulo-cierre">A veces, para encontrarte,<br><em>solo hace falta salir.</em></h2><a class="boton boton-crema" href="{{ route('publico.catalogo') }}">Explorar la propuesta <x-icono nombre="flecha" /></a></div>
             <div class="curvas-cierre" aria-hidden="true"></div>
         </section>
     </main>
@@ -393,8 +361,8 @@
         <div class="contenedor">
             <div class="pie-superior">
                 <div><a class="marca" href="#inicio"><img src="{{ asset('imagenes/simbolo.svg') }}" alt="" width="47" height="47"><span>Mil Cumbres<small>Turismo regenerativo</small></span></a><p>Naturaleza que inspira.<br>Conexiones que permanecen.</p></div>
-                <nav aria-label="Explorar Mil Cumbres"><span>Descubre</span><a href="#experiencias">Experiencias</a><a href="#propuesta">Nuestra propuesta</a><a href="#guias">Nuestros guías</a></nav>
-                <nav aria-label="Conocer Mil Cumbres"><span>Conecta</span><a href="#esencia">Nuestra esencia</a><a href="#comunidades">Territorio y comunidad</a><a href="#organizaciones">Para organizaciones</a></nav>
+                <nav aria-label="Explorar Mil Cumbres"><span>Descubre</span><a href="{{ route('publico.catalogo') }}">Experiencias</a><a href="#propuesta">Nuestra propuesta</a><a href="{{ route('publico.guias') }}">Nuestros guías</a></nav>
+                <nav aria-label="Conocer Mil Cumbres"><span>Conecta</span><a href="{{ route('publico.nosotros') }}">Nuestra esencia</a><a href="{{ route('publico.comunidades') }}">Territorio y comunidad</a><a href="{{ route('publico.consultoria') }}">Para organizaciones</a></nav>
                 <div class="pie-nota"><span>Un proyecto que sigue creciendo</span><p>Estamos preparando las primeras experiencias. Gracias por ser parte del comienzo.</p><a class="enlace-texto" href="#inicio">Volver al inicio <x-icono nombre="arriba" /></a></div>
             </div>
             <div class="pie-inferior"><p>© {{ date('Y') }} Mil Cumbres. Todos los derechos reservados.</p><span>Hecho para volver a lo esencial.</span></div>

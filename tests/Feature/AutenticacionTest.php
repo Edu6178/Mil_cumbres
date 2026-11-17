@@ -159,7 +159,10 @@ class AutenticacionTest extends TestCase
         ]);
 
         try {
-            $this->get('/')->assertOk();
+            $this->get('/')->assertOk()
+                ->assertSee('No podemos consultar las fechas en este momento.')
+                ->assertDontSee('Aún no hay fechas publicadas.')
+                ->assertDontSee('SQLSTATE');
             $this->post('/acceso', ['correo' => 'maria@ejemplo.com', 'contrasena' => 'Bosque123'])
                 ->assertStatus(503)->assertSee('Volvemos')->assertDontSee('SQLSTATE');
         } finally {

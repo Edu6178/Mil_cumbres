@@ -1,3 +1,5 @@
+import './pre-reservacion.js';
+
 // Las interacciones de presentación funcionan sin peticiones ni datos de ejemplo.
 document.body.classList.add('con-js');
 

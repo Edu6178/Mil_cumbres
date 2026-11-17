@@ -1,17 +1,13 @@
 <?php
-
 use App\Http\Controllers\AutenticacionController;
 use App\Http\Controllers\Cliente\PreReservacionController;
 use Illuminate\Support\Facades\Route;
-
 // Página pública con acceso a las programaciones disponibles.
 Route::get('/', [PreReservacionController::class, 'inicio'])
     ->name('inicio');
-
 // Registro público de solicitudes de pre-reservación.
 Route::post('/pre-reservaciones', [PreReservacionController::class, 'guardar'])
     ->name('pre-reservaciones.guardar');
-
 // Los formularios públicos solo se muestran a visitantes sin una sesión iniciada.
 Route::middleware(['guest', 'cache.headers:no_store;private;max_age=0'])->group(function () {
     Route::get('/acceso', [AutenticacionController::class, 'acceso'])->name('acceso');
@@ -19,16 +15,11 @@ Route::middleware(['guest', 'cache.headers:no_store;private;max_age=0'])->group(
     Route::get('/registro', [AutenticacionController::class, 'registro'])->name('registro');
     Route::post('/registro', [AutenticacionController::class, 'registrar'])->name('registro.guardar');
 });
-
 // Esta pantalla es personal; no habilita funciones administrativas.
 Route::view('/mi-cuenta', 'autenticacion.cuenta')
     ->middleware(['auth', 'cache.headers:no_store;private;max_age=0'])
     ->name('cuenta');
 Route::post('/salir', [AutenticacionController::class, 'salir'])->name('salir');
-
-//Auth::routes();
-
-//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-// El módulo administrativo mantiene sus rutas separadas del flujo de autenticación.
 require __DIR__.'/administracion.php';
+// Catálogo, guías e identidad institucional del frontend público.
+require __DIR__.'/publico.php';
