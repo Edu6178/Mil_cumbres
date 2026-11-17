@@ -26,12 +26,12 @@
                 <x-icono nombre="menu" /><span>Menú</span>
             </button>
             <nav class="navegacion" id="navegacion-principal" aria-label="Navegación principal">
-                <a href="#experiencias">Experiencias</a>
-                <a href="#esencia">Nuestra esencia</a>
-                <a href="#comunidades">Comunidades</a>
-                <a href="#guias">Guías</a>
+                <a href="{{ route('publico.catalogo') }}">Experiencias</a>
+                <a href="{{ route('publico.nosotros') }}">Nuestra esencia</a>
+                <a href="{{ route('publico.comunidades') }}">Comunidades</a>
+                <a href="{{ route('publico.guias') }}">Guías</a>
                 <a class="enlace-acceso" href="{{ route('cuenta') }}"><x-icono nombre="usuario" /> Mi cuenta</a>
-                <a class="boton boton-pequeno boton-bosque" href="#organizaciones">Para organizaciones <x-icono nombre="flecha-diagonal" /></a>
+                <a class="boton boton-pequeno boton-bosque" href="{{ route('publico.consultoria') }}">Para organizaciones <x-icono nombre="flecha-diagonal" /></a>
             </nav>
         </div>
     </header>
@@ -49,11 +49,11 @@
                     <p class="antetitulo antetitulo-claro"><span></span> Naturaleza. Comunidad. Propósito.</p>
                     <h1 id="titulo-portada">Volver a la tierra.<br>Conectar con<br><em>lo que importa.</em></h1>
                     <p class="portada-descripcion">Hay viajes que te llevan a un lugar.<br>Y otros que te acercan a una nueva forma de verlo.</p>
-                    <a class="boton boton-tierra" href="#experiencias">Descubre Mil Cumbres <x-icono nombre="flecha" /></a>
+                    <a class="boton boton-tierra" href="{{ route('publico.catalogo') }}">Descubre Mil Cumbres <x-icono nombre="flecha" /></a>
                 </div>
                 <div class="portada-pie">
                     <p><span>Una manera distinta de viajar</span>Operación turística y consultoría con sentido.</p>
-                    <a href="#esencia" class="enlace-bajar"><span>El camino empieza aquí</span><x-icono nombre="abajo" /></a>
+                    <a href="{{ route('publico.nosotros') }}" class="enlace-bajar"><span>El camino empieza aquí</span><x-icono nombre="abajo" /></a>
                 </div>
                 <div class="sello-portada" aria-hidden="true"><x-icono nombre="montana" /><span>Menos prisa.<br>Más conexión.</span></div>
             </div>
@@ -74,8 +74,8 @@
                     <p class="texto-destacado">Un encuentro con la naturaleza. Una conversación con el territorio. Una conexión que continúa después del viaje.</p>
                     <p>En Mil Cumbres, el turismo regenerativo es el punto de partida para pensar nuestra relación con los lugares que visitamos y con quienes los habitan.</p>
                     <div class="vertientes">
-                        <article><span class="numero-seccion">01 / Explorar</span><h3>Operadora turística</h3><p>Experiencias para acercarnos a la naturaleza y mirar el entorno con otros ojos.</p><a class="enlace-texto" href="#experiencias">Conocer la propuesta <x-icono nombre="flecha" /></a></article>
-                        <article><span class="numero-seccion">02 / Acompañar</span><h3>Consultoría</h3><p>Un espacio para impulsar proyectos junto a organizaciones y comunidades.</p><a class="enlace-texto" href="#organizaciones">Explorar esta vertiente <x-icono nombre="flecha" /></a></article>
+                        <article><span class="numero-seccion">01 / Explorar</span><h3>Operadora turística</h3><p>Experiencias para acercarnos a la naturaleza y mirar el entorno con otros ojos.</p><a class="enlace-texto" href="{{ route('publico.catalogo') }}">Conocer la propuesta <x-icono nombre="flecha" /></a></article>
+                        <article><span class="numero-seccion">02 / Acompañar</span><h3>Consultoría</h3><p>Un espacio para impulsar proyectos junto a organizaciones y comunidades.</p><a class="enlace-texto" href="{{ route('publico.consultoria') }}">Explorar esta vertiente <x-icono nombre="flecha" /></a></article>
                     </div>
                 </div>
             </div>
@@ -94,7 +94,7 @@
                     <div class="lista-lineas">
                         <details class="linea-servicio" open>
                             <summary><span class="numero-linea">01</span><span>Senderismo</span><x-icono nombre="mas" /></summary>
-                            <div class="detalle-linea"><p>Caminar, observar y reconectar con el entorno. Aquí presentaremos las distintas rutas, sus recorridos y la información para elegir tu experiencia.</p><a class="enlace-texto" href="#experiencias" data-ver-senderismo>Explorar las rutas <x-icono nombre="flecha" /></a></div>
+                            <div class="detalle-linea"><p>Caminar, observar y reconectar con el entorno. Aquí presentaremos las distintas rutas, sus recorridos y la información para elegir tu experiencia.</p><a class="enlace-texto" href="{{ route('publico.catalogo') }}" data-ver-senderismo>Explorar las rutas <x-icono nombre="flecha" /></a></div>
                         </details>
                         {{-- Son espacios de presentación, no registros del catálogo; los otros cuatro nombres están pendientes. --}}
                         @foreach (['02', '03', '04', '05'] as $numero)
@@ -384,7 +384,7 @@
         </section>
 
         <section class="cierre" aria-labelledby="titulo-cierre">
-            <div class="contenedor cierre-interior"><x-icono nombre="montana" /><p class="antetitulo antetitulo-claro">Un lugar para volver a conectar</p><h2 id="titulo-cierre">A veces, para encontrarte,<br><em>solo hace falta salir.</em></h2><a class="boton boton-crema" href="#experiencias">Explorar la propuesta <x-icono nombre="flecha" /></a></div>
+            <div class="contenedor cierre-interior"><x-icono nombre="montana" /><p class="antetitulo antetitulo-claro">Un lugar para volver a conectar</p><h2 id="titulo-cierre">A veces, para encontrarte,<br><em>solo hace falta salir.</em></h2><a class="boton boton-crema" href="{{ route('publico.catalogo') }}">Explorar la propuesta <x-icono nombre="flecha" /></a></div>
             <div class="curvas-cierre" aria-hidden="true"></div>
         </section>
     </main>
@@ -393,8 +393,8 @@
         <div class="contenedor">
             <div class="pie-superior">
                 <div><a class="marca" href="#inicio"><img src="{{ asset('imagenes/simbolo.svg') }}" alt="" width="47" height="47"><span>Mil Cumbres<small>Turismo regenerativo</small></span></a><p>Naturaleza que inspira.<br>Conexiones que permanecen.</p></div>
-                <nav aria-label="Explorar Mil Cumbres"><span>Descubre</span><a href="#experiencias">Experiencias</a><a href="#propuesta">Nuestra propuesta</a><a href="#guias">Nuestros guías</a></nav>
-                <nav aria-label="Conocer Mil Cumbres"><span>Conecta</span><a href="#esencia">Nuestra esencia</a><a href="#comunidades">Territorio y comunidad</a><a href="#organizaciones">Para organizaciones</a></nav>
+                <nav aria-label="Explorar Mil Cumbres"><span>Descubre</span><a href="{{ route('publico.catalogo') }}">Experiencias</a><a href="#propuesta">Nuestra propuesta</a><a href="{{ route('publico.guias') }}">Nuestros guías</a></nav>
+                <nav aria-label="Conocer Mil Cumbres"><span>Conecta</span><a href="{{ route('publico.nosotros') }}">Nuestra esencia</a><a href="{{ route('publico.comunidades') }}">Territorio y comunidad</a><a href="{{ route('publico.consultoria') }}">Para organizaciones</a></nav>
                 <div class="pie-nota"><span>Un proyecto que sigue creciendo</span><p>Estamos preparando las primeras experiencias. Gracias por ser parte del comienzo.</p><a class="enlace-texto" href="#inicio">Volver al inicio <x-icono nombre="arriba" /></a></div>
             </div>
             <div class="pie-inferior"><p>© {{ date('Y') }} Mil Cumbres. Todos los derechos reservados.</p><span>Hecho para volver a lo esencial.</span></div>
