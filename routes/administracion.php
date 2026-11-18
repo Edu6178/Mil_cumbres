@@ -5,6 +5,9 @@ use App\Http\Controllers\Admin\GuiaController;
 use App\Http\Controllers\Admin\PanelController;
 use App\Http\Controllers\Admin\PerfilController;
 use App\Http\Controllers\Admin\ServicioController;
+use App\Http\Controllers\Admin\VentaController;
+use App\Http\Controllers\Admin\FinanzaController;
+use App\Http\Controllers\PagoController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -13,6 +16,10 @@ Route::prefix('administracion')->name('administracion.')
     ->middleware(['auth', 'can:administrar', 'cache.headers:no_store;private;max_age=0'])
     ->group(function () {
         Route::get('/', [PanelController::class, 'index'])->name('inicio');
+        Route::get('/finanzas', [FinanzaController::class, 'index'])->name('finanzas');
+        Route::get('/ventas', [VentaController::class, 'index'])->name('ventas.indice');
+        Route::get('/ventas/{reservacion}', [VentaController::class, 'mostrar'])->whereNumber('reservacion')->name('ventas.mostrar');
+        Route::post('/ventas/{reservacion}/confirmar', [VentaController::class, 'confirmar'])->whereNumber('reservacion')->name('ventas.confirmar');
         Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil');
         Route::post('/perfil/foto', [PerfilController::class, 'guardarFoto'])->name('perfil.guardar-foto');
         Route::get('/perfil/foto', [PerfilController::class, 'foto'])->name('perfil.foto');
@@ -41,3 +48,13 @@ Route::prefix('administracion')->name('administracion.')
         Route::get('/canales-externos', [CalendarioAdminController::class, 'canalesExternos'])->name('canales.indice');
         Route::post('/canales-externos', [CalendarioAdminController::class, 'registrarExterna'])->name('canales.guardar');
     });
+
+// Conserva las direcciones del módulo original, con autorización administrativa en todas las acciones.
+Route::middleware(['auth', 'can:administrar', 'cache.headers:no_store;private;max_age=0'])->group(function () {
+    Route::get('/pagos', [PagoController::class, 'index'])->name('pagos.index');
+    Route::get('/pagos/crear', [PagoController::class, 'create'])->name('pagos.create');
+    Route::post('/pagos', [PagoController::class, 'store'])->name('pagos.store');
+    Route::get('/pagos/{pago}', [PagoController::class, 'show'])->whereNumber('pago')->name('pagos.show');
+    Route::post('/pagos/{pago}/confirmar', [PagoController::class, 'confirmar'])->whereNumber('pago')->name('pagos.confirmar');
+    Route::post('/pagos/{pago}/anular', [PagoController::class, 'anular'])->whereNumber('pago')->name('pagos.anular');
+});

@@ -1,5 +1,14 @@
 import './transiciones.js';
 
+// Cambiar de venta sugiere su moneda; el servidor vuelve a comprobarla al guardar el abono.
+const ventaPago = document.querySelector('#reservacion_id');
+const monedaPago = document.querySelector('#moneda');
+if (ventaPago && monedaPago) {
+    const actualizarMoneda = () => { const moneda = ventaPago.selectedOptions[0]?.dataset.moneda; if (moneda) monedaPago.value = moneda; };
+    ventaPago.addEventListener('change', actualizarMoneda);
+    actualizarMoneda();
+}
+
 // El menú móvil conserva los enlaces accesibles y se cierra con Escape.
 document.body.classList.add('adm-con-js');
 const boton = document.querySelector('.adm-menu-boton');

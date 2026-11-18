@@ -20,6 +20,9 @@
             <a href="{{ route('administracion.servicios.indice') }}" @if(request()->routeIs('administracion.servicios.*')) aria-current="page" @endif><x-icono nombre="brujula" /><span>Servicios y precios</span></a>
             <a href="{{ route('administracion.categorias.indice') }}" @if(request()->routeIs('administracion.categorias.*')) aria-current="page" @endif><x-icono nombre="carpetas" /><span>Categorías</span></a>
             <p class="adm-grupo">Operación</p>
+            <a href="{{ route('administracion.finanzas') }}" @if(request()->routeIs('administracion.finanzas')) aria-current="page" @endif><x-icono nombre="panel" /><span>Resumen financiero</span></a>
+            <a href="{{ route('administracion.ventas.indice') }}" @if(request()->routeIs('administracion.ventas.*')) aria-current="page" @endif><x-icono nombre="lista" /><span>Solicitudes y ventas</span></a>
+            <a href="{{ route('pagos.index') }}" @if(request()->routeIs('pagos.*')) aria-current="page" @endif><x-icono nombre="pago" /><span>Pagos y abonos</span></a>
             <a href="{{ route('administracion.calendario.indice') }}" @if(request()->routeIs('administracion.calendario.*')) aria-current="page" @endif><x-icono nombre="calendario" /><span>Calendario y cupos</span></a>
             <a href="{{ route('administracion.canales.indice') }}" @if(request()->routeIs('administracion.canales.*')) aria-current="page" @endif><x-icono nombre="brujula" /><span>Canales externos</span></a>
             <a href="{{ route('administracion.guias') }}" @if(request()->routeIs('administracion.guias')) aria-current="page" @endif><x-icono nombre="personas" /><span>Equipo de guías</span></a>
