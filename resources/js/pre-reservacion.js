@@ -14,12 +14,15 @@ export function iniciarPreReservacion(raiz = document) {
 
     function crearAcompanante(indice) {
         const grupo = raiz.createElement('fieldset');
+        grupo.className = 'reserva-acompanante';
         grupo.dataset.acompanante = String(indice);
         const leyenda = raiz.createElement('legend');
         leyenda.textContent = `Acompañante ${indice + 1}`;
         grupo.appendChild(leyenda);
 
         for (const [nombre, texto] of Object.entries(campos)) {
+            const campo = raiz.createElement('div');
+            campo.className = 'reserva-campo';
             const etiqueta = raiz.createElement('label');
             const entrada = raiz.createElement('input');
             entrada.id = `acompanante-${indice}-${nombre}`;
@@ -27,10 +30,12 @@ export function iniciarPreReservacion(raiz = document) {
             entrada.type = nombre === 'fecha_nacimiento' ? 'date' : 'text';
             entrada.required = nombre !== 'apellido_materno';
             if (nombre === 'fecha_nacimiento') entrada.max = contenedor.dataset.fechaMaxima;
+            else entrada.maxLength = 255;
             etiqueta.htmlFor = entrada.id;
-            etiqueta.textContent = texto;
-            grupo.appendChild(etiqueta);
-            grupo.appendChild(entrada);
+            etiqueta.textContent = texto + (nombre === 'apellido_materno' ? ' (opcional)' : '');
+            campo.appendChild(etiqueta);
+            campo.appendChild(entrada);
+            grupo.appendChild(campo);
         }
 
         return grupo;
@@ -51,6 +56,21 @@ export function iniciarPreReservacion(raiz = document) {
             if (!grupos.has(indice)) grupos.set(indice, crearAcompanante(indice));
             const grupo = grupos.get(indice);
             if (grupo.parentElement !== contenedor) contenedor.appendChild(grupo);
+        }
+        const aviso = raiz.getElementById('reserva-sin-acompanantes');
+        if (aviso) aviso.hidden = necesarios > 0;
+
+        // El resumen usa únicamente los datos de la opción seleccionada y nunca modifica los campos.
+        const opcion = programacion.selectedOptions[0];
+        const resumen = {
+            nombre: opcion?.dataset.experiencia || 'Tu próxima salida empieza aquí.',
+            fecha: opcion?.dataset.fecha || 'Elige una fecha en el formulario',
+            region: opcion?.dataset.region || 'Por seleccionar',
+            cupos: cupos ? `${cupos} ${cupos === 1 ? 'lugar disponible' : 'lugares disponibles'}` : 'Consulta los lugares al elegir tu salida',
+        };
+        for (const [clave, valor] of Object.entries(resumen)) {
+            const destino = raiz.querySelector?.(`[data-reserva-${clave}]`);
+            if (destino) destino.textContent = valor;
         }
     }
 

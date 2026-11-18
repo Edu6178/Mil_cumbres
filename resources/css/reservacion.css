@@ -1,0 +1,90 @@
+/* Este bloque conserva el formulario legible aunque el navegador restablezca los estilos nativos. */
+.formulario-prereserva { margin-top: 76px; padding-top: 54px; border-top: 1px solid var(--borde); min-width: 0; scroll-margin-top: 110px; }
+.reserva-encabezado { display: flex; justify-content: space-between; align-items: flex-end; gap: 36px; margin-bottom: 36px; }
+.reserva-encabezado h2 { font-size: clamp(34px, 3.5vw, 47px); }
+.reserva-encabezado .antetitulo { margin-bottom: 18px; }
+.reserva-encabezado > p { max-width: 330px; color: var(--texto-suave); font-size: 13px; line-height: 1.85; padding-bottom: 5px; }
+.reserva-distribucion { display: grid; grid-template-columns: minmax(0, 1fr) 305px; gap: 28px; align-items: start; }
+.reserva-formulario { padding: 36px; background: #fffefa; border: 1px solid var(--borde); border-radius: 8px; min-width: 0; box-shadow: 0 8px 32px #193e3405; }
+.reserva-formulario fieldset { min-inline-size: 0; margin: 0; padding: 0; border: 0; }
+.reserva-seccion + .reserva-seccion { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--borde); }
+.reserva-seccion > legend { float: left; display: flex; align-items: center; gap: 12px; width: 100%; color: var(--bosque); font-size: 18px; font-weight: 600; line-height: 1.45; }
+.reserva-numero { display: inline-grid; place-items: center; flex: 0 0 32px; height: 32px; border: 1px solid #dce2d4; border-radius: 50%; color: #647756; font-size: 11px; font-weight: 600; }
+.reserva-introduccion { clear: both; padding-top: 11px; margin-bottom: 22px; color: var(--texto-suave); font-size: 12px; }
+.reserva-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 21px 18px; }
+.reserva-campos-tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.reserva-ancho-completo { grid-column: 1 / -1; }
+.reserva-campo { min-width: 0; }
+.reserva-campo > label { display: block; margin-bottom: 8px; color: var(--bosque); font-size: 12px; font-weight: 600; line-height: 1.5; }
+.reserva-campo > label > span { margin-left: 4px; color: #737e70; font-size: 10px; font-weight: 400; }
+.reserva-campo input, .reserva-campo select, .reserva-campo textarea { display: block; box-sizing: border-box; width: 100%; min-width: 0; max-width: 100%; min-height: 50px; margin: 0; padding: 12px 13px; border: 1px solid #cbd3c4; border-radius: 4px; background: #fff; color: var(--bosque); font: inherit; font-size: 14px; line-height: 1.6; transition: border-color .2s ease, box-shadow .2s ease; }
+.reserva-campo select { padding-right: 32px; text-overflow: ellipsis; }
+.reserva-campo textarea { min-height: 122px; resize: vertical; }
+.reserva-campo input::placeholder, .reserva-campo textarea::placeholder { color: #858d80; font-size: 12px; opacity: 1; }
+.reserva-campo input:focus, .reserva-campo select:focus, .reserva-campo textarea:focus { outline: 0; border-color: #647756; box-shadow: 0 0 0 3px #6477561a; }
+.reserva-campo [aria-invalid='true'] { border-color: #b95634; }
+.reserva-ayuda, .reserva-error { margin-top: 7px; font-size: 11px; line-height: 1.6; }
+.reserva-ayuda { color: var(--texto-suave); }
+.reserva-error { color: #9d432c; }
+.reserva-sin-acompanantes { display: flex; gap: 11px; align-items: center; padding: 17px; background: #f3f4ed; border-radius: 4px; color: #65755b; font-size: 12px; }
+.reserva-sin-acompanantes .icono { width: 19px; height: 19px; }
+.reserva-sin-acompanantes[hidden] { display: none; }
+#contenedor-acompanantes { display: grid; gap: 18px; }
+.reserva-formulario .reserva-acompanante { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; padding: 22px; border: 1px solid #dde2d5; border-radius: 5px; background: #f8f8f2; }
+.reserva-acompanante > legend { padding-inline: 8px; margin-left: -8px; color: #657756; font-size: 12px; font-weight: 600; }
+.reserva-enviar { margin-top: 31px; padding-top: 26px; border-top: 1px solid var(--borde); }
+.reserva-enviar > p { display: flex; align-items: flex-start; gap: 10px; max-width: 570px; color: var(--texto-suave); font-size: 12px; }
+.reserva-enviar > p .icono { width: 18px; height: 18px; margin-top: 2px; }
+.reserva-enviar > .boton { margin-top: 24px; min-height: 53px; gap: 36px; }
+.reserva-resumen { position: sticky; top: 112px; min-width: 0; padding: 31px 27px 24px; border-radius: 7px; background: var(--bosque); color: var(--crema); overflow-wrap: anywhere; }
+.reserva-resumen-icono { display: grid; place-items: center; width: 45px; height: 45px; margin-bottom: 26px; border: 1px solid #ffffff30; border-radius: 50%; color: #d1d7b8; }
+.reserva-resumen .numero-seccion { color: #c6d0b9; font-size: 8px; letter-spacing: 1.2px; }
+.reserva-resumen h3 { margin-top: 13px; font-family: var(--serif); font-size: 30px; line-height: 1.22; letter-spacing: -.6px; }
+.reserva-resumen dl { display: grid; gap: 19px; margin-block: 28px; }
+.reserva-resumen dt { display: flex; align-items: center; gap: 8px; color: #c6d0b9; font-size: 10px; }
+.reserva-resumen dt .icono { width: 15px; height: 15px; }
+.reserva-resumen dd { margin: 6px 0 0 23px; color: #f1f1e8; font-size: 12px; line-height: 1.7; }
+.reserva-resumen-pie { display: flex; gap: 13px; align-items: center; padding-top: 24px; border-top: 1px solid #ffffff26; }
+.reserva-resumen-pie > .icono { color: #c6d0b9; width: 28px; height: 28px; }
+.reserva-resumen-pie p { font-family: var(--serif); font-size: 21px; line-height: 1.35; }
+.reserva-resumen-pie em { color: #d9dbbc; }
+.reserva-resumen-nota { margin-top: 23px; color: #c6d0b9; font-size: 10px; line-height: 1.7; }
+.reserva-aviso { display: flex; align-items: flex-start; gap: 13px; padding: 20px 23px; margin-bottom: 27px; border: 1px solid #cbd8be; border-radius: 6px; background: #edf3e6; font-size: 13px; overflow-wrap: anywhere; }
+.reserva-aviso > .icono { margin-top: 1px; }
+.reserva-aviso p { margin-top: 5px; }
+.reserva-aviso ul { margin: 8px 0 0; padding-left: 18px; }
+.reserva-aviso-error { background: #faf0e9; border-color: #e0bda8; color: #843f2b; }
+.reserva-estado { padding: 40px; border: 1px solid var(--borde); border-radius: 6px; background: #fffefa; text-align: center; }
+.reserva-estado > .icono { display: inline-block; margin-bottom: 18px; color: #647756; width: 33px; height: 33px; }
+.reserva-estado h3 { font-family: var(--serif); font-size: 28px; line-height: 1.3; }
+.reserva-estado > p { margin-top: 14px; color: var(--texto-suave); font-size: 13px; }
+@media (max-width: 1100px) {
+    .reserva-distribucion { grid-template-columns: minmax(0, 1fr) 270px; gap: 20px; }
+    .reserva-formulario { padding: 26px; }
+    .reserva-campos-tres { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 850px) {
+    .reserva-encabezado { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .reserva-encabezado > p { max-width: 500px; }
+    .reserva-distribucion { grid-template-columns: minmax(0, 1fr); }
+    .reserva-resumen { position: static; order: -1; padding: 24px; }
+    .reserva-resumen-icono, .reserva-resumen-pie, .reserva-resumen-nota { display: none; }
+    .reserva-resumen h3 { font-size: 27px; }
+    .reserva-resumen dl { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-block: 20px 0; }
+}
+@media (max-width: 600px) {
+    .formulario-prereserva { margin-top: 48px; padding-top: 36px; }
+    .reserva-encabezado h2 { font-size: 35px; letter-spacing: -1.3px; }
+    .reserva-encabezado > p { font-size: 12px; }
+    .reserva-formulario { padding: 23px 18px; }
+    .reserva-seccion > legend { font-size: 16px; gap: 10px; }
+    .reserva-campos, .reserva-campos-tres, .reserva-formulario .reserva-acompanante { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+    .reserva-campo input, .reserva-campo select, .reserva-campo textarea { font-size: 16px; }
+    .reserva-campo > label { font-size: 13px; }
+    .reserva-formulario .reserva-acompanante { padding: 17px 13px; }
+    .reserva-resumen { padding: 23px 20px; }
+    .reserva-resumen dl { grid-template-columns: minmax(0, 1fr); gap: 15px; }
+    .reserva-resumen dd { margin-top: 3px; }
+    .reserva-enviar > .boton { width: 100%; justify-content: space-between; }
+    .reserva-estado { padding: 30px 20px; }
+}

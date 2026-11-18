@@ -1,5 +1,6 @@
 @import 'tailwindcss' source(none);
 @import './transiciones.css';
+@import './reservacion.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../**/*.blade.php';
@@ -168,7 +169,8 @@ summary::-webkit-details-marker { display: none; }
 .etiqueta-proximamente .icono { width: 18px; height: 18px; }
 
 /* El bloque de territorio reúne imagen y principios sin presentar comunidades ficticias. */
-.comunidades { position: relative; isolation: isolate; color: var(--crema); background: var(--bosque-profundo); }
+/* Recorta el fondo ampliado para que el paisaje animado no genere desplazamiento horizontal. */
+.comunidades { position: relative; isolation: isolate; overflow: clip; color: var(--crema); background: var(--bosque-profundo); }
 .comunidades-fondo { object-fit: cover; object-position: center 45%; z-index: -3; }
 .comunidades-sombra { background: linear-gradient(90deg, #112e27d1, #112e27e6 60%, #112e27f2); z-index: -2; }
 .comunidades-interior { display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: 100px; padding-block: 107px; }

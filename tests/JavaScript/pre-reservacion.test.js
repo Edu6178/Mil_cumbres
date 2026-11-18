@@ -29,6 +29,11 @@ class Elemento {
     setCustomValidity(mensaje) { this.error = mensaje; }
 }
 
+// Permite consultar campos por su significado aunque cambie la distribución visual del formulario.
+function descendientes(elemento) {
+    return elemento.children.flatMap((hijo) => [hijo, ...descendientes(hijo)]);
+}
+
 function formulario() {
     const cantidad = new Elemento('input');
     cantidad.value = '2';
@@ -55,7 +60,7 @@ test('conserva acompañantes al cambiar fecha, aumentar, reducir y volver a aume
     cantidad.value = '3';
     cantidad.emitir('input');
     const segundo = contenedor.children[1];
-    const nombreSegundo = segundo.children.find((elemento) => elemento.name === 'acompanantes[1][nombre]');
+    const nombreSegundo = descendientes(segundo).find((elemento) => elemento.name === 'acompanantes[1][nombre]');
     nombreSegundo.value = 'Luis';
     programacion.emitir('change');
     assert.equal(nombreAnterior.value, 'Ana');
@@ -90,10 +95,10 @@ test('los campos nuevos tienen etiquetas y usan la fecha máxima entregada por e
     cantidad.value = '3';
     cantidad.emitir('input');
     const grupo = contenedor.children[1];
-    const entradas = grupo.children.filter((elemento) => elemento.etiqueta === 'input');
+    const entradas = descendientes(grupo).filter((elemento) => elemento.etiqueta === 'input');
     assert.equal(entradas.length, 4);
     for (const entrada of entradas) {
-        assert.ok(grupo.children.some((etiqueta) => etiqueta.htmlFor === entrada.id));
+        assert.ok(descendientes(grupo).some((etiqueta) => etiqueta.htmlFor === entrada.id));
     }
     const fecha = entradas.find((entrada) => entrada.type === 'date');
     assert.equal(fecha.max, '2026-11-16');
