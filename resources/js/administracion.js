@@ -1,3 +1,5 @@
+import './transiciones.js';
+
 // El menú móvil conserva los enlaces accesibles y se cierra con Escape.
 document.body.classList.add('adm-con-js');
 const boton = document.querySelector('.adm-menu-boton');

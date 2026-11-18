@@ -1,4 +1,5 @@
 @import 'tailwindcss' source(none);
+@import './transiciones.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../**/*.blade.php';
@@ -178,7 +179,6 @@ summary::-webkit-details-marker { display: none; }
 .principios-comunidad p { display: flex; gap: 15px; font-size: 11px; }
 .principios-comunidad span { color: #dab28c; font-size: 9px; }
 .comunidades-texto > .nota-comunidades { margin-top: 25px; padding-top: 17px; border-top: 1px solid #ffffff30; color: #c0cebc; font-size: 10px; line-height: 1.8; }
-.credito-imagen { position: absolute; bottom: 13px; right: 25px; color: #d1dac5b3; font-size: 8px; }
 .guias-cuadricula { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 100px; }
 .guias-descripcion { max-width: 375px; margin-top: 24px; font-size: 12px; color: var(--texto-suave); }
 .nota-editorial { display: flex; align-items: center; gap: 12px; margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--borde); font-size: 10px; color: #6f7d61; }
@@ -371,7 +371,6 @@ summary::-webkit-details-marker { display: none; }
     .comunidades-interior { padding-block: 65px; gap: 30px; }
     .comunidades h2 { font-size: 37px; }
     .comunidades-texto > p { font-size: 13px; }
-    .credito-imagen { right: 20px; }
     .guias h2 { font-size: 38px; }
     .guias-descripcion { font-size: 12px; max-width: none; }
     .guias-vacio { padding: 35px 25px; border-top-right-radius: 75px; }
@@ -420,6 +419,26 @@ summary::-webkit-details-marker { display: none; }
     html { scroll-behavior: auto; }
     *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+
+.catalogo-adelanto { padding: 22px; }
+.catalogo-adelanto .publico-servicios-cuadricula { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.catalogo-adelanto > .boton, .guia-destacada > .enlace-texto { margin-top: 22px; }
+.guia-destacada { max-width: 390px; width: 100%; justify-self: center; }
+@media (max-width: 650px) { .catalogo-adelanto .publico-servicios-cuadricula { grid-template-columns: 1fr; } }
+
+/* El movimiento acompaña la lectura y mantiene estables los botones y los formularios. */
+@media (prefers-reduced-motion: no-preference) {
+    .portada { overflow: clip; }
+    .portada-fondo, .comunidades-fondo { scale: 1.045; translate: 0 var(--desfase-paisaje, 0px); }
+    .navegacion > a:not(.boton) { position: relative; }
+    .navegacion > a:not(.boton)::after { content: ''; position: absolute; bottom: 4px; left: 0; right: 0; height: 1px; background: var(--tierra); transform: scaleX(0); transform-origin: left; transition: transform .3s ease; }
+    .navegacion > a:not(.boton):hover::after, .navegacion > a:not(.boton):focus-visible::after, .navegacion > a[aria-current='page']::after { transform: scaleX(1); }
+    .boton:active { transform: translateY(0) scale(.98); }
+    .campo label { transition: color .2s ease, transform .25s ease; }
+    .campo:focus-within > label { color: var(--tierra); transform: translateX(3px); }
+    .formulario-cuenta[aria-busy='true'] .boton-formulario .icono { animation: avanzar-flecha .8s ease-in-out infinite alternate; }
+}
+@keyframes avanzar-flecha { to { translate: 4px 0; opacity: .5; } }
 
 /* Acceso y registro comparten composición, campos y estados; usan la identidad de la portada. */
 .acceso-distribucion { display: grid; grid-template-columns: .94fr 1.06fr; min-height: 100svh; }

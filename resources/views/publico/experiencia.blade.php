@@ -28,7 +28,7 @@
                         <p class="publico-nota">Los cupos se comprueban de nuevo al registrar la solicitud.</p>
                     </section>
                 </div>
-                <aside class="publico-resumen-experiencia"><p class="numero-seccion">Prepara tu recorrido</p><h2>Un momento para salir.</h2><dl><div><dt>Duración</dt><dd>{{ isset($servicio['duracion_estimada']) ? $servicio['duracion_estimada'].' minutos' : 'Por confirmar' }}</dd></div><div><dt>Precio base</dt><dd>{{ isset($servicio['precio_base']) ? '$'.number_format((float) $servicio['precio_base'], 2) : 'Por confirmar' }}</dd></div><div><dt>Unidad de cobro</dt><dd>{{ $servicio['unidad_cobro'] ?? 'Por confirmar' }}</dd></div></dl><a class="boton boton-bosque" href="{{ route('inicio') }}#pre-reservacion">Consultar programaciones <x-icono nombre="flecha" /></a><p>La solicitud de pre-reservación se realiza en el apartado de programaciones.</p></aside>
+                <aside class="publico-resumen-experiencia"><p class="numero-seccion">Prepara tu recorrido</p><h2>Un momento para salir.</h2><dl><div><dt>Duración</dt><dd>{{ isset($servicio['duracion_estimada']) ? $servicio['duracion_estimada'].' minutos' : 'Por confirmar' }}</dd></div><div><dt>Precio base</dt><dd>{{ isset($servicio['precio_base']) ? '$'.number_format((float) $servicio['precio_base'], 2) : 'Por confirmar' }}</dd></div><div><dt>Unidad de cobro</dt><dd>{{ $servicio['unidad_cobro'] ?? 'Por confirmar' }}</dd></div></dl><a class="boton boton-bosque" href="{{ $servicio['url_reservacion'] ?? route('inicio').'#pre-reservacion' }}">Consultar programaciones <x-icono nombre="flecha" /></a><p>La solicitud de pre-reservación se realiza en el apartado de programaciones.</p></aside>
             </div>
         @endif
     </div>

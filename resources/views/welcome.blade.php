@@ -10,7 +10,7 @@
     {{-- El teléfono descarga una portada más ligera; las demás imágenes se cargan al acercarse a su sección. --}}
     <link rel="preload" as="image" href="{{ asset('imagenes/bosque-portada.webp') }}" media="(min-width: 651px)" fetchpriority="high">
     <link rel="preload" as="image" href="{{ asset('imagenes/bosque-portada-movil.webp') }}" media="(max-width: 650px)" fetchpriority="high">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/css/publico.css', 'resources/js/app.js'])
 </head>
 <body>
     <a class="saltar-contenido" href="#contenido">Saltar al contenido</a>
@@ -86,7 +86,7 @@
                 <figure class="imagen-senderismo">
                     <img src="{{ asset('imagenes/senderismo.webp') }}" alt="Personas recorriendo un sendero de montaña" width="1000" height="1333" loading="lazy" decoding="async">
                     <div class="etiqueta-imagen"><x-icono nombre="ruta" /><span>El paisaje se descubre<br><strong>paso a paso.</strong></span></div>
-                    <figcaption>Una mirada a lo que nos mueve · Imagen de referencia</figcaption>
+                    <figcaption>Una mirada a lo que nos mueve</figcaption>
                 </figure>
                 <div class="lineas-contenido">
                     <p class="antetitulo"><span></span> Nuestra propuesta</p><h2 id="titulo-lineas">Cinco caminos.<br><em>Un mismo propósito.</em></h2>
@@ -113,6 +113,16 @@
                 </div>
                 <div class="catalogo-cuadricula">
                     <div class="catalogo-panel">
+                        @if($serviciosPublicos->isNotEmpty())
+                            <div class="catalogo-adelanto">
+                                <div class="publico-servicios-cuadricula">
+                                    @foreach($serviciosPublicos->take(2) as $servicio)
+                                        <x-publico.servicio :servicio="$servicio" />
+                                    @endforeach
+                                </div>
+                                <a class="boton boton-bosque" href="{{ route('publico.catalogo') }}">Ver todas las experiencias <x-icono nombre="flecha" /></a>
+                            </div>
+                        @else
                         <div class="pestanas" role="tablist" aria-label="Tipo de experiencia">
                             <button id="pestana-experiencias" type="button" role="tab" aria-selected="true" aria-controls="catalogo-contenido" data-catalogo="experiencias">Todas las experiencias</button>
                             <button id="pestana-senderismo" type="button" role="tab" aria-selected="false" aria-controls="catalogo-contenido" tabindex="-1" data-catalogo="senderismo"><x-icono nombre="ruta" /> Rutas de senderismo</button>
@@ -125,6 +135,7 @@
                             <p id="descripcion-catalogo-vacio" aria-live="polite">Todavía no hay experiencias publicadas. Aquí encontrarás los recorridos, itinerarios y detalles de cada servicio cuando estén disponibles.</p>
                             <a class="enlace-texto" href="#propuesta">Mientras tanto, conoce nuestra propuesta <x-icono nombre="flecha" /></a>
                         </div>
+                        @endif
                     </div>
                     <aside class="proximas-salidas" aria-labelledby="titulo-salidas">
                         <div class="salidas-icono"><x-icono nombre="calendario" /></div>
@@ -212,7 +223,7 @@
                                     @foreach ($programaciones as $programacion)
                                         <option value="{{ $programacion->id }}"
                                             data-cupos="{{ $programacion->cupos_disponibles }}"
-                                            @selected(old('programacion_id') == $programacion->id)>
+                                            @selected(old('programacion_id', is_scalar(request('programacion')) ? request('programacion') : null) == $programacion->id)>
                                             {{ $programacion->servicioRegion?->servicio?->nombre_servicio ?? 'Experiencia' }}
                                             · {{ \Carbon\Carbon::parse($programacion->fecha_inicio)->format('d/m/Y') }}
                                             · {{ $programacion->cupos_disponibles }} cupos
@@ -313,17 +324,23 @@
                 <div class="comunidades-texto">
                     <p>Conocer un lugar también significa acercarse a quienes lo habitan. Nuestra propuesta pone en el centro al territorio, sus saberes y sus comunidades.</p>
                     <div class="principios-comunidad"><p><span>01</span> Escuchar antes de proponer.</p><p><span>02</span> Aprender de los saberes del lugar.</p><p><span>03</span> Construir desde la colaboración.</p></div>
-                    <p class="nota-comunidades">Próximamente compartiremos las comunidades y regiones que forman parte de este camino.</p>
+                    <p class="nota-comunidades"><a href="{{ route('publico.comunidades') }}">Conoce las comunidades y regiones que forman parte de este camino.</a></p>
                 </div>
             </div>
-            <span class="credito-imagen">Imagen de referencia</span>
         </section>
 
         <section class="seccion guias" id="guias" aria-labelledby="titulo-guias">
             <div class="contenedor guias-cuadricula">
                 <div><p class="antetitulo"><span></span> Personas que acompañan</p><h2 id="titulo-guias">El camino cambia<br>cuando alguien<br><em>te lo comparte.</em></h2><p class="guias-descripcion">La formación, los talentos y la mirada de cada guía dan una perspectiva distinta al recorrido.</p><span class="nota-editorial"><x-icono nombre="hoja" /> Cada encuentro, una nueva forma de aprender.</span></div>
-                {{-- Los perfiles se mostrarán con información autorizada; no se simulan personas. --}}
+                @if($guiasPublicos->isNotEmpty())
+                    <div class="guia-destacada">
+                        <x-publico.carrusel-guias :guias="$guiasPublicos" identificador="guias-portada" :individual="true" />
+                        <a class="enlace-texto" href="{{ route('publico.guias') }}">Conoce a todos los guías <x-icono nombre="flecha" /></a>
+                    </div>
+                @else
+                {{-- Sin perfiles publicados se conserva el estado vacío. --}}
                 <div class="guias-vacio"><div class="guias-ilustracion" aria-hidden="true"><x-icono nombre="personas" /><span></span></div><p class="numero-seccion">Conoce a quienes te acompañarán</p><h3>Las personas detrás<br>de la experiencia.</h3><p>Todavía no hay perfiles publicados. Aquí podrás conocer a los guías, su formación y sus talentos.</p><span class="estado-publicacion"><span></span> Perfiles próximamente</span></div>
+                @endif
             </div>
         </section>
 
@@ -365,7 +382,7 @@
                 <nav aria-label="Conocer Mil Cumbres"><span>Conecta</span><a href="{{ route('publico.nosotros') }}">Nuestra esencia</a><a href="{{ route('publico.comunidades') }}">Territorio y comunidad</a><a href="{{ route('publico.consultoria') }}">Para organizaciones</a></nav>
                 <div class="pie-nota"><span>Un proyecto que sigue creciendo</span><p>Estamos preparando las primeras experiencias. Gracias por ser parte del comienzo.</p><a class="enlace-texto" href="#inicio">Volver al inicio <x-icono nombre="arriba" /></a></div>
             </div>
-            <div class="pie-inferior"><p>© {{ date('Y') }} Mil Cumbres. Todos los derechos reservados.</p><span>Hecho para volver a lo esencial.</span></div>
+            <div class="pie-inferior"><p>© {{ date('Y') }} Mil Cumbres. Todos los derechos reservados.</p><a href="{{ route('publico.creditos') }}">Créditos fotográficos</a><span>Hecho para volver a lo esencial.</span></div>
         </div>
     </footer>
 </body>

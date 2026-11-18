@@ -1,4 +1,12 @@
 import './pre-reservacion.js';
+import './transiciones.js';
+
+// El carrusel comparte los perfiles existentes y se descarga solo donde se muestra.
+if (document.querySelector('[data-carrusel-guias]')) {
+    import('./carrusel-guias.js').then(({ iniciarCarruseles }) => iniciarCarruseles()).catch(() => {
+        // Si falla la mejora visual, las fichas y sus enlaces siguen disponibles.
+    });
+}
 
 // Las interacciones de presentación funcionan sin peticiones ni datos de ejemplo.
 document.body.classList.add('con-js');
@@ -130,7 +138,11 @@ document.querySelectorAll('[data-formulario-cuenta]').forEach((formulario) => {
 
 // Anime.js se carga después del contenido; sin JavaScript o con movimiento reducido, todo permanece visible.
 if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    import('./animaciones.js').then(({ iniciarAnimaciones }) => iniciarAnimaciones()).catch(() => {
+    import('./animaciones.js').then(async ({ iniciarAnimaciones }) => {
+        // La entrada del contenido comienza al terminar el cambio de página, para evitar saltos entre efectos.
+        if (document.activeViewTransition) await document.activeViewTransition.finished.catch(() => {});
+        iniciarAnimaciones();
+    }).catch(() => {
         // Si la animación no carga, los formularios y la navegación continúan funcionando.
     });
 }

@@ -83,6 +83,7 @@ if (equipo) {
         const url = new URL(window.location.href);
         if (entrada.value.trim()) url.searchParams.set('buscar', entrada.value.trim()); else url.searchParams.delete('buscar');
         window.history.replaceState(null, '', url);
+        equipo.querySelector('[data-carrusel-guias]')?.dispatchEvent(new Event('guias:filtrados'));
     };
     entrada.addEventListener('input', filtrar);
     formulario.addEventListener('submit', (evento) => { evento.preventDefault(); filtrar(); });

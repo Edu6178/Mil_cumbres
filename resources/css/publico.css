@@ -364,3 +364,52 @@
 @media (prefers-reduced-motion: reduce) {
     .pagina-publica *, .pagina-publica *::before, .pagina-publica *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }
+
+/* El carrusel conserva las tarjetas originales y cambia de una a tres columnas según la pantalla. */
+.publico-carrusel { --guias-por-vista: 3; --separacion-guias: 29px; min-width: 0; }
+.publico-carrusel [hidden] { display: none !important; }
+.publico-carrusel-individual { --guias-por-vista: 1; }
+.publico-carrusel-individual:not(.carrusel-listo) [data-carrusel-ficha]:not(:first-child) { display: none; }
+.publico-carrusel-individual:not(.carrusel-listo) .publico-guias-cuadricula { grid-template-columns: 1fr; }
+.carrusel-listo .publico-carrusel-ventana { overflow: clip; padding: 12px 0; margin-block: -12px; touch-action: pan-y; }
+.carrusel-listo [data-carrusel-pista] { display: flex; gap: var(--separacion-guias); align-items: stretch; }
+.carrusel-listo [data-carrusel-pista] > div { flex: 0 0 calc((100% - (var(--guias-por-vista) - 1) * var(--separacion-guias)) / var(--guias-por-vista)); min-width: 0; }
+.publico-carrusel[data-moviendo] .publico-carrusel-ventana { pointer-events: none; }
+.publico-carrusel-controles { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--borde); }
+.publico-carrusel-posicion { display: flex; gap: 8px; align-items: baseline; font-size: 11px; font-variant-numeric: tabular-nums; color: var(--texto-suave); }
+.publico-carrusel-posicion > span:first-child { font-family: var(--serif); font-size: 24px; color: var(--bosque); }
+.publico-carrusel-separador { color: #c7cebc; }
+.publico-carrusel-puntos { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; }
+.publico-carrusel-puntos button { display: grid; place-items: center; width: 27px; height: 44px; border: 0; background: transparent; cursor: pointer; }
+.publico-carrusel-puntos span { width: 6px; height: 6px; border-radius: 50%; background: #cdd4bf; transition: width .35s ease, background .35s ease; }
+.publico-carrusel-puntos [aria-current] span { width: 20px; border-radius: 10px; background: var(--tierra); }
+.publico-carrusel-botones { display: flex; gap: 5px; }
+.publico-carrusel-botones > button { display: grid; place-items: center; position: relative; width: 44px; height: 44px; padding: 0; border: 1px solid var(--borde); border-radius: 50%; background: transparent; color: var(--bosque); cursor: pointer; transition: background .25s ease, color .25s ease, transform .25s ease; }
+.publico-carrusel-botones > button:hover { background: var(--bosque); color: var(--crema); transform: translateY(-2px); }
+.publico-carrusel-botones > button:disabled { opacity: .4; cursor: default; }
+.publico-carrusel-botones .icono { width: 18px; height: 18px; }
+.publico-carrusel-botones .publico-carrusel-reproduccion { border: 0; }
+.publico-carrusel-reloj { position: absolute; inset: 0; width: 44px; height: 44px; transform: rotate(-90deg); fill: none; stroke: var(--borde); stroke-width: 1; }
+.publico-carrusel-reloj [data-carrusel-progreso] { stroke: var(--tierra); stroke-width: 1.8; stroke-dasharray: 100; stroke-dashoffset: 100; stroke-linecap: round; }
+.publico-carrusel button:focus-visible { outline: 2px solid var(--tierra); outline-offset: 3px; }
+.publico-guia-tarjeta { transition: transform .4s ease, border-color .4s ease, box-shadow .4s ease; }
+.publico-guia-tarjeta:hover, .publico-guia-tarjeta:focus-within { transform: translateY(-4px); border-color: #aab79b; box-shadow: 0 8px 20px #193e340c; }
+.publico-guia-foto img { transition: transform .8s cubic-bezier(.2,.7,.2,1); }
+.publico-guia-tarjeta:hover .publico-guia-foto img { transform: scale(1.035); }
+.publico-guia-tarjeta h2 a { transition: color .25s ease; }
+.publico-guia-tarjeta h2 a:hover { color: var(--tierra); }
+.publico-servicio { transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease; }
+.publico-servicio:hover, .publico-servicio:focus-within { transform: translateY(-5px); box-shadow: 0 12px 24px #193e3410; }
+.publico-servicio-foto img { transition: transform .85s cubic-bezier(.2,.7,.2,1); }
+.publico-servicio:hover .publico-servicio-foto img { transform: scale(1.045); }
+.publico-enlace-redondo { transition: transform .3s ease, background .3s ease, color .3s ease; }
+.publico-servicio:hover .publico-enlace-redondo { transform: rotate(6deg); }
+.solo-lectores { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* El retrato viaja de la ficha al perfil sin sustituir la navegación normal de Laravel. */
+[data-retrato-guia] { view-transition-name: var(--retrato-guia, none); }
+@media (max-width: 920px) { .publico-carrusel-equipo { --guias-por-vista: 2; --separacion-guias: 20px; } }
+@media (max-width: 650px) { .publico-carrusel-equipo { --guias-por-vista: 1; } .publico-carrusel-controles { margin-top: 20px; } }
+@media (prefers-reduced-motion: reduce) {
+    .publico-guia-tarjeta:hover, .publico-guia-tarjeta:focus-within, .publico-guia-tarjeta:hover .publico-guia-foto img, .publico-carrusel-botones > button:hover, .publico-servicio:hover, .publico-servicio:focus-within, .publico-servicio:hover .publico-servicio-foto img, .publico-servicio:hover .publico-enlace-redondo { transform: none; }
+}

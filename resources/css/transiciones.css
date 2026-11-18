@@ -1,0 +1,22 @@
+/* La misma transición conecta las páginas públicas, las cuentas y la administración. */
+@view-transition { navigation: auto; }
+.cabecera { view-transition-name: cabecera-publica; }
+.acceso-paisaje { view-transition-name: paisaje-acceso; }
+.acceso-formulario { view-transition-name: formulario-acceso; }
+.adm-lateral { view-transition-name: menu-administracion; }
+::view-transition-group(*) { animation-duration: .6s; animation-timing-function: cubic-bezier(.22,.7,.22,1); }
+::view-transition-old(root) { animation: despedir-pagina .22s ease both; }
+::view-transition-new(root) { animation: recibir-pagina .48s cubic-bezier(.22,.7,.22,1) both; }
+::view-transition-old(formulario-acceso) { animation: despedir-formulario .24s ease both; }
+::view-transition-new(formulario-acceso) { animation: recibir-formulario .52s cubic-bezier(.22,.7,.22,1) both; }
+::view-transition-old(paisaje-acceso), ::view-transition-new(paisaje-acceso),
+::view-transition-old(cabecera-publica), ::view-transition-new(cabecera-publica),
+::view-transition-old(menu-administracion), ::view-transition-new(menu-administracion) { animation-duration: .25s; }
+@keyframes despedir-pagina { to { opacity: 0; } }
+@keyframes recibir-pagina { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes despedir-formulario { to { opacity: 0; transform: translateX(-18px); } }
+@keyframes recibir-formulario { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: translateX(0); } }
+@media (prefers-reduced-motion: reduce) {
+    @view-transition { navigation: none; }
+    ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}

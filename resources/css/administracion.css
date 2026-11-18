@@ -1,3 +1,5 @@
+@import './transiciones.css';
+
 /* Panel administrativo: conserva la identidad de Mil Cumbres con una estructura de trabajo compacta. */
 :root {
     --adm-bosque: #193e34;
