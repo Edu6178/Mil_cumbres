@@ -1,6 +1,9 @@
 <?php
 
 return [
+    // El VPS puede mostrar el escenario sin cambiar el entorno ni habilitar la depuración.
+    'habilitada' => filter_var(env('DEMOSTRACION_HABILITADA', false), FILTER_VALIDATE_BOOLEAN),
+
     // Escenario académico: no describe la oferta ni al personal real de Mil Cumbres.
     'servicios' => [
         'pinos' => [

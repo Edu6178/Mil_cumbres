@@ -120,4 +120,52 @@ class DatosDemostracionTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->app->make(DatosDemostracionSeeder::class)->run();
     }
+
+    public function test_publica_el_escenario_en_produccion_solo_con_activacion_expresa(): void
+    {
+        $this->app->instance('env', 'production');
+        config(['demostracion.habilitada' => true, 'app.debug' => false]);
+        $this->artisan('db:seed', ['--class' => DatosDemostracionSeeder::class, '--force' => true])->assertSuccessful();
+        $ids = app(RegistroDemostracion::class)->leer()['ids'];
+
+        $this->get('/catalogo')->assertOk()->assertSee('Sendero del bosque de pinos')
+            ->assertSee('imagenes/demostracion/bosque-pinos.jpg');
+        $this->get('/guias/'.$ids['personal']['maria'])->assertOk()->assertSee('María Elena Castillo Rojas')
+            ->assertDontSee('maria@demostracion.milcumbres.test');
+        $this->get('/comunidades')->assertOk()->assertSee('El Encinal');
+        $this->assertTrue(app()->environment('production'));
+        $this->assertFalse(config('app.debug'));
+        $this->assertDatabaseCount('users', 0);
+
+        $this->artisan('db:seed', ['--class' => DatosDemostracionSeeder::class, '--force' => true])->assertSuccessful();
+        $this->assertDatabaseCount('reservaciones', 12);
+    }
+
+    public function test_desactivar_el_escenario_oculta_los_perfiles_sin_borrar_sus_datos(): void
+    {
+        $this->app->instance('env', 'production');
+        config(['demostracion.habilitada' => true]);
+        $this->artisan('db:seed', ['--class' => DatosDemostracionSeeder::class, '--force' => true])->assertSuccessful();
+        $id = app(RegistroDemostracion::class)->leer()['ids']['personal']['maria'];
+
+        config(['demostracion.habilitada' => false]);
+        $this->get('/guias')->assertOk()->assertDontSee('María Elena Castillo Rojas');
+        $this->get('/guias/'.$id)->assertNotFound();
+        $this->assertFalse(app(RegistroDemostracion::class)->activo());
+        $this->assertDatabaseCount('personal', 3);
+        $this->assertDatabaseCount('reservaciones', 12);
+        $this->assertFileExists($this->registro);
+    }
+
+    public function test_la_demostracion_en_produccion_no_habilita_la_cuenta_compartida_ni_el_panel(): void
+    {
+        $this->app->instance('env', 'production');
+        config(['demostracion.habilitada' => true]);
+        $this->artisan('db:seed', ['--class' => \Database\Seeders\CuentaPruebaSeeder::class, '--force' => true])->assertSuccessful();
+        $this->assertDatabaseCount('users', 0);
+
+        $usuario = User::factory()->create();
+        $this->actingAs($usuario)->get('/administracion')->assertForbidden();
+        $this->assertSame([], config('administracion.usuarios'));
+    }
 }

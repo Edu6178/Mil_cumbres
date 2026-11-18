@@ -9,6 +9,11 @@ use RuntimeException;
 
 class RegistroDemostracion
 {
+    public function permitida(): bool
+    {
+        return app()->environment(['local', 'testing']) || config('demostracion.habilitada', false) === true;
+    }
+
     public function ruta(): string
     {
         if ($ruta = config('demostracion.registro')) {
@@ -23,7 +28,7 @@ class RegistroDemostracion
 
     public function leer(): array
     {
-        if (!app()->environment(['local', 'testing']) || !File::exists($this->ruta())) {
+        if (!$this->permitida() || !File::exists($this->ruta())) {
             return [];
         }
 

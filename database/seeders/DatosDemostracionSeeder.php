@@ -14,11 +14,11 @@ class DatosDemostracionSeeder extends Seeder
 
     public function run(): void
     {
-        if (!app()->environment(['local', 'testing'])) {
-            throw new RuntimeException('Los datos ficticios solo se permiten en un entorno local o de pruebas.');
+        $registro = app(RegistroDemostracion::class);
+        if (!$registro->permitida()) {
+            throw new RuntimeException('Los datos ficticios requieren un entorno de pruebas o DEMOSTRACION_HABILITADA=true.');
         }
 
-        $registro = app(RegistroDemostracion::class);
         if ($registro->leer()) {
             $this->command?->info('La demostración ya está cargada; se conservaron sus datos y modificaciones.');
 
