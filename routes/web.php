@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AutenticacionController;
 use App\Http\Controllers\Cliente\PreReservacionController;
+use App\Http\Controllers\PagoController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 // Página pública con acceso a las programaciones disponibles.
 Route::get('/', [PreReservacionController::class, 'inicio'])
@@ -24,11 +26,43 @@ Route::middleware(['guest', 'cache.headers:no_store;private;max_age=0'])->group(
 Route::view('/mi-cuenta', 'autenticacion.cuenta')
     ->middleware(['auth', 'cache.headers:no_store;private;max_age=0'])
     ->name('cuenta');
-Route::post('/salir', [AutenticacionController::class, 'salir'])->name('salir');
+
+Route::post('/salir', [AutenticacionController::class, 'salir'])
+    ->name('salir');
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
+    ->name('home');
 
-// El módulo administrativo mantiene sus rutas separadas del flujo de autenticación.
+// =====================================================
+// MÓDULO DE VENTAS Y PAGOS - MIL CUMBRES
+// Responsable: desarrollo-longino
+// =====================================================
+
+// Solo los usuarios autenticados pueden acceder.
+// Antes de habilitarlo en producción se deberá agregar
+// la autorización específica para el personal de ventas.
+Route::middleware(['auth', 'cache.headers:no_store;private;max_age=0'])
+    ->group(function () {
+
+        // Consultar los pagos registrados.
+        Route::get('/pagos', [PagoController::class, 'index'])
+            ->name('pagos.index');
+
+        // Mostrar el formulario de registro de pagos.
+        Route::get('/pagos/crear', [PagoController::class, 'create'])
+            ->name('pagos.create');
+
+        // Guardar la información del pago.
+        Route::post('/pagos', [PagoController::class, 'store'])
+            ->name('pagos.store');
+    });
+
+// =====================================================
+// RUTAS ADMINISTRATIVAS EXISTENTES
+// =====================================================
+
+// El módulo administrativo mantiene sus rutas separadas
+// del flujo de autenticación.
 require __DIR__.'/administracion.php';

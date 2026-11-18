@@ -1,4 +1,3 @@
-
 <?php
 
 namespace App\Models;
@@ -46,5 +45,11 @@ class Reservacion extends Model
             EstadoReservacion::class,
             'estado_reservacion_id'
         );
+    }
+
+    // Relación con el módulo de Ventas y Pagos
+    public function pagos()
+    {
+        return $this->hasMany(Pago::class, 'reservacion_id');
     }
 }
