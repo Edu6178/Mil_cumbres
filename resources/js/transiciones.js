@@ -1,6 +1,6 @@
 // Se anima la navegación real; los formularios conservan sus tokens, validaciones y redirecciones.
 const preferenciaMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
-const transicionNativa = typeof window.CSSViewTransitionRule !== 'undefined';
+const transicionNativa = 'onpagereveal' in window && 'onpageswap' in window;
 let salida;
 let navegando = false;
 let restauracion;
@@ -35,12 +35,8 @@ document.addEventListener('click', (evento) => {
 });
 
 window.addEventListener('pageshow', () => {
+    // Volver con el historial restaura la página sin repetir la entrada ni borrar formularios.
     restaurarPagina();
-    if (transicionNativa || preferenciaMovimiento.matches) return;
-    document.querySelector('main')?.animate?.([
-        { opacity: 0.6, transform: 'translateY(12px)' },
-        { opacity: 1, transform: 'translateY(0)' },
-    ], { duration: 420, easing: 'cubic-bezier(.22,.7,.22,1)' });
 });
 preferenciaMovimiento.addEventListener('change', () => {
     if (preferenciaMovimiento.matches) restaurarPagina();

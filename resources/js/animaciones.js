@@ -1,4 +1,4 @@
-import { animate, createScope, stagger } from 'animejs';
+import { animate, createScope } from 'animejs';
 
 // Cada efecto se ejecuta una sola vez y se revierte si cambia la preferencia de movimiento.
 export function iniciarAnimaciones() {
@@ -6,47 +6,52 @@ export function iniciarAnimaciones() {
     if (preferencia.matches) return;
 
     let observador;
+    const pendientes = new Set();
+    const revelaciones = new Map();
     const alcance = createScope().add(() => {
-        const portada = document.querySelectorAll('.portada-texto > *');
-        if (portada.length) {
-            // La portada nunca queda invisible mientras termina de cargar su imagen.
-            animate(portada, { y: [18, 0], opacity: [0.8, 1], duration: 850, delay: stagger(90), ease: 'outCubic' });
-            animate('.portada-pie', { y: [8, 0], opacity: [0.6, 1], duration: 750, delay: 200, ease: 'outCubic' });
-            animate('.sello-portada', { scale: [0.92, 1], opacity: [0.6, 1], duration: 1100, ease: 'outCubic' });
-        }
-
-        const entradas = document.querySelectorAll('[data-entrada]');
-        if (entradas.length) {
-            animate(entradas, { y: [18, 0], opacity: [0.75, 1], duration: 800, delay: stagger(80), ease: 'outCubic' });
-        }
-
-        const fotografiaPrincipal = document.querySelector('.publico-hero-foto');
-        if (fotografiaPrincipal) {
-            animate(fotografiaPrincipal, { x: [24, 0], opacity: [0.6, 1], duration: 950, ease: 'outCubic' });
-            animate('.publico-sello', { y: [12, 0], opacity: [0.6, 1], duration: 800, delay: 170, ease: 'outCubic' });
-        }
-        const camposCuenta = document.querySelectorAll('.formulario-cuenta > .campo, .formulario-cuenta > .boton');
-        if (camposCuenta.length) {
-            // Los campos aparecen en su orden de lectura y nunca se ocultan antes de cargar el módulo.
-            animate(camposCuenta, { y: [12, 0], opacity: [0.65, 1], duration: 520, delay: stagger(65, { start: 100 }), ease: 'outCubic' });
-        }
-
-        // Solo se anima lo que aparece en pantalla; el resto conserva su contenido accesible.
+        if (!('IntersectionObserver' in window)) return;
+        // Solo se preparan bloques que todavía están debajo de la pantalla al cargar el módulo.
         observador = new IntersectionObserver((elementos) => {
             elementos.forEach(({ target, isIntersecting }) => {
                 if (!isIntersecting || preferencia.matches) return;
-                const orden = [...target.parentElement.children].indexOf(target);
-                alcance.execute(() => animate(target, {
-                    y: [26, 0], opacity: [0.45, 1], duration: 800,
-                    delay: Math.min(orden * 60, 180), ease: 'outCubic',
-                    // Libera el movimiento para que después funcionen los efectos al pasar el ratón.
-                    onComplete: () => { target.style.removeProperty('transform'); target.style.removeProperty('opacity'); },
-                }));
                 observador.unobserve(target);
+                const orden = [...target.parentElement.children].indexOf(target);
+                alcance.execute(() => {
+                    const revelacion = animate(target, {
+                        y: [18, 0], opacity: [0, 1], duration: 620,
+                        delay: Math.min(orden * 45, 100), ease: 'outCubic',
+                        // Libera el movimiento para que después funcionen los efectos al pasar el ratón.
+                        onComplete: () => {
+                            target.classList.remove('revelar-al-recorrer');
+                            pendientes.delete(target);
+                            revelaciones.delete(target);
+                            target.style.removeProperty('transform');
+                            target.style.removeProperty('opacity');
+                        },
+                    });
+                    revelaciones.set(target, revelacion);
+                });
             });
-        }, { threshold: 0.12 });
+        }, { threshold: 0, rootMargin: '0px 0px 48px 0px' });
 
-        document.querySelectorAll('.esencia-cuadricula > div, .lineas-cuadricula > *, .encabezado-seccion, .catalogo-cuadricula > *, .comunidades-interior > div, .guias-cuadricula > div, .organizaciones-cuadricula > div, .preguntas-cuadricula > div, .cierre-interior, .pie-superior > *, .publico-guias-cuadricula > [data-guia], .publico-servicios-cuadricula > article, .publico-bloque-perfil, .publico-tres-columnas > article, .publico-manifiesto > div > *, .publico-dos-caminos > article, .publico-contacto > *, .publico-detalle-foto, .publico-texto-detalle').forEach((elemento) => observador.observe(elemento));
+        document.querySelectorAll('.esencia-cuadricula > div, .lineas-cuadricula > *, .encabezado-seccion, .catalogo-cuadricula > *, .comunidades-interior > div, .guias-cuadricula > div, .organizaciones-cuadricula > div, .preguntas-cuadricula > div, .cierre-interior, .pie-superior > *, .publico-guias-cuadricula > [data-guia], .publico-servicios-cuadricula > article, .publico-bloque-perfil, .publico-tres-columnas > article, .publico-manifiesto > div > *, .publico-dos-caminos > article, .publico-contacto > *, .publico-detalle-foto, .publico-texto-detalle').forEach((elemento) => {
+            if (elemento.hidden || elemento.getBoundingClientRect().top < window.innerHeight + 48) return;
+            pendientes.add(elemento);
+            elemento.classList.add('revelar-al-recorrer');
+            observador.observe(elemento);
+        });
+    });
+
+    // El teclado revela inmediatamente cualquier bloque que reciba el foco.
+    document.addEventListener('focusin', (evento) => {
+        for (const elemento of pendientes) {
+            if (!elemento.contains(evento.target)) continue;
+            observador?.unobserve(elemento);
+            revelaciones.get(elemento)?.revert();
+            revelaciones.delete(elemento);
+            elemento.classList.remove('revelar-al-recorrer');
+            pendientes.delete(elemento);
+        }
     });
 
     // Los cambios del catálogo reciben una transición breve, sin recargar la página.
@@ -106,6 +111,9 @@ export function iniciarAnimaciones() {
         if (preferencia.matches) {
             observador?.disconnect();
             alcance.revert();
+            pendientes.forEach((elemento) => elemento.classList.remove('revelar-al-recorrer'));
+            pendientes.clear();
+            revelaciones.clear();
             cancelAnimationFrame(cuadro);
             cuadro = null;
             paisajes.forEach((imagen) => imagen.style.removeProperty('--desfase-paisaje'));

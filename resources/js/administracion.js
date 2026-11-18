@@ -86,14 +86,4 @@ document.querySelectorAll('[data-formulario-administracion]').forEach((formulari
     });
 });
 
-// Anime.js aporta una entrada breve; todo el contenido es visible si no carga o se reduce el movimiento.
-const preferencia = window.matchMedia('(prefers-reduced-motion: reduce)');
-if (!preferencia.matches) {
-    import('animejs').then(({ animate, stagger }) => {
-        if (preferencia.matches) return;
-        const elementos = document.querySelectorAll('.adm-revelar');
-        if (!elementos.length) return;
-        const entrada = animate(elementos, { y: [8, 0], opacity: [0.8, 1], duration: 450, delay: stagger(55), ease: 'outCubic' });
-        preferencia.addEventListener('change', () => { if (preferencia.matches) entrada.revert(); });
-    }).catch(() => {});
-}
+// La entrada del panel se prepara en la cabecera y CSS, sin reiniciar contenido que ya se ve.

@@ -229,6 +229,10 @@ summary::-webkit-details-marker { display: none; }
 .pie { padding-top: 65px; background: var(--crema); }
 .pie-superior { display: grid; grid-template-columns: 1.4fr .7fr .85fr 1.05fr; gap: 45px; padding-bottom: 47px; }
 .pie-superior > div:first-child > p { margin-top: 18px; font-size: 11px; line-height: 1.9; color: var(--texto-suave); }
+.redes-sociales { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.redes-sociales a { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; padding: 9px 11px; border: 1px solid var(--borde); border-radius: 4px; color: var(--bosque); font-size: 11px; transition: background .2s ease, border-color .2s ease; }
+.redes-sociales a:hover { background: var(--arena); border-color: var(--bosque); }
+.redes-sociales .icono { width: 17px; height: 17px; }
 .pie nav { display: flex; flex-direction: column; gap: 9px; font-size: 10px; color: var(--texto-suave); }
 .pie nav > span, .pie-nota > span { display: block; margin-bottom: 11px; font-size: 9px; font-weight: 600; color: var(--bosque); text-transform: uppercase; letter-spacing: .7px; }
 .pie nav a:hover { color: var(--tierra); }

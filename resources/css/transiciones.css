@@ -1,5 +1,25 @@
 /* La misma transición conecta las páginas públicas, las cuentas y la administración. */
 @view-transition { navigation: auto; }
+/* El desplazamiento sigue siendo nativo; solo cambia el acabado de la barra. */
+html { scrollbar-color: #647756 #efede4; }
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: #efede4; }
+::-webkit-scrollbar-thumb { background: #647756; border: 3px solid #efede4; border-radius: 12px; }
+::-webkit-scrollbar-thumb:hover { background: #193e34; }
+::-webkit-scrollbar-corner { background: #efede4; }
+
+/* Empieza desde el primer dibujo; nunca espera una descarga de Anime.js. */
+@media (prefers-reduced-motion: no-preference) {
+    html.con-entrada:not(.con-transicion-nativa):not(.entrada-restaurada) main {
+        animation: entrada-inicial .65s cubic-bezier(.22,.7,.22,1) both;
+    }
+    .revelar-al-recorrer { opacity: 0; }
+}
+@keyframes entrada-inicial {
+    from { opacity: 0; translate: 0 14px; }
+    to { opacity: 1; translate: 0 0; }
+}
+
 .cabecera { view-transition-name: cabecera-publica; }
 .acceso-paisaje { view-transition-name: paisaje-acceso; }
 .acceso-formulario { view-transition-name: formulario-acceso; }
@@ -18,5 +38,10 @@
 @keyframes recibir-formulario { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: translateX(0); } }
 @media (prefers-reduced-motion: reduce) {
     @view-transition { navigation: none; }
+    html.con-entrada main { animation: none !important; }
+    .revelar-al-recorrer { opacity: 1; }
     ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
+@media (forced-colors: active) {
+    html { scrollbar-color: auto; }
 }

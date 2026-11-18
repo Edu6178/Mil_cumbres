@@ -18,7 +18,9 @@ class FrontendPublicoTest extends TestCase
         config(['database.connections.sqlite.database' => storage_path('base-inexistente-para-esta-prueba.sqlite')]);
         DB::enableQueryLog();
         foreach (['/catalogo', '/guias', '/guias/perfil', '/experiencias/detalle', '/nosotros', '/turismo-regenerativo', '/operadora', '/consultoria', '/comunidades'] as $ruta) {
-            $this->get($ruta)->assertOk()->assertSee('<html lang="es">', false)->assertSee('Navegación principal');
+            $this->get($ruta)->assertOk()->assertSee('<html lang="es">', false)->assertSee('Navegación principal')
+                ->assertSee('https://www.facebook.com/milcumbresturismoalternativo')
+                ->assertSee('https://www.instagram.com/milcumbres_turismoregenerativo/');
         }
         $this->assertSame([], DB::getQueryLog());
     }

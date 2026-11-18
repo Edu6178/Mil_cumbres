@@ -136,11 +136,9 @@ document.querySelectorAll('[data-formulario-cuenta]').forEach((formulario) => {
     });
 });
 
-// Anime.js se carga después del contenido; sin JavaScript o con movimiento reducido, todo permanece visible.
+// La entrada inicial vive en CSS; Anime.js solo acompaña el recorrido y las interacciones.
 if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    import('./animaciones.js').then(async ({ iniciarAnimaciones }) => {
-        // La entrada del contenido comienza al terminar el cambio de página, para evitar saltos entre efectos.
-        if (document.activeViewTransition) await document.activeViewTransition.finished.catch(() => {});
+    import('./animaciones.js').then(({ iniciarAnimaciones }) => {
         iniciarAnimaciones();
     }).catch(() => {
         // Si la animación no carga, los formularios y la navegación continúan funcionando.

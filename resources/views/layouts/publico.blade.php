@@ -9,6 +9,7 @@
     <title>@yield('titulo') · Mil Cumbres</title>
     <link rel="icon" href="{{ asset('imagenes/simbolo.svg') }}" type="image/svg+xml">
     {{-- Se reutiliza la identidad existente; los estilos nuevos se limitan a las páginas públicas. --}}
+    <x-entrada-pagina />
     @vite(['resources/css/app.css', 'resources/css/publico.css', 'resources/js/app.js', 'resources/js/publico.js'])
 </head>
 <body class="pagina-publica">
@@ -33,7 +34,7 @@
     <footer class="pie publico-pie">
         <div class="contenedor">
             <div class="pie-superior">
-                <div><x-marca /><p>Naturaleza que inspira.<br>Conexiones que permanecen.</p></div>
+                <div><x-marca /><p>Naturaleza que inspira.<br>Conexiones que permanecen.</p><x-redes-sociales /></div>
                 <nav aria-label="Descubrir experiencias"><span>Descubre</span><a href="{{ route('publico.catalogo') }}">Catálogo de experiencias</a><a href="{{ route('publico.catalogo', ['linea' => 'senderismo']) }}">Rutas de senderismo</a><a href="{{ route('publico.guias') }}">Nuestro equipo de guías</a></nav>
                 <nav aria-label="Nuestra propuesta"><span>Conecta</span><a href="{{ route('publico.metodologia') }}">Turismo regenerativo</a><a href="{{ route('publico.comunidades') }}">Territorio y comunidades</a><a href="{{ route('publico.consultoria') }}">Consultoría</a></nav>
                 <div class="pie-nota"><span>Dos maneras de acompañarte</span><p>Explorar el territorio y construir proyectos con sentido.</p><a class="enlace-texto" href="{{ route('publico.operadora') }}">Conoce la operadora <x-icono nombre="flecha" /></a></div>

@@ -10,6 +10,7 @@
     {{-- El teléfono descarga una portada más ligera; las demás imágenes se cargan al acercarse a su sección. --}}
     <link rel="preload" as="image" href="{{ asset('imagenes/bosque-portada.webp') }}" media="(min-width: 651px)" fetchpriority="high">
     <link rel="preload" as="image" href="{{ asset('imagenes/bosque-portada-movil.webp') }}" media="(max-width: 650px)" fetchpriority="high">
+    <x-entrada-pagina />
     @vite(['resources/css/app.css', 'resources/css/publico.css', 'resources/js/app.js'])
 </head>
 <body>
@@ -238,7 +239,7 @@
     <footer class="pie">
         <div class="contenedor">
             <div class="pie-superior">
-                <div><a class="marca" href="#inicio"><img src="{{ asset('imagenes/simbolo.svg') }}" alt="" width="47" height="47"><span>Mil Cumbres<small>Turismo regenerativo</small></span></a><p>Naturaleza que inspira.<br>Conexiones que permanecen.</p></div>
+                <div><a class="marca" href="#inicio"><img src="{{ asset('imagenes/simbolo.svg') }}" alt="" width="47" height="47"><span>Mil Cumbres<small>Turismo regenerativo</small></span></a><p>Naturaleza que inspira.<br>Conexiones que permanecen.</p><x-redes-sociales /></div>
                 <nav aria-label="Explorar Mil Cumbres"><span>Descubre</span><a href="{{ route('publico.catalogo') }}">Experiencias</a><a href="#propuesta">Nuestra propuesta</a><a href="{{ route('publico.guias') }}">Nuestros guías</a></nav>
                 <nav aria-label="Conocer Mil Cumbres"><span>Conecta</span><a href="{{ route('publico.nosotros') }}">Nuestra esencia</a><a href="{{ route('publico.comunidades') }}">Territorio y comunidad</a><a href="{{ route('publico.consultoria') }}">Para organizaciones</a></nav>
                 <div class="pie-nota"><span>Un proyecto que sigue creciendo</span><p>Estamos preparando las primeras experiencias. Gracias por ser parte del comienzo.</p><a class="enlace-texto" href="#inicio">Volver al inicio <x-icono nombre="arriba" /></a></div>

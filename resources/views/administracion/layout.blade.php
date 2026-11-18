@@ -7,6 +7,7 @@
     <meta name="robots" content="noindex, nofollow">
     <title>@yield('titulo') · Administración Mil Cumbres</title>
     <link rel="icon" href="{{ asset('imagenes/simbolo.svg') }}" type="image/svg+xml">
+    <x-entrada-pagina />
     @vite(['resources/css/administracion.css', 'resources/js/administracion.js'])
 </head>
 <body class="pagina-administracion">
