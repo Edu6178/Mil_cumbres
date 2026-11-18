@@ -8,6 +8,8 @@ use App\Models\EstadoReservacion;
 use App\Models\Persona;
 use App\Models\Programacion;
 use App\Models\Reservacion;
+use App\Services\Demostracion\PresentacionDemostracion;
+use App\Services\Demostracion\RegistroDemostracion;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +23,8 @@ class PreReservacionController extends Controller
     public function inicio()
     {
         $programaciones = collect();
+        $serviciosPublicos = collect();
+        $guiasPublicos = collect();
         $disponibilidadInterrumpida = false;
 
         try {
@@ -35,13 +39,19 @@ class PreReservacionController extends Controller
                 ->get()
                 ->filter(fn ($programacion) => $programacion->cupos_disponibles > 0)
                 ->values();
+            $registro = app(RegistroDemostracion::class);
+            if ($registro->activo()) {
+                $presentacion = app(PresentacionDemostracion::class);
+                $serviciosPublicos = $presentacion->servicios($registro);
+                $guiasPublicos = $presentacion->perfiles($registro);
+            }
         } catch (QueryException $error) {
             // La información pública permanece disponible, sin confundir una falla con un calendario vacío.
             report($error);
             $disponibilidadInterrumpida = true;
         }
 
-        return view('welcome', compact('programaciones', 'disponibilidadInterrumpida'));
+        return view('welcome', compact('programaciones', 'disponibilidadInterrumpida', 'serviciosPublicos', 'guiasPublicos'));
     }
 
     /**

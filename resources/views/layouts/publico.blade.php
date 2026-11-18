@@ -18,10 +18,10 @@
             <x-marca />
             <button class="boton-menu" type="button" aria-expanded="false" aria-controls="navegacion-principal" aria-label="Abrir menú de navegación"><x-icono nombre="menu" /><span>Menú</span></button>
             <nav class="navegacion" id="navegacion-principal" aria-label="Navegación principal">
-                <a href="{{ route('publico.catalogo') }}" @if(request()->routeIs('publico.catalogo', 'publico.experiencia')) aria-current="page" @endif>Experiencias</a>
+                <a href="{{ route('publico.catalogo') }}" @if(request()->routeIs('publico.catalogo', 'publico.experiencia*')) aria-current="page" @endif>Experiencias</a>
                 <a href="{{ route('publico.nosotros') }}" @if(request()->routeIs('publico.nosotros', 'publico.metodologia', 'publico.operadora')) aria-current="page" @endif>Nuestra esencia</a>
                 <a href="{{ route('publico.comunidades') }}" @if(request()->routeIs('publico.comunidades')) aria-current="page" @endif>Comunidades</a>
-                <a href="{{ route('publico.guias') }}" @if(request()->routeIs('publico.guias', 'publico.guia')) aria-current="page" @endif>Guías</a>
+                <a href="{{ route('publico.guias') }}" @if(request()->routeIs('publico.guias', 'publico.guia*')) aria-current="page" @endif>Guías</a>
                 <a class="enlace-acceso" href="{{ route('cuenta') }}"><x-icono nombre="usuario" /> Mi cuenta</a>
                 <a class="boton boton-pequeno boton-bosque" href="{{ route('publico.consultoria') }}">Para organizaciones <x-icono nombre="flecha-diagonal" /></a>
             </nav>
@@ -38,7 +38,7 @@
                 <nav aria-label="Nuestra propuesta"><span>Conecta</span><a href="{{ route('publico.metodologia') }}">Turismo regenerativo</a><a href="{{ route('publico.comunidades') }}">Territorio y comunidades</a><a href="{{ route('publico.consultoria') }}">Consultoría</a></nav>
                 <div class="pie-nota"><span>Dos maneras de acompañarte</span><p>Explorar el territorio y construir proyectos con sentido.</p><a class="enlace-texto" href="{{ route('publico.operadora') }}">Conoce la operadora <x-icono nombre="flecha" /></a></div>
             </div>
-            <div class="pie-inferior"><p>© {{ date('Y') }} Mil Cumbres. Todos los derechos reservados.</p><a href="#contenido">Volver arriba <x-icono nombre="arriba" /></a></div>
+            <div class="pie-inferior"><p>© {{ date('Y') }} Mil Cumbres. Todos los derechos reservados.</p><a href="{{ route('publico.creditos') }}">Créditos fotográficos</a><a href="#contenido">Volver arriba <x-icono nombre="arriba" /></a></div>
         </div>
     </footer>
 </body>
