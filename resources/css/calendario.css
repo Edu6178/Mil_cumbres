@@ -1,0 +1,44 @@
+.adm-calendario-distribucion { grid-template-columns: minmax(0, 1.45fr) minmax(320px, 1fr); gap: 25px; }
+.adm-calendario-leyenda { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 13px 22px; color: #6a7b61; background: #f6f7ef; font-size: 11px; }
+.adm-calendario-leyenda span { display: inline-flex; align-items: center; gap: 7px; }
+.adm-calendario-leyenda i { width: 6px; height: 6px; border-radius: 50%; background: #79936b; }
+.adm-calendario-leyenda .icono { width: 14px; height: 14px; }
+.adm-calendario-agenda { padding: 0 22px; }
+.adm-salida { display: flex; align-items: flex-start; gap: 18px; padding-block: 24px; }
+.adm-salida + .adm-salida { border-top: 1px solid #e7ebdf; }
+.adm-salida-fecha { flex: 0 0 65px; display: grid; justify-items: center; padding: 10px 7px; border: 1px solid #d8e1cd; border-radius: 9px; background: #eff2e7; color: #193e34; line-height: 1.2; }
+.adm-salida-fecha > span { font-size: 10px; font-weight: 650; text-transform: uppercase; letter-spacing: 1.1px; }
+.adm-salida-fecha strong { margin-block: 4px; font-family: Georgia, serif; font-size: 32px; font-weight: 400; }
+.adm-salida-fecha small { font-size: 9px; color: #738267; }
+.adm-salida-contenido { flex: 1; min-width: 0; }
+.adm-salida-titulo { display: flex; justify-content: space-between; flex-wrap: wrap; align-items: flex-start; gap: 7px 12px; }
+.adm-salida-titulo h3 { flex: 1 1 160px; font-family: Georgia, serif; font-size: 22px; font-weight: 400; line-height: 1.3; color: #193e34; }
+.adm-salida-estado { padding: 3px 8px; border-radius: 5px; border: 1px solid #dce6d3; background: #edf3e7; color: #466137; font-size: 10px; font-weight: 600; white-space: nowrap; }
+.adm-salida-estado.es-bloqueada { color: #995334; background: #f7ece0; border-color: #ead6c2; }
+.adm-salida-territorio { display: flex; align-items: center; gap: 6px; margin-top: 7px; color: #78836d; font-size: 11px; }
+.adm-salida-territorio .icono { flex: 0 0 14px; width: 14px; height: 14px; }
+.adm-salida-detalles { display: flex; align-items: center; flex-wrap: wrap; gap: 15px 22px; margin-top: 18px; }
+.adm-salida-detalles > p { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.adm-salida-detalles > p .icono { width: 15px; height: 15px; color: #89977b; }
+.adm-salida-detalles > p strong { font-weight: 550; }
+.adm-salida-detalles > p small { display: block; margin-top: 4px; color: #839075; font-size: 10px; }
+.adm-salida-cupo { flex: 1 1 180px; max-width: 330px; }
+.adm-salida-cupo > div { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; justify-content: space-between; font-size: 12px; }
+.adm-salida-cupo strong { font-weight: 550; color: #526d45; }
+.adm-salida-cupo span { color: #7d896f; font-size: 10px; }
+.adm-salida-cupo meter { display: block; width: 100%; height: 6px; margin-top: 7px; border: 0; border-radius: 5px; background: #e7ebdf; }
+.adm-salida-cupo meter::-webkit-meter-bar { border: 0; border-radius: 5px; background: #e7ebdf; }
+.adm-salida-cupo meter::-webkit-meter-optimum-value { border-radius: 5px; background: #8b9d74; }
+.adm-salida-cupo meter::-moz-meter-bar { background: #8b9d74; }
+.adm-salida-acciones { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; margin-top: 17px; }
+.adm-salida-acciones a, .adm-salida-acciones button { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0; border: 0; background: none; color: #a35033; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; }
+.adm-salida-acciones a:hover, .adm-salida-acciones button:hover { text-decoration: underline; text-underline-offset: 4px; }
+.adm-salida-acciones .icono { width: 13px; height: 13px; }
+.adm-salida-bloqueada .adm-salida-fecha { background: #f5eee4; border-color: #e7dac8; }
+.adm-calendario-formulario .adm-calendario-formulario-titulo { justify-content: flex-start; padding: 25px; background: #193e34; color: #fff9e9; }
+.adm-calendario-formulario-titulo > .icono { width: 33px; height: 33px; color: #d5c395; }
+.adm-calendario-formulario-titulo span { font-size: 8px; text-transform: uppercase; letter-spacing: 1.7px; color: #c6cdad; }
+.adm-calendario-formulario .adm-calendario-formulario-titulo h2 { margin-top: 4px; font-family: Georgia, serif; font-size: 25px; font-weight: 400; }
+.adm-calendario-formulario .adm-calendario-formulario-titulo p { color: #c3cdb7; font-size: 10px; }
+@media (max-width: 1180px) { .adm-dos-columnas.adm-calendario-distribucion { grid-template-columns: minmax(0, 1fr); } .adm-calendario-distribucion > aside { grid-row: 1; } .adm-calendario-formulario .adm-campos { grid-template-columns: repeat(2, minmax(0, 1fr)); } .adm-calendario-formulario .adm-campos > :first-child { grid-column: 1 / -1; } }
+@media (max-width: 560px) { .adm-calendario-formulario .adm-campos { grid-template-columns: 1fr; } .adm-calendario-agenda { padding-inline: 16px; } .adm-salida { gap: 12px; } .adm-salida-fecha { flex-basis: 49px; padding-inline: 4px; } .adm-salida-fecha strong { font-size: 27px; } .adm-salida-titulo h3 { font-size: 20px; } .adm-calendario-leyenda { padding-inline: 16px; font-size: 10px; } }

@@ -1,4 +1,5 @@
 import './pre-reservacion.js';
+import './fechas.js';
 import './transiciones.js';
 
 // El carrusel comparte los perfiles existentes y se descarga solo donde se muestra.

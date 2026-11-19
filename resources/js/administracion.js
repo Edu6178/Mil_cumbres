@@ -1,4 +1,18 @@
 import './transiciones.js';
+import './fechas.js';
+
+const territorioCalendario = document.querySelector('#programar-salida #servicio_reg_id');
+if (territorioCalendario) {
+    const cupo = document.querySelector('#cupo_maximo');
+    const ayuda = document.querySelector('[data-cupo-territorial]');
+    const actualizarCupo = () => {
+        const limite = territorioCalendario.selectedOptions[0]?.dataset.cupo;
+        if (limite) cupo.max = limite; else cupo.removeAttribute('max');
+        ayuda.textContent = limite ? `Hasta ${limite} personas en este territorio.` : 'El límite depende del territorio seleccionado.';
+    };
+    territorioCalendario.addEventListener('change', actualizarCupo);
+    actualizarCupo();
+}
 
 // Cambiar de venta sugiere su moneda; el servidor vuelve a comprobarla al guardar el abono.
 const ventaPago = document.querySelector('#reservacion_id');

@@ -1,5 +1,7 @@
 @import './transiciones.css';
 @import './finanzas.css';
+@import './fechas.css';
+@import './calendario.css';
 
 /* Panel administrativo: conserva la identidad de Mil Cumbres con una estructura de trabajo compacta. */
 :root {

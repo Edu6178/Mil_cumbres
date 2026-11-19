@@ -33,14 +33,14 @@
         </div>
     @endif
 
-    <div class="adm-dos-columnas">
+    <div class="adm-dos-columnas adm-calendario-distribucion">
         {{-- COLUMNA PRINCIPAL: LISTADO DE PROGRAMACIONES Y BLOQUEOS POR TERRITORIO --}}
         <div class="adm-formulario-principal adm-revelar">
             {{-- BLOQUE 1: TABLA DE PROGRAMACIONES (FECHAS Y CUPOS) --}}
             <section class="adm-panel">
                 <div class="adm-panel-titulo">
                     <div>
-                        <h2>Programaciones en calendario</h2>
+                        <h2>La agenda de tus recorridos</h2>
                         <p>{{ $programaciones->total() }} {{ $programaciones->total() == 1 ? 'fecha registrada' : 'fechas registradas' }}</p>
                     </div>
                     <x-icono nombre="calendario" />
@@ -53,63 +53,47 @@
                         icono="calendario"
                     />
                 @else
-                    <div class="adm-tabla-contenedor">
-                        <table class="adm-tabla">
-                            <thead>
-                                <tr>
-                                    <th>Experiencia / Territorio</th>
-                                    <th>Horario</th>
-                                    <th>Cupo</th>
-                                    <th>Estado</th>
-                                    <th class="adm-alinear-derecha">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($programaciones as $prog)
-                                    @php
-                                        $regionBloqueada = !($prog->servicioRegion?->region?->disponibilidad ?? true);
-                                    @endphp
-                                    <tr>
-                                        <td>
-                                            <strong>{{ $prog->servicioRegion?->servicio?->nombre_servicio ?? 'Servicio' }}</strong>
-                                            <small class="adm-reciente">
-                                                Región: {{ $prog->servicioRegion?->region?->nombre_region ?? 'Sin región' }}
-                                                @if($regionBloqueada) (Territorio bloqueado) @endif
-                                            </small>
-                                        </td>
-                                        <td>
-                                            <div>Inicio: {{ $prog->fecha_inicio->format('d/m/Y H:i') }}</div>
-                                            <small>Fin: {{ $prog->fecha_fin->format('d/m/Y H:i') }}</small>
-                                        </td>
-                                        <td>
-                                            <strong>{{ $prog->cupos_disponibles }}</strong> / {{ $prog->cupo_maximo }} disp.
-                                            <small class="adm-reciente">({{ $prog->cupos_ocupados }} ocupados)</small>
-                                        </td>
-                                        <td>
-                                            @if($prog->estado === 'bloqueada' || $regionBloqueada)
-                                                <span style="color: #9d432c; font-weight: 600;">Bloqueada</span>
-                                            @elseif($prog->estado === 'cancelada')
-                                                <span style="color: #657168;">Cancelada</span>
-                                            @else
-                                                <span style="color: #193e34; font-weight: 600;">Programada</span>
-                                            @endif
-                                        </td>
-                                        <td class="adm-alinear-derecha">
-                                            <div style="display: inline-flex; gap: 12px; align-items: center;">
-                                                <a class="adm-enlace" href="{{ route('administracion.calendario.editar', $prog) }}">Editar</a>
-                                                <form method="POST" action="{{ route('administracion.calendario.bloquear', $prog) }}" style="display:inline;">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <button type="submit" class="adm-enlace" style="background:none; border:0; padding:0; color: {{ $prog->estado === 'bloqueada' ? '#193e34' : '#b95634' }};">
-                                                        {{ $prog->estado === 'bloqueada' ? 'Habilitar' : 'Bloquear' }}
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                    <div class="adm-calendario-leyenda"><span><i></i> Fechas y horarios</span><span><x-icono nombre="personas" /> Cupos actualizados con cada solicitud</span></div>
+                    <div class="adm-calendario-agenda">
+                        @foreach($programaciones as $prog)
+                            @php
+                                $regionBloqueada = !($prog->servicioRegion?->region?->disponibilidad ?? true);
+                                $bloqueada = $prog->estado === 'bloqueada' || $regionBloqueada;
+                                $disponibles = $prog->cupos_disponibles;
+                                $ocupados = $prog->cupos_ocupados;
+                                $porcentaje = $prog->cupo_maximo > 0 ? min(100, round($ocupados / $prog->cupo_maximo * 100)) : 0;
+                            @endphp
+                            <article class="adm-salida {{ $bloqueada ? 'adm-salida-bloqueada' : '' }}">
+                                <div class="adm-salida-fecha" aria-label="{{ $prog->fecha_inicio->translatedFormat('j \d\e F \d\e Y') }}">
+                                    <span>{{ $prog->fecha_inicio->translatedFormat('M') }}</span>
+                                    <strong>{{ $prog->fecha_inicio->format('d') }}</strong>
+                                    <small>{{ $prog->fecha_inicio->format('Y') }}</small>
+                                </div>
+                                <div class="adm-salida-contenido">
+                                    <div class="adm-salida-titulo">
+                                        <h3>{{ $prog->servicioRegion?->servicio?->nombre_servicio ?? 'Servicio' }}</h3>
+                                        <span class="adm-salida-estado {{ $bloqueada ? 'es-bloqueada' : '' }}">
+                                            {{ $prog->estado === 'cancelada' ? 'Cancelada' : ($bloqueada ? 'Bloqueada' : ($disponibles === 0 ? 'Cupo completo' : 'Programada')) }}
+                                        </span>
+                                    </div>
+                                    <p class="adm-salida-territorio"><x-icono nombre="ruta" /> {{ $prog->servicioRegion?->region?->nombre_region ?? 'Sin región' }} @if($regionBloqueada) · Territorio bloqueado @endif</p>
+                                    <div class="adm-salida-detalles">
+                                        <p><x-icono nombre="calendario" /><span>{{ $prog->fecha_inicio->translatedFormat('l') }} · <strong>{{ $prog->fecha_inicio->format('H:i') }} — {{ $prog->fecha_fin->format('H:i') }}</strong>@if(!$prog->fecha_inicio->isSameDay($prog->fecha_fin))<small>Termina el {{ $prog->fecha_fin->format('d/m/Y') }}</small>@endif</span></p>
+                                        <div class="adm-salida-cupo">
+                                            <div><strong>{{ $disponibles }} de {{ $prog->cupo_maximo }} disponibles</strong><span>({{ $ocupados }} ocupados)</span></div>
+                                            <meter min="0" max="{{ max(1, $prog->cupo_maximo) }}" value="{{ $ocupados }}" aria-label="Lugares ocupados: {{ $ocupados }} de {{ $prog->cupo_maximo }}">{{ $porcentaje }}%</meter>
+                                        </div>
+                                    </div>
+                                    <div class="adm-salida-acciones">
+                                        <a href="{{ route('administracion.calendario.editar', $prog) }}"><x-icono nombre="editar" /> Editar salida</a>
+                                        <form method="POST" action="{{ route('administracion.calendario.bloquear', $prog) }}">
+                                            @csrf @method('PATCH')
+                                            <button type="submit">{{ $prog->estado === 'bloqueada' ? 'Habilitar fecha' : 'Bloquear fecha' }}</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </article>
+                        @endforeach
                     </div>
                     <x-administracion.paginacion :registros="$programaciones" />
                 @endif
@@ -173,11 +157,13 @@
 
         {{-- COLUMNA LATERAL: FORMULARIO DE CREACIÓN / EDICIÓN DE PROGRAMACIÓN --}}
         <aside>
-            <section class="adm-panel adm-panel-formulario">
-                <div class="adm-panel-titulo">
+            <section class="adm-panel adm-panel-formulario adm-calendario-formulario" id="programar-salida">
+                <div class="adm-panel-titulo adm-calendario-formulario-titulo">
+                    <x-icono nombre="calendario" />
                     <div>
-                        <h2>{{ $programacionEdicion->exists ? 'Editar programación' : 'Nueva programación' }}</h2>
-                        <p>Define experiencia, horario y cupo máximo.</p>
+                        <span>El próximo encuentro</span>
+                        <h2>{{ $programacionEdicion->exists ? 'Editar programación' : 'Programa una salida' }}</h2>
+                        <p>Una experiencia, una fecha, un nuevo camino.</p>
                     </div>
                 </div>
 
@@ -193,7 +179,7 @@
                         <select id="servicio_reg_id" name="servicio_reg_id" required>
                             <option value="">Selecciona servicio y región</option>
                             @foreach($serviciosRegiones as $sr)
-                                <option value="{{ $sr->id }}" @selected((string)old('servicio_reg_id', $programacionEdicion->servicio_reg_id) === (string)$sr->id)>
+                                <option value="{{ $sr->id }}" data-cupo="{{ $sr->cupo_maximo }}" @selected((string)old('servicio_reg_id', $programacionEdicion->servicio_reg_id) === (string)$sr->id)>
                                     {{ $sr->servicio?->nombre_servicio }} — {{ $sr->region?->nombre_region }} (Máx. {{ $sr->cupo_maximo }})
                                 </option>
                             @endforeach
@@ -207,6 +193,7 @@
                                type="datetime-local"
                                value="{{ old('fecha_inicio', $programacionEdicion->fecha_inicio?->format('Y-m-d\TH:i')) }}"
                                required>
+                        <small>Elige el día y escribe la hora en formato de 24 horas.</small>
                     </div>
 
                     <div class="adm-campo">
@@ -227,6 +214,7 @@
                                value="{{ old('cupo_maximo', $programacionEdicion->cupo_maximo) }}"
                                required
                                placeholder="Ej. 15">
+                        <small data-cupo-territorial>El límite depende del territorio seleccionado.</small>
                     </div>
 
                     @if($programacionEdicion->exists)

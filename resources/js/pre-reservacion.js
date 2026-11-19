@@ -59,6 +59,7 @@ export function iniciarPreReservacion(raiz = document) {
         }
         const aviso = raiz.getElementById('reserva-sin-acompanantes');
         if (aviso) aviso.hidden = necesarios > 0;
+        if (typeof CustomEvent !== 'undefined') contenedor.dispatchEvent?.(new CustomEvent('reserva:acompanantes', { bubbles: true, detail: contenedor }));
 
         // El resumen usa únicamente los datos de la opción seleccionada y nunca modifica los campos.
         const opcion = programacion.selectedOptions[0];
