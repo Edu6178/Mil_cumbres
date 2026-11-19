@@ -46,7 +46,7 @@ class ReservacionesCalendarioTest extends TestCase
             'acompanantes' => [$this->acompanante('Ana'), $this->acompanante('Luis')]];
 
         $this->from('/')->post('/pre-reservaciones', $datos)
-            ->assertRedirect('/')->assertSessionHas('folio');
+            ->assertRedirect('/#pre-reservacion')->assertSessionHas('folio');
 
         $this->assertDatabaseCount('reservaciones', 1);
         $this->assertDatabaseCount('clientes', 1);

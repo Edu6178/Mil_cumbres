@@ -4,6 +4,8 @@
     $seleccion = old('programacion_id', is_scalar(request('programacion')) ? request('programacion') : null);
     $salidaElegida = $programaciones->firstWhere('id', $seleccion);
     $fechaMaxima = today()->subDay()->format('Y-m-d');
+    $ultimoAcuse = session('ultima_pre_reserva');
+    $acuseDisponible = is_array($ultimoAcuse) && ($ultimoAcuse['vence'] ?? 0) > now()->timestamp;
 @endphp
 <section class="formulario-prereserva" id="pre-reservacion" aria-labelledby="titulo-reservacion">
     <div class="reserva-encabezado">
@@ -15,6 +17,12 @@
         <div class="reserva-aviso reserva-aviso-correcto" role="status">
             <x-icono nombre="correcto" /><div><strong>{{ session('success') }}</strong>
             @if(session('folio'))<p>Tu folio de solicitud es <strong>{{ session('folio') }}</strong>. Consérvalo para dar seguimiento.</p>@endif</div>
+        </div>
+    @endif
+    @if($acuseDisponible)
+        <div class="reserva-comprobante" aria-labelledby="titulo-comprobante">
+            <div><p class="numero-seccion">Tu última pre-reservación</p><h3 id="titulo-comprobante">Conserva el inicio de tu próxima experiencia.</h3><p>Folio <strong>{{ $ultimoAcuse['folio'] }}</strong>. Descarga el resumen con los datos de tu solicitud y de tu grupo.</p><small>El enlace estará disponible durante 24 horas. La confirmación se acuerda después con Mil Cumbres.</small></div>
+            <a class="boton boton-bosque" href="{{ $ultimoAcuse['pdf'] }}" download rel="noreferrer">Descargar mi pre-reserva <x-icono nombre="descargar" /></a>
         </div>
     @endif
     @if($errors->any())

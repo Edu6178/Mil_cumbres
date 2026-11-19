@@ -3,6 +3,9 @@
 {{-- Iconos locales reutilizables: heredan el color y no necesitan bibliotecas externas. --}}
 <svg {{ $attributes->class(['icono']) }} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
     @switch($nombre)
+        @case('descargar')
+            <path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>
+            @break
         @case('facebook')
             <path d="M14 21v-8h3l.5-4H14V7c0-1 .5-2 2-2h2V1.5A22 22 0 0 0 15 1c-3 0-5 2-5 5v3H7v4h3v8"/>
             @break

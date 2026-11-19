@@ -13,6 +13,7 @@ use App\Services\Demostracion\RegistroDemostracion;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\ValidationException;
 
 class PreReservacionController extends Controller
@@ -196,12 +197,17 @@ class PreReservacionController extends Controller
             return $reservacion;
         });
 
-        $folio = 'MC-' . now()->format('Y') . '-'
-            . str_pad($reservacion->id, 6, '0', STR_PAD_LEFT);
+        // La descarga se habilita después de guardar y no permite consultar otros folios cambiando el enlace.
+        $vencimiento = now()->addDay();
+        $request->session()->put('ultima_pre_reserva', [
+            'folio' => $reservacion->folio,
+            'pdf' => URL::temporarySignedRoute('pre-reservaciones.pdf', $vencimiento, ['reservacion' => $reservacion->id]),
+            'vence' => $vencimiento->timestamp,
+        ]);
 
-        return redirect()->back()->with([
+        return redirect()->to(rtrim(route('inicio'), '/').'/#pre-reservacion')->with([
             'success' => 'Tu solicitud de pre-reservación fue registrada.',
-            'folio' => $folio,
+            'folio' => $reservacion->folio,
         ]);
     }
 }

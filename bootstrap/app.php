@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Exceptions\InvalidSignatureException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -22,6 +23,14 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         // Los nombres de los campos están en español; sus contraseñas tampoco deben guardarse en mensajes de sesión.
         $exceptions->dontFlash(['contrasena', 'contrasena_confirmation']);
+
+        // Un enlace vencido del acuse recibe una explicación propia, sin confundirlo con permisos de administración.
+        $exceptions->render(function (InvalidSignatureException $error, Request $request) {
+            if ($request->routeIs('pre-reservaciones.pdf')) {
+                return response()->view('errors.comprobante', [], 403)
+                    ->header('Cache-Control', 'private, no-store, max-age=0');
+            }
+        });
 
         // Una conexión pendiente o interrumpida se presenta sin revelar consultas ni datos internos.
         $exceptions->render(function (QueryException $error, Request $request) {

@@ -58,6 +58,13 @@ class Reservacion extends Model
         return $this->hasMany(Pago::class, 'reservacion_id');
     }
 
+    // Recupera a los acompañantes del grupo usando la relación que ya existe en la base.
+    public function acompanantes()
+    {
+        return $this->belongsToMany(Persona::class, 'asigna_reservacion_invitados', 'reservacion_id', 'persona_id')
+            ->orderBy('asigna_reservacion_invitados.id');
+    }
+
     public function getFolioAttribute(): string
     {
         return 'MC-'.$this->fecha_solicitud->format('Y').'-'.str_pad((string) $this->id, 6, '0', STR_PAD_LEFT);

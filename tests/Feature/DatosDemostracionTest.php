@@ -85,7 +85,7 @@ class DatosDemostracionTest extends TestCase
         $this->from('/')->post('/pre-reservaciones', [
             'programacion_id' => $programacion->id, 'numero_personas' => 1, 'nombre' => 'Visitante',
             'apellido_paterno' => 'De prueba', 'telefono' => '0000000199', 'fecha_nacimiento' => '1995-05-18',
-        ])->assertRedirect('/')->assertSessionHas('folio');
+        ])->assertRedirect('/#pre-reservacion')->assertSessionHas('folio');
         $this->assertSame($antes - 1, $programacion->fresh()->cupos_disponibles);
         $this->assertDatabaseCount('reservaciones', 13);
     }
