@@ -14,6 +14,7 @@
     <section class="contenedor publico-equipo" data-equipo-publico>
         <div class="publico-titulo-linea"><div><p class="antetitulo"><span></span> Nuestro equipo</p><h2>Encuentra otras miradas.</h2></div><form class="publico-buscar-guia" action="{{ route('publico.guias') }}" method="GET"><label for="buscar-guia">Busca un nombre, talento o especialidad</label><div><x-icono nombre="buscar" /><input type="search" id="buscar-guia" name="buscar" value="{{ $buscar }}" maxlength="100" placeholder="¿Qué te gustaría aprender?" data-buscar-guia><button type="submit" aria-label="Buscar guía"><x-icono nombre="flecha" /></button></div></form></div>
         <p class="publico-contador" role="status" aria-live="polite"><strong data-total-guias>{{ $guias->filter($coincide)->count() }}</strong> perfiles publicados</p>
+        <p class="reserva-ayuda">Mil Cumbres asigna a la persona que acompañará cada experiencia según su disponibilidad y las características del grupo.</p>
         <x-publico.carrusel-guias :guias="$guias" identificador="guias-equipo" :buscar="$buscar" />
         <x-publico.vacio data-vacio-guias :hidden="$guias->filter($coincide)->isNotEmpty()" titulo="Las personas detrás de la experiencia." descripcion="Todavía no hay perfiles publicados. Aquí podrás conocer su formación, especialidad y talentos cuando su información esté autorizada." icono="personas"><a class="enlace-texto" href="{{ route('publico.metodologia') }}">Conoce lo que nos mueve <x-icono nombre="flecha" /></a></x-publico.vacio>
     </section>
