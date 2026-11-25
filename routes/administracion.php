@@ -18,6 +18,9 @@ Route::prefix('administracion')->name('administracion.')
     ->middleware(['auth', 'can:administrar', 'cache.headers:no_store;private;max_age=0'])
     ->group(function () {
         Route::get('/', [PanelController::class, 'index'])->name('inicio');
+        Route::get('/accesos', [\App\Http\Controllers\Admin\AccesoEquipoController::class, 'index'])->middleware('can:gestionar-accesos')->name('accesos');
+        Route::view('/whatsapp', 'administracion.whatsapp')->middleware('can:gestionar-accesos')->name('whatsapp');
+        Route::patch('/accesos/{usuario}', [\App\Http\Controllers\Admin\AccesoEquipoController::class, 'actualizar'])->middleware('can:gestionar-accesos')->whereNumber('usuario')->name('accesos.actualizar');
         Route::get('/buscar', [BusquedaController::class, 'index'])->name('buscar');
         Route::get('/fotografias', [FotografiaController::class, 'index'])->name('fotografias');
         Route::post('/fotografias', [FotografiaController::class, 'subir'])->name('fotografias.subir');

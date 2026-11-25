@@ -15,27 +15,29 @@ class AutenticacionTest extends TestCase
     public function test_los_formularios_se_muestran_en_espanol(): void
     {
         $this->get('/acceso')->assertOk()->assertSee('Iniciar sesión')->assertSee('Correo electrónico');
-        $this->get('/registro')->assertOk()->assertSee('Crear cuenta')->assertSee('Confirmar contraseña');
+        $this->get('/registro')->assertRedirect('/solicitar-acceso');
+        $this->get('/solicitar-acceso')->assertOk()->assertSee('Solicitar acceso')->assertSee('Confirmar contraseña')->assertDontSee('Crear cuenta');
     }
 
-    public function test_registra_una_cuenta_personal_con_la_contrasena_protegida(): void
+    public function test_recibe_una_solicitud_sin_iniciar_sesion_ni_otorgar_el_rol_enviado(): void
     {
         $this->post('/registro', [
             ...$this->datosRegistro(),
             'correo' => '  MARIA@EJEMPLO.COM  ',
-            'role' => 'admin',
-        ])->assertRedirect('/mi-cuenta');
+            'role' => 'admin', 'rol' => 'super_admin', 'estado_acceso' => 'activo',
+        ])->assertRedirect('/acceso');
 
         $usuario = User::firstOrFail();
-        $this->assertAuthenticatedAs($usuario);
+        $this->assertGuest();
+        $this->assertSame('pendiente', $usuario->estado_acceso);
+        $this->assertSame('empleado', $usuario->rol);
         $this->assertSame('maria@ejemplo.com', $usuario->email);
         $this->assertNotSame('Bosque123', $usuario->password);
         $this->assertTrue(Hash::check('Bosque123', $usuario->password));
         $this->assertNull($usuario->getAttribute('role'));
         $this->assertDatabaseCount('clientes', 0);
         $this->assertDatabaseCount('personal', 0);
-        $this->get('/mi-cuenta')->assertOk()->assertSee('María Pérez')
-            ->assertHeader('Cache-Control', 'max-age=0, no-store, private');
+        $this->get('/mi-cuenta')->assertRedirect('/acceso');
     }
 
     #[DataProvider('registrosInvalidos')]
@@ -95,7 +97,7 @@ class AutenticacionTest extends TestCase
             ...$this->datosRegistro(),
             'contrasena' => ' Bosque123 ',
             'contrasena_confirmation' => ' Bosque123 ',
-        ])->assertRedirect('/mi-cuenta');
+        ])->assertRedirect('/acceso');
 
         $this->assertTrue(Hash::check(' Bosque123 ', User::firstOrFail()->password));
         $this->assertFalse(Hash::check('Bosque123', User::firstOrFail()->password));

@@ -11,7 +11,7 @@
                 aria-invalid="{{ $errors->has('acompanantes.'.$indice.'.'.$campo) ? 'true' : 'false' }}"
                 @if($errors->has('acompanantes.'.$indice.'.'.$campo)) aria-describedby="acompanante-{{ $indice }}-{{ $campo }}-error" @endif
                 @required($campo !== 'apellido_materno')
-                @if($campo === 'edad') min="0" max="120" step="1" inputmode="numeric" placeholder="Años cumplidos" @else maxlength="120" placeholder="Nombre y apellidos" @endif>
+                @if($campo === 'edad') min="0" max="120" step="1" inputmode="numeric" autocomplete="off" placeholder="Años cumplidos" @else maxlength="120" placeholder="Nombre y apellidos" @endif>
             @error('acompanantes.'.$indice.'.'.$campo)<p class="reserva-error" id="acompanante-{{ $indice }}-{{ $campo }}-error">{{ $message }}</p>@enderror
         </div>
     @endforeach

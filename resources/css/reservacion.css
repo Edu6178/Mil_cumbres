@@ -1,4 +1,12 @@
 /* Este bloque conserva el formulario legible aunque el navegador restablezca los estilos nativos. */
+.reserva-cantidad { min-height: 58px; display: grid; grid-template-columns: 54px 1fr 54px; align-items: center; border: 1px solid var(--borde); border-radius: 4px; background: #fff; }
+.reserva-cantidad button { align-self: stretch; border: 0; background: transparent; color: var(--bosque); font: inherit; font-size: 24px; cursor: pointer; }
+.reserva-cantidad button:hover:not(:disabled) { background: #eaf0e4; }
+.reserva-cantidad button:disabled { opacity: .35; cursor: default; }
+.reserva-cantidad output { text-align: center; color: var(--bosque); font: inherit; font-size: 18px; padding: 12px; }
+.reserva-cantidad output:focus-visible, .reserva-cantidad button:focus-visible { outline: 2px solid var(--bosque); outline-offset: -3px; }
+.reserva-consentimiento { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; line-height: 1.6; margin: 24px 0; }
+.reserva-consentimiento input { flex: 0 0 auto; width: 18px; height: 18px; margin-top: 3px; accent-color: var(--bosque); }
 .formulario-prereserva { margin-top: 76px; padding-top: 54px; border-top: 1px solid var(--borde); min-width: 0; scroll-margin-top: 110px; }
 .reserva-encabezado { display: flex; justify-content: space-between; align-items: flex-end; gap: 36px; margin-bottom: 36px; }
 .reserva-encabezado h2 { font-size: clamp(34px, 3.5vw, 47px); }

@@ -124,6 +124,7 @@ class PreReservacionController extends Controller
             'tipo_grupo' => ['nullable', 'string', 'max:100'],
             'proposito_visita' => ['nullable', 'string'],
             'personalizacion' => ['nullable', 'string'],
+            'whatsapp_acepta' => ['sometimes', 'boolean'],
         ]);
 
         $acompanantes = $datos['acompanantes'] ?? [];
@@ -226,11 +227,14 @@ class PreReservacionController extends Controller
         // La descarga se habilita después de guardar y no permite consultar otros folios cambiando el enlace.
         $vencimiento = now()->addDay();
         $compartir = app(\App\Services\Contenido\CompartirPreReserva::class)->preparar($reservacion, $vencimiento);
+        $resumen = URL::temporarySignedRoute('pre-reservaciones.resumen', $vencimiento, ['reservacion' => $reservacion->id]);
+        $estadoWhatsApp = app(\App\Services\Contenido\WhatsAppPreReserva::class)->enviarNueva($reservacion, (bool) ($datos['whatsapp_acepta'] ?? false), $resumen);
         $request->session()->put('ultima_pre_reserva', [
             'folio' => $reservacion->folio,
             'pdf' => URL::temporarySignedRoute('pre-reservaciones.pdf', $vencimiento, ['reservacion' => $reservacion->id]),
             'vence' => $vencimiento->timestamp,
             'whatsapp' => $compartir,
+            'whatsapp_estado' => $estadoWhatsApp,
         ]);
 
         return redirect()->to(rtrim(route('inicio'), '/').'/#pre-reservacion')->with([

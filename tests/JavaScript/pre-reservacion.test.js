@@ -35,7 +35,8 @@ class Elemento {
     }
     querySelectorAll() { return this.children.filter((elemento) => elemento.dataset.acompanante !== undefined); }
     addEventListener(nombre, accion) { this.eventos.set(nombre, accion); }
-    emitir(nombre) { this.eventos.get(nombre)?.(); }
+    emitir(nombre, evento) { this.eventos.get(nombre)?.(evento); }
+    setAttribute(nombre, valor) { (this.atributos ??= {})[nombre] = valor; }
     setCustomValidity(mensaje) { this.error = mensaje; }
 }
 
@@ -44,7 +45,7 @@ function descendientes(elemento) {
     return elemento.children.flatMap((hijo) => [hijo, ...descendientes(hijo)]);
 }
 
-function formulario() {
+function formulario(conControl = false) {
     const cantidad = new Elemento('input');
     cantidad.value = '2';
     const programacion = new Elemento('select');
@@ -59,10 +60,32 @@ function formulario() {
     grupoAnterior.appendChild(nombreAnterior);
     contenedor.appendChild(grupoAnterior);
     const elementos = { numero_personas: cantidad, programacion_id: programacion, 'contenedor-acompanantes': contenedor };
-    const raiz = { getElementById: (id) => elementos[id], createElement: (etiqueta) => new Elemento(etiqueta) };
+    const salida = new Elemento('output');
+    const botones = [-1, 1].map((cambio) => { const b = new Elemento('button'); b.dataset.cantidadCambio = String(cambio); return b; });
+    if (conControl) elementos['cantidad-visible'] = salida;
+    const raiz = { getElementById: (id) => elementos[id], createElement: (etiqueta) => new Elemento(etiqueta), querySelectorAll: () => conControl ? botones : [] };
     iniciarPreReservacion(raiz);
-    return { cantidad, programacion, contenedor, grupoAnterior, nombreAnterior };
+    return { cantidad, programacion, contenedor, grupoAnterior, nombreAnterior, salida, botones };
 }
+
+test('el contador sin campo editable responde a botones y teclado y respeta los cupos', () => {
+    const { cantidad, programacion, salida, botones, contenedor } = formulario(true);
+    programacion.selectedOptions[0].dataset.cupos = '3';
+    botones[1].emitir('click');
+    assert.equal(cantidad.value, '3');
+    assert.equal(salida.textContent, '3');
+    assert.equal(salida.atributos['aria-valuenow'], '3');
+    assert.equal(botones[1].disabled, true);
+    assert.equal(contenedor.children.length, 2);
+    let prevenido = false;
+    salida.emitir('keydown', { key: 'ArrowDown', preventDefault() { prevenido = true; } });
+    assert.equal(prevenido, true);
+    assert.equal(cantidad.value, '2');
+    botones[0].emitir('click');
+    assert.equal(botones[0].disabled, true);
+    assert.equal(cantidad.value, '1');
+    assert.equal(contenedor.children.length, 0);
+});
 
 test('conserva acompañantes al cambiar fecha, aumentar, reducir y volver a aumentar el grupo', () => {
     const { cantidad, programacion, contenedor, grupoAnterior, nombreAnterior } = formulario();

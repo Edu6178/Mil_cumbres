@@ -10,15 +10,12 @@ class CompartirPreReserva
 {
     public function preparar(Reservacion $solicitud, CarbonInterface $vence): array
     {
-        if (!config('whatsapp.pruebas') || !app()->environment('local', 'testing')) {
+        if (!config('whatsapp.compartir')) {
             return [];
         }
 
-        $numero = preg_replace('/\D/', '', (string) config('whatsapp.numero_prueba'));
-        if (strlen($numero) === 10) $numero = '52'.$numero;
-        if (!preg_match('/^[1-9][0-9]{10,14}$/', $numero)) return [];
-
         $solicitud->loadMissing(['cliente.persona', 'programacion.servicioRegion.servicio']);
+        $numero = self::normalizarNumero($solicitud->cliente->persona->telefono ?? '');
         $nombre = trim($solicitud->cliente->persona->nombre);
         $experiencia = $solicitud->programacion->servicioRegion->servicio->nombre_servicio;
         $resumen = URL::temporarySignedRoute('pre-reservaciones.resumen', $vence, ['reservacion' => $solicitud->id]);
@@ -33,8 +30,22 @@ class CompartirPreReserva
             ."El enlace es personal y vence en 24 horas.\n\nMenos prisa. Más conexión. 🍃";
 
         // Crear el enlace no envía nada: el usuario elige el chat y pulsa Enviar en WhatsApp.
-        return ['resumen' => $resumen, 'mensaje' => $mensaje, 'destino' => $numero,
-            'prueba' => 'https://wa.me/'.$numero.'?text='.rawurlencode($mensaje),
+        $enlaces = ['resumen' => $resumen, 'mensaje' => $mensaje, 'destino' => $numero,
+            'propio' => $numero ? 'https://wa.me/'.$numero.'?text='.rawurlencode($mensaje) : null,
             'elegir' => 'https://wa.me/?text='.rawurlencode($mensaje)];
+        $prueba = self::normalizarNumero((string) config('whatsapp.numero_prueba'));
+        if (config('whatsapp.pruebas') && app()->environment('local', 'testing') && $prueba) {
+            $enlaces['prueba'] = 'https://wa.me/'.$prueba.'?text='.rawurlencode($mensaje);
+        }
+        return $enlaces;
+    }
+
+    public static function normalizarNumero(string $numero): ?string
+    {
+        $numero = preg_replace('/\D/', '', $numero);
+        if (strlen($numero) === 10) $numero = '52'.$numero;
+        // El prefijo mexicano actual no lleva el antiguo 1 después de 52.
+        if (strlen($numero) === 13 && str_starts_with($numero, '521')) $numero = '52'.substr($numero, 3);
+        return preg_match('/^[1-9][0-9]{10,14}$/D', $numero) ? $numero : null;
     }
 }

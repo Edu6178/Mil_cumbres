@@ -31,12 +31,14 @@
             <a href="{{ route('administracion.programaciones') }}" @if(request()->routeIs('administracion.programaciones', 'administracion.asignacion.*')) aria-current="page" @endif><x-icono nombre="calendario" /><span>Asignación de guías</span></a>
             <a href="{{ route('administracion.asistencia') }}" @if(request()->routeIs('administracion.asistencia', 'administracion.participantes')) aria-current="page" @endif><x-icono nombre="lista" /><span>Participantes</span><span class="adm-punto" title="Registro de asistencia pendiente"></span></a>
             <p class="adm-grupo">Mi espacio</p>
+            @can('gestionar-accesos')<a href="{{ route('administracion.accesos') }}" @if(request()->routeIs('administracion.accesos*')) aria-current="page" @endif><x-icono nombre="personas" /><span>Accesos y solicitudes</span></a>@endcan
+            @can('gestionar-accesos')<a href="{{ route('administracion.whatsapp') }}" @if(request()->routeIs('administracion.whatsapp')) aria-current="page" @endif><x-icono nombre="informacion" /><span>Conexión de WhatsApp</span></a>@endcan
             <a href="{{ route('administracion.perfil') }}" @if(request()->routeIs('administracion.perfil*')) aria-current="page" @endif><x-icono nombre="usuario" /><span>Mi perfil</span></a>
             <a href="{{ route('inicio') }}"><x-icono nombre="flecha-diagonal" /><span>Ver página pública</span></a>
             
         </nav>
         <div class="adm-lateral-pie">
-            <a class="adm-usuario-lateral" href="{{ route('administracion.perfil') }}"><x-administracion.avatar /><span><strong>{{ auth()->user()->name }}</strong><small>Administración</small></span><x-icono nombre="chevron" /></a>
+            <a class="adm-usuario-lateral" href="{{ route('administracion.perfil') }}"><x-administracion.avatar /><span><strong>{{ auth()->user()->name }}</strong><small>{{ auth()->user()->nombreRol() }}</small></span><x-icono nombre="chevron" /></a>
             <form method="POST" action="{{ route('salir') }}">@csrf<button type="submit" class="adm-cerrar-lateral"><x-icono nombre="salir" /> Cerrar sesión</button></form>
         </div>
     </aside>
@@ -49,7 +51,7 @@
             <div class="adm-cabecera-derecha">
                 <form class="adm-buscar-cabecera" method="GET" action="{{ route('administracion.buscar') }}" role="search" aria-label="Búsqueda general"><x-icono nombre="buscar" /><input type="search" name="buscar" maxlength="100" aria-label="Buscar en todo el sistema" placeholder="Buscar en el sistema…" value="{{ request()->routeIs('administracion.buscar') ? ($buscar ?? '') : '' }}" data-buscador-remoto="todo" data-url-sugerencias="{{ route('administracion.buscar') }}"><button type="submit" aria-label="Ver resultados de la búsqueda general"><x-icono nombre="flecha" /></button></form>
                 <details class="adm-menu-perfil">
-                    <summary aria-label="Abrir opciones de mi cuenta"><x-administracion.avatar /><span><strong>{{ \Illuminate\Support\Str::before(auth()->user()->name, ' ') }}</strong><small>Administración</small></span><x-icono nombre="chevron" /></summary>
+                    <summary aria-label="Abrir opciones de mi cuenta"><x-administracion.avatar /><span><strong>{{ \Illuminate\Support\Str::before(auth()->user()->name, ' ') }}</strong><small>{{ auth()->user()->nombreRol() }}</small></span><x-icono nombre="chevron" /></summary>
                     <div class="adm-opciones-perfil"><div><strong>{{ auth()->user()->name }}</strong><span>{{ auth()->user()->email }}</span></div><a href="{{ route('administracion.perfil') }}"><x-icono nombre="usuario" /> Mi perfil</a><a href="{{ route('cuenta') }}"><x-icono nombre="ojo" /> Mi cuenta personal</a><form method="POST" action="{{ route('salir') }}">@csrf<button type="submit"><x-icono nombre="salir" /> Cerrar sesión</button></form></div>
                 </details>
             </div>

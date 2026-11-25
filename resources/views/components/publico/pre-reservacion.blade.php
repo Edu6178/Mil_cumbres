@@ -26,12 +26,15 @@
             <a class="boton boton-bosque" href="{{ $ultimoAcuse['pdf'] }}" download rel="noreferrer">Descargar mi pre-reserva <x-icono nombre="descargar" /></a>
         </div>
     @endif
-    @if($acuseDisponible && config('whatsapp.pruebas') && app()->environment('local', 'testing') && !empty($ultimoAcuse['whatsapp']['prueba']))
+    @if($acuseDisponible && !empty($ultimoAcuse['whatsapp']['elegir']))
         <div class="reserva-whatsapp" aria-labelledby="titulo-whatsapp-prueba">
-            <div><p class="numero-seccion">WhatsApp · prueba manual</p><h3 id="titulo-whatsapp-prueba">Comparte esta nueva experiencia.</h3><p>El mensaje ya incluye tu nombre, experiencia, fecha y folio. Puedes probarlo con el número configurado o elegir a quién compartírselo.</p></div>
-            <div class="reserva-whatsapp-acciones"><a class="boton boton-bosque" href="{{ $ultimoAcuse['whatsapp']['prueba'] }}" target="_blank" rel="noopener noreferrer">Probar con mi número <x-icono nombre="flecha-diagonal" /></a><a class="boton" href="{{ $ultimoAcuse['whatsapp']['elegir'] }}" target="_blank" rel="noopener noreferrer">Elegir destinatario <x-icono nombre="personas" /></a><a class="enlace-texto" href="{{ $ultimoAcuse['whatsapp']['resumen'] }}" rel="noreferrer">Ver la página que recibirá <x-icono nombre="flecha" /></a></div>
+            <div><p class="numero-seccion">Tu pre-reserva en WhatsApp</p><h3 id="titulo-whatsapp-prueba">Comparte esta nueva experiencia.</h3>
+            @if(($ultimoAcuse['whatsapp_estado'] ?? '') === 'aceptado')<p role="status">WhatsApp aceptó el envío a tu teléfono. La entrega depende de WhatsApp y de la disponibilidad del destinatario.</p>
+            @elseif(in_array($ultimoAcuse['whatsapp_estado'] ?? '', ['fallido', 'no_configurado'], true))<p role="status">Tu pre-reserva está guardada. El envío automático no se completó; puedes compartir el resumen con los botones siguientes.</p>
+            @else<p>Tu solicitud está guardada. Abre WhatsApp para enviar el mensaje personalizado a tu teléfono o a otra persona.</p>@endif</div>
+            <div class="reserva-whatsapp-acciones">@if(!empty($ultimoAcuse['whatsapp']['propio']))<a class="boton boton-bosque" href="{{ $ultimoAcuse['whatsapp']['propio'] }}" target="_blank" rel="noopener noreferrer">Abrir WhatsApp con mi número</a>@endif<a class="boton" href="{{ $ultimoAcuse['whatsapp']['elegir'] }}" target="_blank" rel="noopener noreferrer">Elegir destinatario <x-icono nombre="personas" /></a><a class="enlace-texto" href="{{ $ultimoAcuse['whatsapp']['resumen'] }}" rel="noreferrer">Ver el resumen</a></div>
             <details><summary>Vista previa del mensaje</summary><p class="reserva-mensaje-previo">{{ $ultimoAcuse['whatsapp']['mensaje'] }}</p></details>
-            <small>Se abrirá WhatsApp para que revises y envíes el mensaje. El enlace personal vence en 24 horas. Durante la prueba local, la página de la solicitud solo abre en este equipo.</small>
+            <small>Estos botones abren WhatsApp con el texto listo: debes pulsar Enviar dentro de WhatsApp. El enlace personal vence en 24 horas.</small>
         </div>
     @endif
     @if($errors->any())
@@ -75,9 +78,15 @@
                         </div>
                         <div class="reserva-campo">
                             <label for="numero_personas">Número de personas</label>
-                            <input type="number" id="numero_personas" name="numero_personas" min="1"
+                            <div class="reserva-cantidad" data-control-cantidad>
+                            <button type="button" data-cantidad-cambio="-1" aria-label="Quitar una persona" disabled>−</button>
+                            <output id="cantidad-visible" role="spinbutton" tabindex="0" aria-label="Número de personas" aria-valuemin="1" aria-valuenow="{{ $personasPrecio }}">{{ $personasPrecio }}</output>
+                            <button type="button" data-cantidad-cambio="1" aria-label="Agregar una persona" disabled>+</button>
+                            </div>
+                            <input type="hidden" id="numero_personas" name="numero_personas" min="1" disabled autocomplete="off"
                                 max="{{ $programaciones->max('cupos_disponibles') }}" value="{{ is_scalar(old('numero_personas', 1)) ? old('numero_personas', 1) : 1 }}"
-                                required aria-describedby="cantidad-ayuda" aria-invalid="{{ $errors->has('numero_personas') ? 'true' : 'false' }}">
+                                aria-describedby="cantidad-ayuda" aria-invalid="{{ $errors->has('numero_personas') ? 'true' : 'false' }}">
+                            <noscript><label for="cantidad-sin-js">Cantidad de visitantes</label><input type="number" id="cantidad-sin-js" name="numero_personas" min="1" max="{{ $programaciones->max('cupos_disponibles') }}" value="{{ $personasPrecio }}" required autocomplete="off"></noscript>
                             <p class="{{ $errors->has('numero_personas') ? 'reserva-error' : 'reserva-ayuda' }}" id="cantidad-ayuda">{{ $errors->first('numero_personas') ?: 'Inclúyete a ti y a tus acompañantes.' }}</p>
                         </div>
                         <div class="reserva-campo">
@@ -98,7 +107,7 @@
                     <div class="reserva-campos">
                         <x-publico.campo-reserva nombre="nombre" etiqueta="Nombre completo" obligatorio autocomplete="name" maxlength="120" placeholder="Tu nombre y apellidos" />
                         <x-publico.campo-reserva nombre="telefono" etiqueta="Teléfono" tipo="tel" obligatorio autocomplete="tel" inputmode="tel" minlength="10" maxlength="20" placeholder="10 dígitos" />
-                        <x-publico.campo-reserva nombre="edad" etiqueta="Tu edad al realizar la visita" tipo="number" obligatorio min="0" max="120" step="1" inputmode="numeric" placeholder="Años cumplidos" />
+                        <x-publico.campo-reserva nombre="edad" etiqueta="Tu edad al realizar la visita" tipo="number" obligatorio min="0" max="120" step="1" inputmode="numeric" autocomplete="off" placeholder="Años cumplidos" />
                     </div>
                 </fieldset>
 
@@ -126,6 +135,7 @@
                         <div class="reserva-campo"><label for="personalizacion">Comentarios para el recorrido <span>Opcional</span></label><textarea id="personalizacion" name="personalizacion" rows="4" placeholder="¿Hay algo más que debamos considerar?">{{ is_string(old('personalizacion')) ? old('personalizacion') : '' }}</textarea></div>
                     </div>
                 </fieldset>
+                @if(app(\App\Services\Contenido\WhatsAppPreReserva::class)->configurado())<label class="reserva-consentimiento"><input type="checkbox" name="whatsapp_acepta" value="1" @checked(old('whatsapp_acepta'))><span>Quiero recibir el resumen de esta pre-reservación por WhatsApp en el teléfono que indiqué.</span></label>@endif
                 <div class="reserva-enviar"><p><x-icono nombre="informacion" /><span>Enviar la solicitud genera una <strong>pre-reservación</strong>. La confirmación se acuerda después con Mil Cumbres.</span></p><button type="submit" class="boton boton-bosque">Enviar mi solicitud <x-icono nombre="flecha" /></button></div>
             </form>
 

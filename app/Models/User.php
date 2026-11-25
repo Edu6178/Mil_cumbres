@@ -9,6 +9,34 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    public const ROLES = [
+        'super_admin' => 'Superadministrador', 'admin' => 'Administrador',
+        'empleado' => 'Empleado', 'guia' => 'Guía', 'cliente' => 'Cuenta personal',
+    ];
+
+    public function rolActual(): string
+    {
+        if ($this->rol !== null) return array_key_exists($this->rol, self::ROLES) ? $this->rol : 'cliente';
+        $anteriores = config('administracion.usuarios', []);
+        if (! in_array((int) $this->id, $anteriores, true)) return 'cliente';
+        return ($anteriores[0] ?? null) === (int) $this->id ? 'super_admin' : 'admin';
+    }
+
+    public function accesoActivo(): bool
+    {
+        return ($this->estado_acceso ?? 'activo') === 'activo';
+    }
+
+    public function nombreRol(): string
+    {
+        return self::ROLES[$this->rolActual()];
+    }
+
+    public function destinoAcceso(): string
+    {
+        return in_array($this->rolActual(), ['admin', 'super_admin'], true) ? 'administracion.inicio'
+            : (in_array($this->rolActual(), ['guia', 'empleado'], true) ? 'equipo.inicio' : 'cuenta');
+    }
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
@@ -43,6 +71,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'acceso_solicitado_at' => 'datetime',
+            'acceso_revisado_at' => 'datetime',
         ];
     }
 }

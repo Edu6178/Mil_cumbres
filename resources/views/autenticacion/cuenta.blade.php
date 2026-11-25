@@ -14,12 +14,13 @@
     {{-- Se muestran únicamente los datos reales de la cuenta autenticada. --}}
     <div class="resumen-cuenta">
         <span class="avatar-cuenta" aria-hidden="true">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
-        <div><span class="numero-seccion">Cuenta personal</span><h3>{{ auth()->user()->name }}</h3><p>{{ auth()->user()->email }}</p></div>
+        <div><span class="numero-seccion">{{ auth()->user()->nombreRol() }}</span><h3>{{ auth()->user()->name }}</h3><p>{{ auth()->user()->email }}</p></div>
     </div>
     <div class="cuenta-propuesta"><x-icono nombre="ruta" /><div><h3>Un nuevo comienzo, al aire libre.</h3><p>El catálogo sigue tomando forma. Mientras tanto, conoce nuestra propuesta y lo que nos mueve.</p></div></div>
     <a class="boton boton-bosque boton-formulario" href="{{ route('inicio') }}#experiencias">Explorar Mil Cumbres <x-icono nombre="flecha" /></a>
     @can('administrar')
         <a class="boton boton-tierra boton-formulario" href="{{ route('administracion.inicio') }}">Entrar a administración <x-icono nombre="panel" /></a>
     @endcan
+    @can('equipo')<a class="boton boton-formulario" href="{{ route('equipo.inicio') }}">Mi espacio de equipo</a>@endcan
     <form method="POST" action="{{ route('salir') }}" class="formulario-salir">@csrf<button type="submit" class="enlace-salir">Cerrar sesión <x-icono nombre="salir" /></button></form>
 @endsection

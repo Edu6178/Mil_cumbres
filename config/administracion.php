@@ -1,6 +1,6 @@
 <?php
 
-// La autorización queda en configuración hasta que se defina el esquema definitivo de roles.
+// Compatibilidad y arranque de los roles provisionales. Los roles revisados se guardan en users.
 // Solo se aceptan identificadores concretos de users; el registro público nunca modifica esta lista.
 $usuarios = [];
 foreach (explode(',', (string) env('ADMIN_USUARIOS', '')) as $identificador) {

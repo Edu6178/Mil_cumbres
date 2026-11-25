@@ -9,7 +9,6 @@ use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -53,16 +52,21 @@ class AutenticacionController extends Controller
             ]);
         }
 
+        if (! Auth::user()->accesoActivo()) {
+            Auth::logout();
+            throw ValidationException::withMessages(['correo' => 'Tu solicitud todavía no tiene un acceso aprobado. Consulta al superadministrador.']);
+        }
+
         RateLimiter::clear($clave);
         $request->session()->regenerate();
 
         // Las cuentas autorizadas entran al panel; las cuentas personales conservan su propia pantalla.
-        $destino = Gate::allows('administrar') ? 'administracion.inicio' : 'cuenta';
+        $destino = Auth::user()->destinoAcceso();
 
         return redirect()->intended(route($destino, absolute: false));
     }
 
-    // Crea únicamente una cuenta personal en users; no asigna permisos administrativos ni inventa clientes.
+    // Solicitar acceso no inicia sesión ni concede permisos; el superadministrador debe revisarlo.
     public function registrar(Request $request): RedirectResponse
     {
         $this->normalizarCorreo($request);
@@ -73,6 +77,7 @@ class AutenticacionController extends Controller
         $datos = $request->validate([
             'nombre' => ['bail', 'required', 'string', 'max:120'],
             'correo' => ['bail', 'required', 'string', 'email:rfc', 'max:254', Rule::unique('users', 'email')],
+            'motivo' => ['nullable', 'string', 'max:500'],
             'contrasena' => [
                 'bail', 'required', 'string', 'max:72', 'confirmed', Password::min(8)->letters()->numbers(),
                 // Bcrypt admite hasta 72 bytes; se comprueba también al usar caracteres acentuados.
@@ -86,20 +91,21 @@ class AutenticacionController extends Controller
 
         try {
             // El modelo User convierte automáticamente la contraseña en un hash antes de guardarla.
-            $usuario = User::create([
+            $usuario = (new User([
                 'name' => $datos['nombre'],
                 'email' => $datos['correo'],
                 'password' => $datos['contrasena'],
+            ]))->forceFill([
+                'rol' => 'empleado', 'estado_acceso' => 'pendiente', 'acceso_solicitado_at' => now(),
+                'motivo_acceso' => $datos['motivo'] ?? null,
             ]);
+            $usuario->save();
         } catch (UniqueConstraintViolationException) {
             // Conserva la unicidad incluso si dos registros llegan al mismo tiempo.
             throw ValidationException::withMessages(['correo' => 'Este correo ya tiene una cuenta.']);
         }
 
-        Auth::login($usuario);
-        $request->session()->regenerate();
-
-        return redirect()->route('cuenta')->with('estado', 'Tu cuenta está lista. ¡Bienvenido a Mil Cumbres!');
+        return redirect()->route('acceso')->with('estado', 'Recibimos tu solicitud de acceso al equipo. Podrás iniciar sesión cuando el superadministrador la apruebe y te asigne un rol.');
     }
 
     // Permite cerrar la sesión incluso si la conexión deja de estar disponible.

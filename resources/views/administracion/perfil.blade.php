@@ -8,13 +8,13 @@
             <div class="adm-perfil-portada"></div>
             <x-administracion.avatar class="adm-foto-grande" />
             <h2>{{ $usuario->name }}</h2>
-            <span class="adm-insignia adm-insignia-verde"><span class="adm-punto-estado"></span> Administración</span>
+            <span class="adm-insignia adm-insignia-verde"><span class="adm-punto-estado"></span> {{ $usuario->nombreRol() }}</span>
             <p>{{ $usuario->email }}</p>
             <span class="adm-perfil-alta">Cuenta creada el {{ $usuario->created_at?->format('d/m/Y') ?: 'Fecha no disponible' }}</span>
         </section>
         <div class="adm-perfil-detalles">
             <section class="adm-panel"><div class="adm-panel-titulo"><div><h2>Información de la cuenta</h2><p>Datos asociados a tu acceso.</p></div><x-icono nombre="usuario" /></div>
-                <dl class="adm-datos-perfil"><div><dt>Nombre</dt><dd>{{ $usuario->name }}</dd></div><div><dt>Correo electrónico</dt><dd>{{ $usuario->email }}</dd></div><div><dt>Acceso</dt><dd>Administración</dd></div><div><dt>Fecha de alta</dt><dd>{{ $usuario->created_at?->format('d/m/Y') ?: 'Sin fecha registrada' }}</dd></div></dl>
+                <dl class="adm-datos-perfil"><div><dt>Nombre</dt><dd>{{ $usuario->name }}</dd></div><div><dt>Correo electrónico</dt><dd>{{ $usuario->email }}</dd></div><div><dt>Acceso</dt><dd>{{ $usuario->nombreRol() }}</dd></div><div><dt>Fecha de alta</dt><dd>{{ $usuario->created_at?->format('d/m/Y') ?: 'Sin fecha registrada' }}</dd></div></dl>
             </section>
             <section class="adm-panel"><div class="adm-panel-titulo"><div><h2>Foto de perfil</h2><p>Aparecerá en la cabecera, el menú lateral y tu perfil.</p></div><x-icono nombre="camara" /></div>
                 <form class="adm-formulario-foto" method="POST" action="{{ route('administracion.perfil.guardar-foto') }}" enctype="multipart/form-data" data-formulario-administracion>

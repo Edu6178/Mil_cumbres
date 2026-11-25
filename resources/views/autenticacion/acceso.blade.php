@@ -5,11 +5,10 @@
 @section('contenido')
     <p class="antetitulo"><span></span> Vuelve al camino</p>
     <h2 id="titulo-formulario">Qué gusto verte<br><em>de nuevo.</em></h2>
-    <p class="acceso-introduccion">Entra a tu cuenta y sigue conectando con Mil Cumbres.</p>
+    <p class="acceso-introduccion">Acceso para el equipo de Mil Cumbres.</p>
 
     <nav class="acceso-pestanas" aria-label="Acceso a tu cuenta">
         <a href="{{ route('acceso') }}" aria-current="page">Iniciar sesión</a>
-        <a href="{{ route('registro') }}">Crear cuenta</a>
     </nav>
 
     @if (session('estado'))
@@ -35,6 +34,6 @@
         <button class="boton boton-bosque boton-formulario" type="submit"><span data-texto-envio>Entrar a mi cuenta</span><x-icono nombre="flecha" /></button>
     </form>
 
-    <p class="acceso-cambio">¿Es tu primera visita? <a href="{{ route('registro') }}">Crea tu cuenta</a></p>
+    <p class="acceso-cambio">¿Te incorporas al equipo? <a href="{{ route('registro') }}">Solicitar acceso al equipo</a></p>
     <div class="acceso-nota"><x-icono nombre="brujula" /><p>También puedes <a href="{{ route('inicio') }}#experiencias">explorar nuestra propuesta</a> sin iniciar sesión.</p></div>
 @endsection

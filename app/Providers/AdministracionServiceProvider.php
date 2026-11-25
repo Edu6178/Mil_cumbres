@@ -10,9 +10,10 @@ class AdministracionServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        // Sin una cuenta autorizada expresamente, el panel permanece cerrado.
-        Gate::define('administrar', fn (User $usuario): bool => in_array(
-            (int) $usuario->getKey(), config('administracion.usuarios', []), true
-        ));
+        Gate::define('administrar', fn (User $usuario): bool => $usuario->accesoActivo()
+            && in_array($usuario->rolActual(), ['super_admin', 'admin'], true));
+        Gate::define('gestionar-accesos', fn (User $usuario): bool => $usuario->accesoActivo() && $usuario->rolActual() === 'super_admin');
+        Gate::define('equipo', fn (User $usuario): bool => $usuario->accesoActivo()
+            && in_array($usuario->rolActual(), ['super_admin', 'admin', 'empleado', 'guia'], true));
     }
 }

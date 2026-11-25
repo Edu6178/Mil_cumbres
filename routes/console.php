@@ -3,6 +3,13 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
+Artisan::command('equipo:superadmin {correo : Correo de una cuenta existente}', function () {
+    $usuario = \App\Models\User::where('email', mb_strtolower(trim($this->argument('correo'))))->first();
+    if (! $usuario) { $this->error('No existe una cuenta con ese correo.'); return 1; }
+    $usuario->forceFill(['rol' => 'super_admin', 'estado_acceso' => 'activo', 'acceso_revisado_at' => now()])->save();
+    $this->info('La cuenta existente ya tiene acceso de superadministrador.');
+})->purpose('Habilitar expresamente un superadministrador existente desde la consola del servidor');
+
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');

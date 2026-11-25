@@ -24,6 +24,22 @@ export function iniciarPreReservacion(raiz = document) {
     const programacion = raiz.getElementById('programacion_id');
     const contenedor = raiz.getElementById('contenedor-acompanantes');
     if (!cantidad || !programacion || !contenedor) return;
+    cantidad.disabled = false;
+    const salidaCantidad = raiz.getElementById('cantidad-visible');
+    const botonesCantidad = [...(raiz.querySelectorAll?.('[data-cantidad-cambio]') || [])];
+
+    function ajustarCantidad(cambio) {
+        const maximo = Math.max(1, Number(programacion.selectedOptions[0]?.dataset.cupos || 1));
+        cantidad.value = String(Math.min(maximo, Math.max(1, (Number(cantidad.value) || 1) + cambio)));
+        actualizarAcompanantes();
+    }
+    botonesCantidad.forEach((boton) => boton.addEventListener('click', () => ajustarCantidad(Number(boton.dataset.cantidadCambio))));
+    salidaCantidad?.addEventListener('keydown', (evento) => {
+        const ajustes = { ArrowUp: 1, ArrowRight: 1, ArrowDown: -1, ArrowLeft: -1 };
+        if (!(evento.key in ajustes)) return;
+        evento.preventDefault();
+        ajustarCantidad(ajustes[evento.key]);
+    });
 
     const grupos = new Map([...contenedor.querySelectorAll('[data-acompanante]')]
         .map((grupo) => [Number(grupo.dataset.acompanante), grupo]));
@@ -48,7 +64,7 @@ export function iniciarPreReservacion(raiz = document) {
             entrada.name = `acompanantes[${indice}][${nombre}]`;
             entrada.type = nombre === 'edad' ? 'number' : 'text';
             entrada.required = true;
-            if (nombre === 'edad') { entrada.min = '0'; entrada.max = '120'; entrada.step = '1'; entrada.inputMode = 'numeric'; entrada.placeholder = 'Años cumplidos'; }
+            if (nombre === 'edad') { entrada.min = '0'; entrada.max = '120'; entrada.step = '1'; entrada.inputMode = 'numeric'; entrada.autocomplete = 'off'; entrada.placeholder = 'Años cumplidos'; }
             else { entrada.maxLength = 120; entrada.placeholder = 'Nombre y apellidos'; }
             etiqueta.htmlFor = entrada.id;
             etiqueta.textContent = texto + (nombre === 'apellido_materno' ? ' (opcional)' : '');
@@ -65,6 +81,13 @@ export function iniciarPreReservacion(raiz = document) {
         const total = Number(cantidad.value);
         cantidad.max = String(cupos || 1);
         cantidad.setCustomValidity(total > cupos && cupos > 0 ? 'La cantidad supera los cupos disponibles.' : '');
+        if (salidaCantidad) {
+            salidaCantidad.textContent = String(total);
+            salidaCantidad.setAttribute('aria-valuenow', String(total));
+            salidaCantidad.setAttribute('aria-valuemax', String(cupos || 1));
+            salidaCantidad.setAttribute('aria-describedby', 'cantidad-ayuda');
+        }
+        botonesCantidad.forEach((boton) => { boton.disabled = Number(boton.dataset.cantidadCambio) < 0 ? total <= 1 : total >= (cupos || 1); });
         const necesarios = Number.isSafeInteger(total) && total > 0 ? Math.max(0, Math.min(total, cupos || 1) - 1) : 0;
 
         // Los campos retirados se conservan en memoria por si se aumenta de nuevo la cantidad.
