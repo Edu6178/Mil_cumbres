@@ -10,6 +10,8 @@ use App\Models\Programacion;
 use App\Models\Reservacion;
 use App\Services\Demostracion\PresentacionDemostracion;
 use App\Services\Demostracion\RegistroDemostracion;
+use App\Models\Servicio;
+use App\Services\Finanzas\TarifaReserva;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,20 +28,31 @@ class PreReservacionController extends Controller
         $programaciones = collect();
         $serviciosPublicos = collect();
         $guiasPublicos = collect();
+        $fechasCalendario = collect();
         $disponibilidadInterrumpida = false;
 
         try {
-            $programaciones = Programacion::with([
+            $fechas = Programacion::with([
                 'servicioRegion.servicio', 'servicioRegion.region', 'reservaciones.estado',
             ])
-                ->whereIn('estado', ['activo', 'programada'])
+                ->whereIn('estado', ['activo', 'programada', 'bloqueada'])
                 ->whereHas('servicioRegion.servicio', fn ($query) => $query->where('estado_servicio', 'activo'))
-                ->whereHas('servicioRegion.region', fn ($query) => $query->where('disponibilidad', true))
                 ->where('fecha_inicio', '>', now())
                 ->orderBy('fecha_inicio')
-                ->get()
-                ->filter(fn ($programacion) => $programacion->cupos_disponibles > 0)
+                ->get();
+            $programaciones = $fechas->filter(fn ($fecha) => in_array($fecha->estado, ['activo', 'programada'], true)
+                && ($fecha->servicioRegion?->region?->disponibilidad ?? false) && $fecha->cupos_disponibles > 0)
                 ->values();
+            // Solo se publica disponibilidad; nunca datos de viajeros ni motivos internos del bloqueo.
+            $fechasCalendario = $fechas->map(fn ($fecha) => [
+                'id' => $fecha->id, 'dia' => $fecha->fecha_inicio->format('Y-m-d'),
+                'fin' => $fecha->fecha_fin->format('Y-m-d'), 'hora' => $fecha->fecha_inicio->format('H:i'),
+                'nombre' => $fecha->servicioRegion?->servicio?->nombre_servicio,
+                'region' => $fecha->servicioRegion?->region?->nombre_region,
+                'cupos' => $fecha->cupos_disponibles,
+                'estado' => $fecha->estado === 'bloqueada' || !($fecha->servicioRegion?->region?->disponibilidad ?? false)
+                    ? 'bloqueada' : ($fecha->cupos_disponibles > 0 ? 'disponible' : 'completa'),
+            ])->values();
             $registro = app(RegistroDemostracion::class);
             if ($registro->activo()) {
                 $presentacion = app(PresentacionDemostracion::class);
@@ -52,7 +65,7 @@ class PreReservacionController extends Controller
             $disponibilidadInterrumpida = true;
         }
 
-        return view('welcome', compact('programaciones', 'disponibilidadInterrumpida', 'serviciosPublicos', 'guiasPublicos'));
+        return view('welcome', compact('programaciones', 'fechasCalendario', 'disponibilidadInterrumpida', 'serviciosPublicos', 'guiasPublicos'));
     }
 
     /**
@@ -71,17 +84,18 @@ class PreReservacionController extends Controller
                 'integer',
                 'min:1',
             ],
-            'nombre' => ['required', 'string', 'max:255'],
-            'apellido_paterno' => ['required', 'string', 'max:255'],
-            'apellido_materno' => ['nullable', 'string', 'max:255'],
+            'nombre' => ['required', 'string', 'max:120'],
+            'apellido_paterno' => ['nullable', 'string', 'max:120'],
+            'apellido_materno' => ['nullable', 'string', 'max:120'],
             'telefono' => [
                 'required',
                 'string',
                 'regex:/^[0-9+\-\s()]{10,20}$/',
             ],
             'correo' => ['nullable', 'email', 'max:255'],
+            'edad' => ['nullable', 'required_without:fecha_nacimiento', 'integer', 'between:0,120'],
             'fecha_nacimiento' => [
-                'required',
+                'nullable', 'required_without:edad',
                 'date',
                 'before:today',
             ],
@@ -89,23 +103,24 @@ class PreReservacionController extends Controller
             'acompanantes.*.nombre' => [
                 'required',
                 'string',
-                'max:255',
+                'max:120',
             ],
             'acompanantes.*.apellido_paterno' => [
-                'required',
+                'nullable',
                 'string',
-                'max:255',
+                'max:120',
             ],
             'acompanantes.*.apellido_materno' => [
                 'nullable',
                 'string',
-                'max:255',
+                'max:120',
             ],
             'acompanantes.*.fecha_nacimiento' => [
-                'required',
+                'nullable', 'required_without:acompanantes.*.edad',
                 'date',
                 'before:today',
             ],
+            'acompanantes.*.edad' => ['nullable', 'required_without:acompanantes.*.fecha_nacimiento', 'integer', 'between:0,120'],
             'tipo_grupo' => ['nullable', 'string', 'max:100'],
             'proposito_visita' => ['nullable', 'string'],
             'personalizacion' => ['nullable', 'string'],
@@ -144,14 +159,21 @@ class PreReservacionController extends Controller
                 ]);
             }
 
+            // El navegador no decide el importe. Se lee y conserva la tarifa vigente en el servidor.
+            $servicio = Servicio::whereKey($programacion->servicioRegion->servicio_id)->sharedLock()->firstOrFail();
+            if ($servicio->estado_servicio !== 'activo') {
+                throw ValidationException::withMessages(['programacion_id' => 'Esta experiencia ya no está disponible.']);
+            }
+            $tarifa = TarifaReserva::calcular($servicio, $datos['numero_personas']);
+
             // Registrar los datos del responsable.
             $persona = Persona::create([
                 'nombre' => $datos['nombre'],
-                'apellido_paterno' => $datos['apellido_paterno'],
+                'apellido_paterno' => $datos['apellido_paterno'] ?? '',
                 'apellido_materno' => $datos['apellido_materno'] ?? null,
                 'telefono' => $datos['telefono'],
                 'correo' => $datos['correo'] ?? null,
-                'fecha_nacimiento' => $datos['fecha_nacimiento'],
+                'fecha_nacimiento' => $datos['fecha_nacimiento'] ?? null,
             ]);
 
             $cliente = Cliente::create([
@@ -171,24 +193,28 @@ class PreReservacionController extends Controller
                 'estado_reservacion_id' => $estado->id,
                 'fecha_solicitud' => now(),
                 'numero_personas' => $datos['numero_personas'],
+                'edad_responsable' => $datos['edad'] ?? null,
                 'tipo_grupo' => $datos['tipo_grupo'] ?? null,
                 'proposito_visita' => $datos['proposito_visita'] ?? null,
                 'personalizacion' => $datos['personalizacion'] ?? null,
-                'monto_total' => null,
+                'monto_total' => $tarifa['importe'], 'moneda' => $tarifa['moneda'],
+                'tarifa_publicada' => $tarifa['precio'], 'importe_publicado' => $tarifa['importe'],
+                'unidad_cobro' => $tarifa['unidad'], 'tipo_precio' => $tarifa['tipo'], 'moneda_publicada' => $tarifa['moneda'],
             ]);
 
             // Registrar a los acompañantes.
             foreach ($acompanantes as $acompanante) {
                 $personaInvitada = Persona::create([
                     'nombre' => $acompanante['nombre'],
-                    'apellido_paterno' => $acompanante['apellido_paterno'],
+                    'apellido_paterno' => $acompanante['apellido_paterno'] ?? '',
                     'apellido_materno' => $acompanante['apellido_materno'] ?? null,
-                    'fecha_nacimiento' => $acompanante['fecha_nacimiento'],
+                    'fecha_nacimiento' => $acompanante['fecha_nacimiento'] ?? null,
                 ]);
 
                 DB::table('asigna_reservacion_invitados')->insert([
                     'reservacion_id' => $reservacion->id,
                     'persona_id' => $personaInvitada->id,
+                    'edad' => $acompanante['edad'] ?? null,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
@@ -199,10 +225,12 @@ class PreReservacionController extends Controller
 
         // La descarga se habilita después de guardar y no permite consultar otros folios cambiando el enlace.
         $vencimiento = now()->addDay();
+        $compartir = app(\App\Services\Contenido\CompartirPreReserva::class)->preparar($reservacion, $vencimiento);
         $request->session()->put('ultima_pre_reserva', [
             'folio' => $reservacion->folio,
             'pdf' => URL::temporarySignedRoute('pre-reservaciones.pdf', $vencimiento, ['reservacion' => $reservacion->id]),
             'vence' => $vencimiento->timestamp,
+            'whatsapp' => $compartir,
         ]);
 
         return redirect()->to(rtrim(route('inicio'), '/').'/#pre-reservacion')->with([

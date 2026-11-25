@@ -25,10 +25,11 @@ class FrontendPublicoTest extends TestCase
         $this->assertSame([], DB::getQueryLog());
     }
 
-    public function test_las_cinco_lineas_conservan_cuatro_nombres_pendientes(): void
+    public function test_las_cinco_lineas_muestran_los_nombres_expresados_por_el_cliente(): void
     {
-        $respuesta = $this->get('/catalogo')->assertOk()->assertSee('Senderismo')->assertSee('Línea 5 por confirmar');
-        $this->assertSame(4, preg_match_all('/<button\b[^>]*\bdisabled\b/', $respuesta->getContent()));
+        $respuesta = $this->get('/catalogo')->assertOk()->assertSee('Experiencias turísticas')->assertSee('Ecovoluntariado');
+        $this->assertSame(0, preg_match_all('/<button\b[^>]*\bdisabled\b/', $respuesta->getContent()));
+        $respuesta->assertSee('Terapia de naturaleza')->assertSee('Regeneración organizacional')->assertSee('Pedagogía de naturaleza')->assertDontSee('Línea 5 por confirmar');
         $respuesta->assertSee('data-total-servicios>0</strong>', false)->assertDontSee('Ruta de prueba');
         $this->get('/catalogo?buscar[]=texto&linea[]=valor&duracion[]=corta')->assertOk();
     }
@@ -82,7 +83,7 @@ class FrontendPublicoTest extends TestCase
 
     private function servicio(): array
     {
-        return ['nombre_servicio' => 'Ruta del bosque', 'estado_servicio' => 'activo', 'linea_clave' => 'senderismo',
+        return ['nombre_servicio' => 'Ruta del bosque', 'estado_servicio' => 'activo', 'linea_clave' => 'experiencias-turisticas',
             'linea_nombre' => 'Senderismo', 'duracion_estimada' => 120, 'precio_base' => '950.50',
             'unidad_cobro' => 'por persona', 'descripcion' => 'Recorrido de prueba por el bosque.', 'itinerario' => 'Encuentro y recorrido'];
     }

@@ -1,0 +1,882 @@
+{
+  "archivo": null,
+  "albumes": {
+    "recorridos": "Recorridos y paisajes",
+    "aves": "Observación de aves",
+    "aprendizaje": "Aprender en la naturaleza",
+    "biodiversidad": "Detalles del bosque",
+    "encuentros": "Momentos compartidos"
+  },
+  "espacios": {
+    "inicio-portada": {
+      "nombre": "Portada de inicio",
+      "foto": "empresa-1795396108398"
+    },
+    "inicio-propuesta": {
+      "nombre": "Inicio · Cinco caminos",
+      "foto": "empresa-1795396107886"
+    },
+    "inicio-comunidades": {
+      "nombre": "Inicio · Territorio y comunidad",
+      "foto": "empresa-1795396108327"
+    },
+    "acceso": {
+      "nombre": "Iniciar sesión y registro",
+      "foto": "empresa-1795396108398"
+    },
+    "bosque": {
+      "nombre": "Bosque de bienvenida",
+      "foto": "empresa-1795396108398"
+    },
+    "hero-catalogo": {
+      "nombre": "Catálogo de experiencias",
+      "foto": "empresa-1795396107967"
+    },
+    "hero-nosotros": {
+      "nombre": "Nuestra esencia",
+      "foto": "empresa-1795396108555"
+    },
+    "hero-metodologia": {
+      "nombre": "Turismo regenerativo",
+      "foto": "empresa-1795396108621"
+    },
+    "hero-consultoria": {
+      "nombre": "Talleres y cursos",
+      "foto": "empresa-1795396107866"
+    },
+    "hero-operadora": {
+      "nombre": "Operadora turística",
+      "foto": "empresa-1795396108327"
+    },
+    "hero-guias": {
+      "nombre": "Presentación del equipo de guías",
+      "foto": "empresa-1795396108306"
+    },
+    "hero-comunidades": {
+      "nombre": "Territorio y comunidades",
+      "foto": "empresa-1795396108398"
+    }
+  },
+  "servicios": {
+    "sendero-del-bosque-de-pinos": "empresa-1795396108398",
+    "miradores-al-amanecer": "empresa-1795396108381",
+    "travesia-de-alta-montana": "empresa-1795396108289",
+    "caminata-interpretativa-entre-encinos": "empresa-1795396108097",
+    "ruta-de-las-cascadas": "empresa-1795396108432",
+    "senderismo": "empresa-1795396108398",
+    "avistamiento-de-aves": "empresa-1795396108058",
+    "avistamiento-de-mariposa-monarca": "empresa-1795396108621",
+    "avistamiento-de-luciernagas": "empresa-1795396107947",
+    "recoleccion-de-hongos-silvestres-comestibles": "empresa-1795396108216",
+    "practica-de-movimiento-en-la-naturaleza": "empresa-1795396108432",
+    "terapia-de-naturaleza": "empresa-1795396108432",
+    "regeneracion-organizacional": "empresa-1795396108306",
+    "pedagogia-de-naturaleza": "empresa-1795396108131",
+    "ecovoluntariado": "empresa-1795396108172",
+    "talleres-y-cursos-de-turismo": "empresa-1795396107866",
+    "formacion-turistica": "empresa-1795396107866",
+    "consultoria-turistica": "empresa-1795396108078",
+    "experiencias-de-turismo-alternativo": "empresa-1795396107967"
+  },
+  "fotos": {
+    "empresa-1795396107866": {
+      "id": "empresa-1795396107866",
+      "titulo": "Aprender a reconocer las aves",
+      "alternativo": "Explicación con una guía ilustrada de aves durante un recorrido por el bosque.",
+      "album": "aprendizaje",
+      "foco_x": 46,
+      "foco_y": 48,
+      "ancho": 1280,
+      "alto": 852,
+      "posicion": 10,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396107866.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396107866-640.webp",
+      "originales": [
+        "1795396107866.jpg"
+      ],
+      "huella": "4324e868c7c4f86b3950532923dc71167e0d77d5f6b6e412161df6f8c8588a16"
+    },
+    "empresa-1795396107886": {
+      "id": "empresa-1795396107886",
+      "titulo": "Mirar juntos hacia las copas",
+      "alternativo": "Grupo con binoculares observando las copas de los árboles entre la vegetación.",
+      "album": "aves",
+      "foco_x": 50,
+      "foco_y": 65,
+      "ancho": 853,
+      "alto": 1280,
+      "posicion": 20,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396107886.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396107886-640.webp",
+      "originales": [
+        "1795396107886.jpg",
+        "WhatsApp Image 2026-11-22 at 7.07.03 PM.jpeg"
+      ],
+      "huella": "2d4b0d2f9121919272a88840559420edfb16d0045a94490644f49c360bda4350"
+    },
+    "empresa-1795396107907": {
+      "id": "empresa-1795396107907",
+      "titulo": "Una explicación en el camino",
+      "alternativo": "Una persona comparte una explicación con el grupo entre los árboles.",
+      "album": "aprendizaje",
+      "foco_x": 52,
+      "foco_y": 43,
+      "ancho": 1280,
+      "alto": 852,
+      "posicion": 30,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396107907.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396107907-640.webp",
+      "originales": [
+        "1795396107907.jpg"
+      ],
+      "huella": "c8dfbf8b5ce25e10d9ba4a96acdea9c05803c2fc825a9cce369804dbb6cff3e9"
+    },
+    "empresa-1795396107927": {
+      "id": "empresa-1795396107927",
+      "titulo": "La curiosidad nos reúne",
+      "alternativo": "Participantes señalan y observan las ramas del bosque con binoculares.",
+      "album": "aves",
+      "foco_x": 50,
+      "foco_y": 65,
+      "ancho": 853,
+      "alto": 1280,
+      "posicion": 40,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396107927.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396107927-640.webp",
+      "originales": [
+        "1795396107927.jpg"
+      ],
+      "huella": "dd395e8329557b353967aa33e17c3943b69447e55a62dc962d626ebbc44bba42"
+    },
+    "empresa-1795396107947": {
+      "id": "empresa-1795396107947",
+      "titulo": "Pequeños acentos de color",
+      "alternativo": "Detalle de una flor tubular naranja sobre un fondo de vegetación desenfocada.",
+      "album": "biodiversidad",
+      "foco_x": 50,
+      "foco_y": 49,
+      "ancho": 853,
+      "alto": 1280,
+      "posicion": 50,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396107947.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396107947-640.webp",
+      "originales": [
+        "1795396107947.jpg"
+      ],
+      "huella": "9538fb3dd4bb794004632969598988ca4e069e97badadaedcc108e57e7da07b4"
+    },
+    "empresa-1795396107967": {
+      "id": "empresa-1795396107967",
+      "titulo": "Descubrir otra forma de mirar",
+      "alternativo": "Cuatro participantes observan las ramas con binoculares y un teléfono.",
+      "album": "aves",
+      "foco_x": 50,
+      "foco_y": 51,
+      "ancho": 1280,
+      "alto": 853,
+      "posicion": 60,
+      "publicada": true,
+      "destacada": true,
+      "archivo": "imagenes/empresa/empresa-1795396107967.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396107967-640.webp",
+      "originales": [
+        "1795396107967.jpg"
+      ],
+      "huella": "dab4779883f2f5a69f3e0ebc6fdd44381cbe861684c46b359c7084be6b28deda"
+    },
+    "empresa-1795396107991": {
+      "id": "empresa-1795396107991",
+      "titulo": "Compartir lo que observamos",
+      "alternativo": "Explicación con gestos durante una actividad de observación en el bosque.",
+      "album": "aprendizaje",
+      "foco_x": 50,
+      "foco_y": 42,
+      "ancho": 853,
+      "alto": 1280,
+      "posicion": 70,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396107991.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396107991-640.webp",
+      "originales": [
+        "1795396107991.jpg"
+      ],
+      "huella": "f8367bb9fac664d112fea90062ac8071bce574fc7b1241d63a18ed44d0baa4f4"
+    },
+    "empresa-1795396108013": {
+      "id": "empresa-1795396108013",
+      "titulo": "Una pausa sobre la rama",
+      "alternativo": "Ave de plumaje café posada sobre una rama cubierta de líquenes.",
+      "album": "aves",
+      "foco_x": 50,
+      "foco_y": 52,
+      "ancho": 1067,
+      "alto": 1600,
+      "posicion": 80,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108013.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108013-640.webp",
+      "originales": [
+        "1795396108013.jpg"
+      ],
+      "huella": "d647b887cd957caf1544a348f729e4437628ca6afb2340595fbcf00c8470da1d"
+    },
+    "empresa-1795396108037": {
+      "id": "empresa-1795396108037",
+      "titulo": "Atención a lo que nos rodea",
+      "alternativo": "Un participante usa binoculares sentado sobre una roca junto al agua.",
+      "album": "aves",
+      "foco_x": 49,
+      "foco_y": 49,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 90,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108037.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108037-640.webp",
+      "originales": [
+        "1795396108037.jpg"
+      ],
+      "huella": "3a49e2db96ff240f70b5bd90e242a8a50eaabe1f118e0708e6171d132b01ce85"
+    },
+    "empresa-1795396108058": {
+      "id": "empresa-1795396108058",
+      "titulo": "El bosque también nos observa",
+      "alternativo": "Ave de plumaje café sobre una rama, con el bosque desenfocado al fondo.",
+      "album": "aves",
+      "foco_x": 51,
+      "foco_y": 43,
+      "ancho": 1600,
+      "alto": 1067,
+      "posicion": 100,
+      "publicada": true,
+      "destacada": true,
+      "archivo": "imagenes/empresa/empresa-1795396108058.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108058-640.webp",
+      "originales": [
+        "1795396108058.jpg"
+      ],
+      "huella": "b5bf0acc9274a4bfb351d44788e75c459312486db1575f8633481f1ff48d12bb"
+    },
+    "empresa-1795396108078": {
+      "id": "empresa-1795396108078",
+      "titulo": "La conversación también es parte",
+      "alternativo": "Una explicación al aire libre junto a un pequeño cauce rodeado de vegetación.",
+      "album": "aprendizaje",
+      "foco_x": 42,
+      "foco_y": 44,
+      "ancho": 1280,
+      "alto": 853,
+      "posicion": 110,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108078.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108078-640.webp",
+      "originales": [
+        "1795396108078.jpg"
+      ],
+      "huella": "bd758dbbdb5fe15860673b02ac58a9fd31cf2a7a9c6034dbd5493aaa88bc1928"
+    },
+    "empresa-1795396108097": {
+      "id": "empresa-1795396108097",
+      "titulo": "Un mundo a otra escala",
+      "alternativo": "Un participante examina la corteza de un árbol con una lupa.",
+      "album": "aprendizaje",
+      "foco_x": 49,
+      "foco_y": 51,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 120,
+      "publicada": true,
+      "destacada": true,
+      "archivo": "imagenes/empresa/empresa-1795396108097.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108097-640.webp",
+      "originales": [
+        "1795396108097.jpg"
+      ],
+      "huella": "9aea15c93688d07d5d1b01eaebaf179c43d05621c4ee625ffd3028092a58a947"
+    },
+    "empresa-1795396108116": {
+      "id": "empresa-1795396108116",
+      "titulo": "Compañía en una pausa",
+      "alternativo": "Un perro descansa sobre el suelo cubierto de hojas y raíces del bosque.",
+      "album": "encuentros",
+      "foco_x": 49,
+      "foco_y": 43,
+      "ancho": 1280,
+      "alto": 852,
+      "posicion": 130,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108116.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108116-640.webp",
+      "originales": [
+        "1795396108116.jpg"
+      ],
+      "huella": "f3c56f0806ce36b8ba5074fece80306f714d56c314fe6a82466c8df52b65e07e"
+    },
+    "empresa-1795396108131": {
+      "id": "empresa-1795396108131",
+      "titulo": "Acercarse para comprender",
+      "alternativo": "Participantes observan de cerca la corteza de un árbol con lupas.",
+      "album": "aprendizaje",
+      "foco_x": 52,
+      "foco_y": 52,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 140,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108131.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108131-640.webp",
+      "originales": [
+        "1795396108131.jpg"
+      ],
+      "huella": "741cc93bb1fc77dbbb41327995a24c20823f13bd2dd08fe48b054903185a7928"
+    },
+    "empresa-1795396108146": {
+      "id": "empresa-1795396108146",
+      "titulo": "Tiempo junto al agua",
+      "alternativo": "Un participante descansa sobre una roca con un cuerpo de agua al fondo.",
+      "album": "encuentros",
+      "foco_x": 48,
+      "foco_y": 48,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 150,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108146.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108146-640.webp",
+      "originales": [
+        "1795396108146.jpg"
+      ],
+      "huella": "50ce586638182768263b434acb29e953e7a560da1a373bdbc5cceb6060cef7e1"
+    },
+    "empresa-1795396108172": {
+      "id": "empresa-1795396108172",
+      "titulo": "El bosque bajo nuestros pies",
+      "alternativo": "Participantes fotografían un hongo claro entre hojas, pinos y plantas del suelo.",
+      "album": "biodiversidad",
+      "foco_x": 54,
+      "foco_y": 38,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 160,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108172.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108172-640.webp",
+      "originales": [
+        "1795396108172.jpg"
+      ],
+      "huella": "c9f98cbab59a19bbaeb890ffd5d8a94021b47bde278a8200d0ba4c1044500234"
+    },
+    "empresa-1795396108192": {
+      "id": "empresa-1795396108192",
+      "titulo": "Otra forma de disfrutar el agua",
+      "alternativo": "Un perro nada con una rama en el hocico.",
+      "album": "encuentros",
+      "foco_x": 47,
+      "foco_y": 46,
+      "ancho": 1280,
+      "alto": 853,
+      "posicion": 170,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108192.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108192-640.webp",
+      "originales": [
+        "1795396108192.jpg"
+      ],
+      "huella": "1189efdf6dcf4537f62e04b405fb493b5e0fa4bf1ff958ef9d72b9b1f44fb358"
+    },
+    "empresa-1795396108216": {
+      "id": "empresa-1795396108216",
+      "titulo": "Detalles que merecen una pausa",
+      "alternativo": "Un hongo de sombrero claro crece entre las plantas del bosque.",
+      "album": "biodiversidad",
+      "foco_x": 51,
+      "foco_y": 48,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 180,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108216.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108216-640.webp",
+      "originales": [
+        "1795396108216.jpg"
+      ],
+      "huella": "c622bc0b159aca57739d48cd332c74445dc43a232bc51f7f7ae857e6173f7eb8"
+    },
+    "empresa-1795396108238": {
+      "id": "empresa-1795396108238",
+      "titulo": "Un encuentro en el sendero",
+      "alternativo": "Retrato de un perro en un claro del bosque.",
+      "album": "encuentros",
+      "foco_x": 57,
+      "foco_y": 45,
+      "ancho": 1280,
+      "alto": 852,
+      "posicion": 190,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108238.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108238-640.webp",
+      "originales": [
+        "1795396108238.jpg"
+      ],
+      "huella": "50d2bab20346e5a433babbd541b9c415969a5742a38d13c0a4708a7944825f6a"
+    },
+    "empresa-1795396108256": {
+      "id": "empresa-1795396108256",
+      "titulo": "Escuchar, esperar, observar",
+      "alternativo": "Una persona observa el entorno con binoculares sentada en unos escalones.",
+      "album": "aves",
+      "foco_x": 51,
+      "foco_y": 49,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 200,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108256.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108256-640.webp",
+      "originales": [
+        "1795396108256.jpg"
+      ],
+      "huella": "dcd36c92070cd6a72c099054fcf17ddb6cb0b604cf2bf4f8bcf6fc8cfd732318"
+    },
+    "empresa-1795396108271": {
+      "id": "empresa-1795396108271",
+      "titulo": "El color de lo pequeño",
+      "alternativo": "Detalle de una flor roja con centro amarillo sobre un fondo oscuro.",
+      "album": "biodiversidad",
+      "foco_x": 49,
+      "foco_y": 47,
+      "ancho": 853,
+      "alto": 1280,
+      "posicion": 210,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108271.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108271-640.webp",
+      "originales": [
+        "1795396108271.jpg"
+      ],
+      "huella": "b26a82b58762f9381791838941686fff7edcc25275dd641b5770a981d29f262c"
+    },
+    "empresa-1795396108289": {
+      "id": "empresa-1795396108289",
+      "titulo": "El recorrido se comparte",
+      "alternativo": "Tres participantes observan el bosque en un sendero rodeado de árboles.",
+      "album": "recorridos",
+      "foco_x": 49,
+      "foco_y": 54,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 220,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108289.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108289-640.webp",
+      "originales": [
+        "1795396108289.jpg"
+      ],
+      "huella": "e11027966eacfa68c682ab930f68e30bb811e629b5ae956c8a9ca8e177317f18"
+    },
+    "empresa-1795396108306": {
+      "id": "empresa-1795396108306",
+      "titulo": "Aprender en grupo",
+      "alternativo": "Dos personas comparten una explicación con participantes durante el recorrido.",
+      "album": "aprendizaje",
+      "foco_x": 58,
+      "foco_y": 47,
+      "ancho": 1280,
+      "alto": 852,
+      "posicion": 230,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108306.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108306-640.webp",
+      "originales": [
+        "1795396108306.jpg"
+      ],
+      "huella": "7a69f9f8973caffc06c616c58c93dc0b5ea268b70cbe95692f7110b001262427"
+    },
+    "empresa-1795396108327": {
+      "id": "empresa-1795396108327",
+      "titulo": "Siempre hay algo por descubrir",
+      "alternativo": "Un grupo señala y observa las copas de los árboles desde el sendero.",
+      "album": "recorridos",
+      "foco_x": 47,
+      "foco_y": 51,
+      "ancho": 1280,
+      "alto": 852,
+      "posicion": 240,
+      "publicada": true,
+      "destacada": true,
+      "archivo": "imagenes/empresa/empresa-1795396108327.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108327-640.webp",
+      "originales": [
+        "1795396108327.jpg"
+      ],
+      "huella": "686af92bfd92841b4700038ec530c2feab3c5cc29041227234b80d632976aa67"
+    },
+    "empresa-1795396108345": {
+      "id": "empresa-1795396108345",
+      "titulo": "Una pausa para volver a conectar",
+      "alternativo": "Un participante sonríe mientras descansa sobre una roca junto al agua.",
+      "album": "encuentros",
+      "foco_x": 51,
+      "foco_y": 51,
+      "ancho": 851,
+      "alto": 1280,
+      "posicion": 250,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108345.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108345-640.webp",
+      "originales": [
+        "1795396108345.jpg"
+      ],
+      "huella": "4b9f8c989e23b26f125ea42fd35a89e376da0bd714c4051e2455dc5e40546607"
+    },
+    "empresa-1795396108364": {
+      "id": "empresa-1795396108364",
+      "titulo": "La naturaleza despierta preguntas",
+      "alternativo": "Una participante muestra en su teléfono una herramienta de reconocimiento de aves.",
+      "album": "aprendizaje",
+      "foco_x": 49,
+      "foco_y": 47,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 260,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108364.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108364-640.webp",
+      "originales": [
+        "1795396108364.jpg"
+      ],
+      "huella": "d6525ab91272634ce1a05553d3d7e50d93e4b1137b53a7ad77c1acd58e9a3ea1"
+    },
+    "empresa-1795396108381": {
+      "id": "empresa-1795396108381",
+      "titulo": "Miradas desde la orilla",
+      "alternativo": "Una persona observa con binoculares desde una roca junto al agua.",
+      "album": "aves",
+      "foco_x": 50,
+      "foco_y": 50,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 270,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108381.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108381-640.webp",
+      "originales": [
+        "1795396108381.jpg"
+      ],
+      "huella": "ce0f702360195a1c619040d72d6cba07eae017b5e9430e36ad0c2f6e996f06ed"
+    },
+    "empresa-1795396108398": {
+      "id": "empresa-1795396108398",
+      "titulo": "El camino empieza al compartirlo",
+      "alternativo": "Tres participantes caminan de espaldas por un sendero entre árboles y luz natural.",
+      "album": "recorridos",
+      "foco_x": 50,
+      "foco_y": 58,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 280,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108398.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108398-640.webp",
+      "originales": [
+        "1795396108398.jpg"
+      ],
+      "huella": "8b15a5bee2ccf571426f6982d09782d57f11cc24d585a4df8f62d16d8dd1ab7c"
+    },
+    "empresa-1795396108415": {
+      "id": "empresa-1795396108415",
+      "titulo": "Compartir el descanso",
+      "alternativo": "Un participante descansa en un tronco acompañado por un perro.",
+      "album": "encuentros",
+      "foco_x": 51,
+      "foco_y": 49,
+      "ancho": 1280,
+      "alto": 852,
+      "posicion": 290,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108415.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108415-640.webp",
+      "originales": [
+        "1795396108415.jpg"
+      ],
+      "huella": "65fcc7a84ff56928716d0ca77577a9be11531a565ab10533ed6bf7beceb8e360"
+    },
+    "empresa-1795396108432": {
+      "id": "empresa-1795396108432",
+      "titulo": "El agua sigue su camino",
+      "alternativo": "Cascada entre rocas, árboles y vegetación del bosque.",
+      "album": "recorridos",
+      "foco_x": 53,
+      "foco_y": 54,
+      "ancho": 853,
+      "alto": 1280,
+      "posicion": 300,
+      "publicada": true,
+      "destacada": true,
+      "archivo": "imagenes/empresa/empresa-1795396108432.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108432-640.webp",
+      "originales": [
+        "1795396108432.jpg"
+      ],
+      "huella": "84dec45248f1eff2e57f64faa8e00fb5d8e22ff4d18092445663ad40de4d15fb"
+    },
+    "empresa-1795396108451": {
+      "id": "empresa-1795396108451",
+      "titulo": "Descubrir el bosque en compañía",
+      "alternativo": "Grupo observando el follaje con binoculares durante una caminata.",
+      "album": "aves",
+      "foco_x": 50,
+      "foco_y": 60,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 310,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108451.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108451-640.webp",
+      "originales": [
+        "1795396108451.jpg"
+      ],
+      "huella": "12d90e8041ad77d58168e7082df7ade8d8f342469d1d0c97274aa53efd0941e9"
+    },
+    "empresa-1795396108469": {
+      "id": "empresa-1795396108469",
+      "titulo": "Una invitación a aprender",
+      "alternativo": "Una persona explica una actividad de observación con una guía ilustrada en la mano.",
+      "album": "aprendizaje",
+      "foco_x": 49,
+      "foco_y": 45,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 320,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108469.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108469-640.webp",
+      "originales": [
+        "1795396108469.jpg"
+      ],
+      "huella": "58c760e9f5ae52040f568aa1125294f34a69279c1013d0db8c37af7737032c8c"
+    },
+    "empresa-1795396108487": {
+      "id": "empresa-1795396108487",
+      "titulo": "Conversaciones en una pausa",
+      "alternativo": "Un participante toma un descanso en un tronco junto a un perro.",
+      "album": "encuentros",
+      "foco_x": 51,
+      "foco_y": 48,
+      "ancho": 1280,
+      "alto": 852,
+      "posicion": 330,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108487.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108487-640.webp",
+      "originales": [
+        "1795396108487.jpg"
+      ],
+      "huella": "5df290bee6c13759be08e68743b83c66e0e2584177394ef721aff73d73a32748"
+    },
+    "empresa-1795396108503": {
+      "id": "empresa-1795396108503",
+      "titulo": "La alegría de estar afuera",
+      "alternativo": "Un participante sonríe sentado en una roca de la orilla.",
+      "album": "encuentros",
+      "foco_x": 50,
+      "foco_y": 48,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 340,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108503.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108503-640.webp",
+      "originales": [
+        "1795396108503.jpg"
+      ],
+      "huella": "ae1733bb9731aa7b1ed72729b061aafd85e90448a421c130d60c1b5a0aeb003c"
+    },
+    "empresa-1795396108521": {
+      "id": "empresa-1795396108521",
+      "titulo": "Una pausa en la orilla",
+      "alternativo": "Un participante con mochila y binoculares junto al agua.",
+      "album": "encuentros",
+      "foco_x": 49,
+      "foco_y": 49,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 350,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108521.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108521-640.webp",
+      "originales": [
+        "1795396108521.jpg"
+      ],
+      "huella": "b6fdceaeeca42e1f8504754398dae06d0f4ad28fbecaeeec5822fd22d7c74f3f"
+    },
+    "empresa-1795396108536": {
+      "id": "empresa-1795396108536",
+      "titulo": "El ritmo tranquilo del bosque",
+      "alternativo": "Un perro descansa entre hojas y raíces del bosque.",
+      "album": "encuentros",
+      "foco_x": 43,
+      "foco_y": 44,
+      "ancho": 1280,
+      "alto": 852,
+      "posicion": 360,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108536.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108536-640.webp",
+      "originales": [
+        "1795396108536.jpg"
+      ],
+      "huella": "2487c189ee2318436fa5e0fc73ead7f927f66073053c351de67636a8ffe3712f"
+    },
+    "empresa-1795396108555": {
+      "id": "empresa-1795396108555",
+      "titulo": "Viajo y algo en mí se despierta",
+      "alternativo": "Camiseta de Mil Cumbres con el mensaje Viajo y algo en mí se despierta.",
+      "album": "encuentros",
+      "foco_x": 53,
+      "foco_y": 53,
+      "ancho": 1280,
+      "alto": 852,
+      "posicion": 370,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108555.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108555-640.webp",
+      "originales": [
+        "1795396108555.jpg"
+      ],
+      "huella": "4dc1f001f98135c1de6d8270f615be81e8278c17bd7610484ec834e92393844a"
+    },
+    "empresa-1795396108572": {
+      "id": "empresa-1795396108572",
+      "titulo": "Momentos que permanecen",
+      "alternativo": "Una persona adulta abraza a una niña durante una pausa entre los árboles.",
+      "album": "encuentros",
+      "foco_x": 53,
+      "foco_y": 53,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 380,
+      "publicada": true,
+      "destacada": true,
+      "archivo": "imagenes/empresa/empresa-1795396108572.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108572-640.webp",
+      "originales": [
+        "1795396108572.jpg"
+      ],
+      "huella": "b5fa40f899fefb07c2999d4ab55d93b8580f8ca137b4298a1c1a81787c58bfca"
+    },
+    "empresa-1795396108589": {
+      "id": "empresa-1795396108589",
+      "titulo": "Una mirada desde la orilla",
+      "alternativo": "Un participante sostiene binoculares mientras descansa junto al agua.",
+      "album": "aves",
+      "foco_x": 49,
+      "foco_y": 49,
+      "ancho": 852,
+      "alto": 1280,
+      "posicion": 390,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108589.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108589-640.webp",
+      "originales": [
+        "1795396108589.jpg"
+      ],
+      "huella": "0a0be33e1bac70e540fbb1e5bda0b1d2641f5ea5d81bcb526589644781b4ab80"
+    },
+    "empresa-1795396108606": {
+      "id": "empresa-1795396108606",
+      "titulo": "El agua, a otro ritmo",
+      "alternativo": "Un perro nada hacia la orilla con una rama en el hocico.",
+      "album": "encuentros",
+      "foco_x": 56,
+      "foco_y": 50,
+      "ancho": 1280,
+      "alto": 853,
+      "posicion": 400,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108606.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108606-640.webp",
+      "originales": [
+        "1795396108606.jpg"
+      ],
+      "huella": "12cb97f178cf24c774ffb502c84c69b2403c86c43fba82488c9a0f6436f4d0bc"
+    },
+    "empresa-1795396108621": {
+      "id": "empresa-1795396108621",
+      "titulo": "Los pequeños frutos del bosque",
+      "alternativo": "Detalle de un fruto rojo junto a una hoja verde.",
+      "album": "biodiversidad",
+      "foco_x": 49,
+      "foco_y": 51,
+      "ancho": 853,
+      "alto": 1280,
+      "posicion": 410,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108621.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108621-640.webp",
+      "originales": [
+        "1795396108621.jpg"
+      ],
+      "huella": "657303daec0bf15c9e08492a7a01a80e39c65f771c04d13d51f7bf101d712ac6"
+    },
+    "empresa-1795396108637": {
+      "id": "empresa-1795396108637",
+      "titulo": "La sorpresa de mirar arriba",
+      "alternativo": "Un participante con binoculares observa las copas de los árboles.",
+      "album": "aves",
+      "foco_x": 52,
+      "foco_y": 47,
+      "ancho": 1280,
+      "alto": 853,
+      "posicion": 420,
+      "publicada": true,
+      "destacada": false,
+      "archivo": "imagenes/empresa/empresa-1795396108637.webp",
+      "miniatura": "imagenes/empresa/empresa-1795396108637-640.webp",
+      "originales": [
+        "1795396108637.jpg"
+      ],
+      "huella": "bdf60b9122daf97a354fb60ba5970d6282779cc3c7e5a9821c61c67d8efcf25d"
+    }
+  }
+}

@@ -151,8 +151,7 @@ class ReservacionesCalendarioTest extends TestCase
             ->assertDontSee('<script>prueba</script>', false);
         $documento = new \DOMDocument();
         @$documento->loadHTML('<?xml encoding="utf-8" ?>'.$respuesta->getContent());
-        $correo = (new \DOMXPath($documento))->query('//input[@id="correo"]')->item(0);
-        $this->assertFalse($correo->hasAttribute('required'));
+        $this->assertSame(0, (new \DOMXPath($documento))->query('//form[contains(@class,"reserva-formulario")]//input[@name="correo"]')->length);
     }
 
     private function programacion(): Programacion

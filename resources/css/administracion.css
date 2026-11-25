@@ -2,6 +2,8 @@
 @import './finanzas.css';
 @import './fechas.css';
 @import './calendario.css';
+@import './buscador.css';
+@import './administracion-fotografias.css';
 
 /* Panel administrativo: conserva la identidad de Mil Cumbres con una estructura de trabajo compacta. */
 :root {
@@ -68,6 +70,16 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 .adm-buscar-cabecera > .icono, .adm-buscar-cabecera button .icono { width: 16px; height: 16px; color: #81927e; }
 .adm-buscar-cabecera input { min-width: 0; width: 100%; background: transparent; border: 0; outline-offset: 4px; color: var(--adm-texto); font-size: 11px; }
 .adm-buscar-cabecera input::placeholder { color: #8a9585; }
+.adm-buscar-cabecera:focus-within { border-color: #879f77; box-shadow: 0 0 0 3px #879f7717; }
+.adm-filtro-guias { margin-bottom: 24px; }
+.adm-tarjeta-guia[id] { scroll-margin-top: 145px; }
+.adm-busqueda-nota { color: var(--adm-suave); font-size: 12px; margin-bottom: 20px; }
+.adm-busqueda-resultados { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.adm-resultado-busqueda { display: block; padding: 25px; }
+.adm-resultado-busqueda:hover { border-color: #9aaf8c; background: #fafff3; }
+.adm-resultado-busqueda h2 { display: flex; justify-content: space-between; gap: 12px; font-size: 18px; margin-block: 10px 5px; overflow-wrap: anywhere; }
+.adm-resultado-busqueda > small, .adm-resultado-busqueda > p { color: var(--adm-suave); font-size: 12px; }
+.adm-resultado-busqueda > p { margin-top: 12px; line-height: 1.8; }
 .adm-buscar-cabecera button { display: grid; place-items: center; padding: 0; background: transparent; border: 0; }
 .adm-menu-perfil { position: relative; flex-shrink: 0; }
 .adm-menu-perfil summary { display: flex; align-items: center; gap: 10px; list-style: none; border-radius: 8px; padding: 4px; }
@@ -380,8 +392,15 @@ button:disabled { opacity: .45; cursor: not-allowed; }
     .adm-buscar-cabecera { width: 220px; }
 }
 @media (max-width: 650px) {
-    .adm-cabecera { padding-inline: 16px; gap: 12px; }
-    .adm-buscar-cabecera { display: none; }
+    .adm-cabecera { padding: 10px 16px; gap: 8px 12px; flex-wrap: wrap; }
+    .adm-cabecera-izquierda { max-width: calc(100% - 54px); order: 0; }
+    .adm-cabecera-derecha { display: contents; }
+    .adm-cabecera .adm-menu-perfil { order: 1; }
+    .adm-busqueda-resultados { grid-template-columns: 1fr; }
+    .adm-buscar-cabecera { display: flex; width: 100%; }
+    .adm-cabecera .adm-buscar-cabecera { order: 2; min-height: 43px; }
+    .adm-buscar-cabecera input { font-size: 16px; }
+    .adm-buscar-cabecera input::placeholder { font-size: 12px; }
     .adm-ruta { font-size: 12px; }
     .adm-menu-perfil summary > span { display: none; }
     .adm-menu-perfil summary > .icono { display: none; }

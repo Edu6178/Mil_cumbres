@@ -1,5 +1,5 @@
 /* La misma transición conecta las páginas públicas, las cuentas y la administración. */
-@view-transition { navigation: auto; }
+/* La navegación se habilita en entrada-pagina, antes del primer dibujo y del ajuste guardado. */
 /* El desplazamiento sigue siendo nativo; solo cambia el acabado de la barra. */
 html { scrollbar-color: #647756 #efede4; }
 ::-webkit-scrollbar { width: 12px; height: 12px; }
@@ -10,11 +10,56 @@ html { scrollbar-color: #647756 #efede4; }
 
 /* Empieza desde el primer dibujo; nunca espera una descarga de Anime.js. */
 @media (prefers-reduced-motion: no-preference) {
-    html.con-entrada:not(.con-transicion-nativa):not(.entrada-restaurada) main {
+    html.con-entrada:not([data-movimiento="sin"]):not(.con-transicion-nativa):not(.entrada-restaurada) main {
         animation: entrada-inicial .65s cubic-bezier(.22,.7,.22,1) both;
     }
     .revelar-al-recorrer { opacity: 0; }
 }
+
+/* La entrada se prepara con CSS desde el primer dibujo; no reaparece después de cargar Anime.js. */
+@media (prefers-reduced-motion: no-preference) {
+    html.con-entrada[data-movimiento="completas"]:not(.entrada-restaurada) :is(.portada-texto, .publico-hero-texto, .acceso-relato) > * {
+        animation: desplegar-relato .95s cubic-bezier(.16,.75,.22,1) both;
+    }
+    html.con-entrada[data-movimiento="completas"]:not(.entrada-restaurada) :is(.portada-texto, .publico-hero-texto, .acceso-relato) > :nth-child(2) { animation-delay: .09s; }
+    html.con-entrada[data-movimiento="completas"]:not(.entrada-restaurada) :is(.portada-texto, .publico-hero-texto, .acceso-relato) > :nth-child(3) { animation-delay: .18s; }
+    html.con-entrada[data-movimiento="completas"]:not(.entrada-restaurada) :is(.portada-texto, .publico-hero-texto, .acceso-relato) > :nth-child(4) { animation-delay: .27s; }
+    html.con-entrada[data-movimiento="completas"]:not(.entrada-restaurada) .publico-hero-foto > img {
+        animation: desplegar-fotografia 1.15s cubic-bezier(.16,.75,.22,1) both;
+    }
+    html[data-movimiento="completas"] .publico-hero-foto > img { translate: 0 var(--desfase-editorial, 0px); }
+    html[data-movimiento="completas"] :is(.publico-servicio, .publico-tres-columnas > article, .publico-dos-caminos > article) {
+        transition: translate .35s ease, box-shadow .35s ease, border-color .25s ease;
+    }
+    html[data-movimiento="completas"] :is(.publico-servicio, .publico-tres-columnas > article, .publico-dos-caminos > article):is(:hover, :focus-within) { translate: 0 -5px; }
+    html[data-movimiento="suaves"] main { animation-duration: .25s !important; }
+    html[data-movimiento="suaves"]::view-transition-group(*) { animation-duration: .25s; }
+    html[data-movimiento="suaves"]::view-transition-new(*) { animation-name: recibir-suave; animation-duration: .25s; }
+    html[data-movimiento="suaves"]::view-transition-old(*) { animation-name: despedir-pagina; animation-duration: .15s; }
+}
+@keyframes desplegar-relato { from { opacity: 0; translate: 0 28px; } to { opacity: 1; translate: 0 0; } }
+@keyframes desplegar-fotografia { from { opacity: 0; clip-path: inset(8% 0 6% 0 round 95px 5px 5px); } to { opacity: 1; clip-path: inset(0 round 95px 5px 5px); } }
+@keyframes recibir-suave { from { opacity: 0; } to { opacity: 1; } }
+
+.control-movimiento[hidden] { display: none !important; }
+.control-movimiento { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 16px 0; font: 12px/1.5 'Segoe UI', Arial, sans-serif; color: #3d584b; }
+.control-movimiento label { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 9px; }
+.control-movimiento .icono { width: 17px; height: 17px; flex-shrink: 0; }
+.control-movimiento select { min-height: 38px; padding: 6px 28px 6px 10px; background: #fffefa; color: #193e34; border: 1px solid #bdc9b6; border-radius: 5px; font: inherit; }
+.control-movimiento select:focus-visible { outline: 2px solid #b95634; outline-offset: 3px; }
+.movimiento-estado { max-width: 310px; font-size: 11px; }
+.pagina-acceso .control-movimiento { padding-block: 4px 12px; }
+.adm-pie .control-movimiento { padding: 0; }
+
+/* El ajuste del visitante abarca también microinteracciones y desplazamiento automático. */
+html[data-movimiento="sin"] { scroll-behavior: auto !important; }
+html[data-movimiento="sin"] *, html[data-movimiento="sin"] *::before, html[data-movimiento="sin"] *::after {
+    animation: none !important; transition: none !important; scroll-behavior: auto !important;
+}
+html[data-movimiento="sin"] .revelar-al-recorrer { opacity: 1 !important; }
+html[data-movimiento="sin"] :is(.portada-fondo, .comunidades-fondo) { translate: none; scale: 1; }
+html[data-movimiento="sin"] :is(.boton:hover, .enlace-texto:hover .icono, .campo:focus-within > label, .publico-servicio:hover .publico-servicio-foto > img) { transform: none; }
+html[data-movimiento="sin"]::view-transition-group(*), html[data-movimiento="sin"]::view-transition-old(*), html[data-movimiento="sin"]::view-transition-new(*) { animation: none !important; }
 @keyframes entrada-inicial {
     from { opacity: 0; translate: 0 14px; }
     to { opacity: 1; translate: 0 0; }
@@ -33,7 +78,7 @@ html { scrollbar-color: #647756 #efede4; }
 ::view-transition-old(cabecera-publica), ::view-transition-new(cabecera-publica),
 ::view-transition-old(menu-administracion), ::view-transition-new(menu-administracion) { animation-duration: .25s; }
 @keyframes despedir-pagina { to { opacity: 0; } }
-@keyframes recibir-pagina { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes recibir-pagina { from { opacity: 0; filter: blur(4px); transform: translateY(10px) scale(.995); } to { opacity: 1; filter: blur(0px); transform: translateY(0) scale(1); } }
 @keyframes despedir-formulario { to { opacity: 0; transform: translateX(-18px); } }
 @keyframes recibir-formulario { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: translateX(0); } }
 @media (prefers-reduced-motion: reduce) {

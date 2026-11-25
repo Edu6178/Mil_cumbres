@@ -64,7 +64,7 @@ class DatosDemostracionTest extends TestCase
         $this->get('/guias/'.$ids['personal']['maria'])->assertOk()->assertSee('Interpretación ambiental')
             ->assertDontSee('maria@demostracion.milcumbres.test');
         $this->get('/comunidades')->assertOk()->assertSee('El Encinal');
-        $this->get('/creditos-fotograficos')->assertOk()->assertSee('Annie Spratt')->assertSee('Kampus Production');
+        $this->get('/creditos-fotograficos')->assertOk()->assertSee('proporcionadas por Mil Cumbres')->assertSee('Kampus Production')->assertDontSee('Annie Spratt');
         $this->get('/?programacion='.$ids['programaciones']['pinos-0'])->assertOk()
             ->assertSee('value="'.$ids['programaciones']['pinos-0'].'"', false);
         Servicio::findOrFail($ids['servicios']['pinos'])->update(['estado_servicio' => 'oculto']);
@@ -129,7 +129,7 @@ class DatosDemostracionTest extends TestCase
         $ids = app(RegistroDemostracion::class)->leer()['ids'];
 
         $this->get('/catalogo')->assertOk()->assertSee('Sendero del bosque de pinos')
-            ->assertSee('imagenes/demostracion/bosque-pinos.jpg');
+            ->assertSee('imagenes/empresa/empresa-1795396108398.webp');
         $this->get('/guias/'.$ids['personal']['maria'])->assertOk()->assertSee('María Elena Castillo Rojas')
             ->assertDontSee('maria@demostracion.milcumbres.test');
         $this->get('/comunidades')->assertOk()->assertSee('El Encinal');

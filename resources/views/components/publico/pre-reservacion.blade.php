@@ -3,7 +3,8 @@
     // El resumen toma la misma programación que el formulario, sin inventar cupos ni tarifas.
     $seleccion = old('programacion_id', is_scalar(request('programacion')) ? request('programacion') : null);
     $salidaElegida = $programaciones->firstWhere('id', $seleccion);
-    $fechaMaxima = today()->subDay()->format('Y-m-d');
+    $personasPrecio = is_numeric(old('numero_personas', 1)) ? max(1, (int) old('numero_personas', 1)) : 1;
+    $tarifaElegida = \App\Services\Finanzas\TarifaReserva::calcular($salidaElegida?->servicioRegion?->servicio, min($personasPrecio, $salidaElegida?->cupos_disponibles ?? 1));
     $ultimoAcuse = session('ultima_pre_reserva');
     $acuseDisponible = is_array($ultimoAcuse) && ($ultimoAcuse['vence'] ?? 0) > now()->timestamp;
 @endphp
@@ -23,6 +24,14 @@
         <div class="reserva-comprobante" aria-labelledby="titulo-comprobante">
             <div><p class="numero-seccion">Tu última pre-reservación</p><h3 id="titulo-comprobante">Conserva el inicio de tu próxima experiencia.</h3><p>Folio <strong>{{ $ultimoAcuse['folio'] }}</strong>. Descarga el resumen con los datos de tu solicitud y de tu grupo.</p><small>El enlace estará disponible durante 24 horas. La confirmación se acuerda después con Mil Cumbres.</small></div>
             <a class="boton boton-bosque" href="{{ $ultimoAcuse['pdf'] }}" download rel="noreferrer">Descargar mi pre-reserva <x-icono nombre="descargar" /></a>
+        </div>
+    @endif
+    @if($acuseDisponible && config('whatsapp.pruebas') && app()->environment('local', 'testing') && !empty($ultimoAcuse['whatsapp']['prueba']))
+        <div class="reserva-whatsapp" aria-labelledby="titulo-whatsapp-prueba">
+            <div><p class="numero-seccion">WhatsApp · prueba manual</p><h3 id="titulo-whatsapp-prueba">Comparte esta nueva experiencia.</h3><p>El mensaje ya incluye tu nombre, experiencia, fecha y folio. Puedes probarlo con el número configurado o elegir a quién compartírselo.</p></div>
+            <div class="reserva-whatsapp-acciones"><a class="boton boton-bosque" href="{{ $ultimoAcuse['whatsapp']['prueba'] }}" target="_blank" rel="noopener noreferrer">Probar con mi número <x-icono nombre="flecha-diagonal" /></a><a class="boton" href="{{ $ultimoAcuse['whatsapp']['elegir'] }}" target="_blank" rel="noopener noreferrer">Elegir destinatario <x-icono nombre="personas" /></a><a class="enlace-texto" href="{{ $ultimoAcuse['whatsapp']['resumen'] }}" rel="noreferrer">Ver la página que recibirá <x-icono nombre="flecha" /></a></div>
+            <details><summary>Vista previa del mensaje</summary><p class="reserva-mensaje-previo">{{ $ultimoAcuse['whatsapp']['mensaje'] }}</p></details>
+            <small>Se abrirá WhatsApp para que revises y envíes el mensaje. El enlace personal vence en 24 horas. Durante la prueba local, la página de la solicitud solo abre en este equipo.</small>
         </div>
     @endif
     @if($errors->any())
@@ -48,7 +57,12 @@
                                 @error('programacion_id') aria-describedby="programacion-error" @enderror>
                                 <option value="">Selecciona tu próxima salida</option>
                                 @foreach($programaciones as $programacion)
+                                    @php
+                                        $servicioPrecio = $programacion->servicioRegion?->servicio;
+                                    @endphp
                                     <option value="{{ $programacion->id }}" data-cupos="{{ $programacion->cupos_disponibles }}"
+                                        data-precio-centavos="{{ $servicioPrecio?->precio_base !== null ? \App\Services\Finanzas\Dinero::centavos($servicioPrecio->precio_base) : '' }}"
+                                        data-unidad-cobro="{{ $servicioPrecio?->unidad_cobro }}" data-tipo-precio="{{ $servicioPrecio?->tipo_precio }}" data-moneda="{{ $servicioPrecio?->moneda ?? 'MXN' }}"
                                         data-experiencia="{{ $programacion->servicioRegion?->servicio?->nombre_servicio ?? 'Experiencia' }}"
                                         data-fecha="{{ \Carbon\Carbon::parse($programacion->fecha_inicio)->format('d/m/Y · H:i') }} hrs"
                                         data-region="{{ $programacion->servicioRegion?->region?->nombre_region }}"
@@ -70,7 +84,7 @@
                             <label for="tipo_grupo">Tipo de grupo <span>Opcional</span></label>
                             <select id="tipo_grupo" name="tipo_grupo">
                                 <option value="">¿Con quién vienes?</option>
-                                @foreach(['Familiar', 'Amigos', 'Escolar', 'Empresarial', 'Otro'] as $tipoGrupo)
+                                @foreach(['Familiar', 'Familia con niños', 'Pareja', 'Amigos', 'Escolar', 'Empresarial', 'Otro'] as $tipoGrupo)
                                     <option value="{{ $tipoGrupo }}" @selected(old('tipo_grupo') === $tipoGrupo)>{{ $tipoGrupo }}</option>
                                 @endforeach
                             </select>
@@ -81,13 +95,10 @@
                 <fieldset class="reserva-seccion">
                     <legend><span class="reserva-numero" aria-hidden="true">02</span> Tus datos de contacto</legend>
                     <p class="reserva-introduccion">Serás la persona responsable de la solicitud.</p>
-                    <div class="reserva-campos reserva-campos-tres">
-                        <x-publico.campo-reserva nombre="nombre" etiqueta="Nombre(s)" obligatorio autocomplete="given-name" maxlength="255" placeholder="Tu nombre" />
-                        <x-publico.campo-reserva nombre="apellido_paterno" etiqueta="Apellido paterno" obligatorio autocomplete="family-name" maxlength="255" placeholder="Primer apellido" />
-                        <x-publico.campo-reserva nombre="apellido_materno" etiqueta="Apellido materno" maxlength="255" placeholder="Segundo apellido" />
+                    <div class="reserva-campos">
+                        <x-publico.campo-reserva nombre="nombre" etiqueta="Nombre completo" obligatorio autocomplete="name" maxlength="120" placeholder="Tu nombre y apellidos" />
                         <x-publico.campo-reserva nombre="telefono" etiqueta="Teléfono" tipo="tel" obligatorio autocomplete="tel" inputmode="tel" minlength="10" maxlength="20" placeholder="10 dígitos" />
-                        <x-publico.campo-reserva nombre="correo" etiqueta="Correo electrónico" tipo="email" autocomplete="email" maxlength="255" placeholder="tu@correo.com" />
-                        <x-publico.campo-reserva nombre="fecha_nacimiento" etiqueta="Fecha de nacimiento" tipo="date" obligatorio autocomplete="bday" :max="$fechaMaxima" />
+                        <x-publico.campo-reserva nombre="edad" etiqueta="Tu edad al realizar la visita" tipo="number" obligatorio min="0" max="120" step="1" inputmode="numeric" placeholder="Años cumplidos" />
                     </div>
                 </fieldset>
 
@@ -100,9 +111,9 @@
                         $anteriores = is_array($anteriores) ? array_slice(array_values($anteriores), 0, max(0, (int) $programaciones->max('cupos_disponibles') - 1)) : [];
                     @endphp
                     <p class="reserva-sin-acompanantes" id="reserva-sin-acompanantes" @if(count($anteriores)) hidden @endif><x-icono nombre="usuario" /><span>¿Viajas por tu cuenta? Con tus datos es suficiente.</span></p>
-                    <div id="contenedor-acompanantes" data-fecha-maxima="{{ $fechaMaxima }}">
+                    <div id="contenedor-acompanantes">
                         @foreach($anteriores as $indice => $datosAcompanante)
-                            <x-publico.acompanante :indice="$indice" :datos="is_array($datosAcompanante) ? $datosAcompanante : []" :fecha-maxima="$fechaMaxima" />
+                            <x-publico.acompanante :indice="$indice" :datos="is_array($datosAcompanante) ? $datosAcompanante : []" />
                         @endforeach
                     </div>
                 </fieldset>
@@ -126,7 +137,10 @@
                     <div><dt><x-icono nombre="calendario" /> Fecha y horario</dt><dd data-reserva-fecha>{{ $salidaElegida ? \Carbon\Carbon::parse($salidaElegida->fecha_inicio)->format('d/m/Y · H:i').' hrs' : 'Elige una fecha en el formulario' }}</dd></div>
                     <div><dt><x-icono nombre="paisaje" /> Territorio</dt><dd data-reserva-region>{{ $salidaElegida?->servicioRegion?->region?->nombre_region ?? 'Por seleccionar' }}</dd></div>
                     <div><dt><x-icono nombre="personas" /> Disponibilidad</dt><dd data-reserva-cupos>{{ $salidaElegida ? $salidaElegida->cupos_disponibles.' lugares disponibles' : 'Consulta los lugares al elegir tu salida' }}</dd></div>
+                    <div><dt><x-icono nombre="pago" /> Tarifa publicada</dt><dd data-reserva-precio>@if($tarifaElegida['precio'] !== null){{ $tarifaElegida['tipo'] === 'desde' ? 'Desde ' : '' }}${{ \App\Services\Finanzas\Dinero::mostrar(\App\Services\Finanzas\Dinero::centavos($tarifaElegida['precio'])) }} {{ $tarifaElegida['moneda'] }} {{ \App\Services\Finanzas\TarifaReserva::UNIDADES[$tarifaElegida['unidad']] ?? '· unidad por confirmar' }}@else Por cotizar @endif</dd></div>
+                    <div class="reserva-total"><dt>Total del grupo</dt><dd data-reserva-total role="status" aria-live="polite">{{ $tarifaElegida['importe'] !== null ? ($tarifaElegida['tipo'] === 'desde' ? 'Desde ' : '').'$'.\App\Services\Finanzas\Dinero::mostrar(\App\Services\Finanzas\Dinero::centavos($tarifaElegida['importe'])).' '.$tarifaElegida['moneda'] : 'Cotización personalizada' }}</dd></div>
                 </dl>
+                <p class="reserva-precio-nota" data-reserva-precio-nota>El importe publicado acompaña tu solicitud. Cualquier ajuste se acuerda contigo antes de confirmar.</p>
                 <div class="reserva-resumen-pie"><x-icono nombre="hoja" /><p>Menos prisa.<br><em>Más conexión.</em></p></div>
                 <p class="reserva-resumen-nota">Los lugares se comprueban nuevamente al enviar tu solicitud.</p>
             </aside>

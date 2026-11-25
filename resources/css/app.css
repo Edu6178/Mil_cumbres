@@ -1,7 +1,13 @@
 @import 'tailwindcss' source(none);
 @import './transiciones.css';
 @import './reservacion.css';
+@import './calendario-publico.css';
 @import './fechas.css';
+@import './fotografias.css';
+@import './bienvenida-bosque.css';
+@import './ambiente-bosque.css';
+@import './comunidades.css';
+@import './editor-vista-fotos.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../**/*.blade.php';
@@ -65,7 +71,8 @@ h2 em { color: #647756; font-weight: 400; }
 /* Cabecera fija: el mismo menú se adapta a escritorio y teléfono. */
 .cabecera { position: sticky; top: 0; z-index: 40; background: #f8f7f2fa; border-bottom: 1px solid #d9ddd25c; transition: box-shadow .2s ease; }
 .cabecera.con-sombra { box-shadow: 0 4px 24px #132e2710; }
-.cabecera-interior { min-height: 89px; display: flex; align-items: center; justify-content: space-between; gap: 30px; }
+.cabecera-interior { min-height: 89px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.cabecera .navegacion { order: 2; gap: clamp(12px, 1.45vw, 22px); }
 .marca { display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .marca > span { font-family: var(--serif); font-size: 26px; line-height: 1.15; letter-spacing: -.8px; }
 .marca small { display: block; margin-top: 5px; font-family: var(--font-sans); font-size: 7px; font-weight: 600; letter-spacing: 2.1px; text-transform: uppercase; }
@@ -562,4 +569,21 @@ summary::-webkit-details-marker { display: none; }
     .acceso-paisaje { padding-inline: 16px; gap: 10px; }
     .acceso-relato h1 { font-size: 23px; }
     .acceso-formulario h2 { font-size: 36px; }
+}
+
+/* El menú se despliega antes de que los enlaces pierdan espacio en la cabecera. */
+@media (max-width: 1180px) {
+    .cabecera .cabecera-interior { min-height: 78px; flex-wrap: wrap; gap: 0; padding-block: 14px; }
+    .cabecera .boton-menu { align-items: center; gap: 8px; min-height: 44px; border: 1px solid var(--borde); border-radius: 3px; padding: 9px 12px; background: transparent; font-size: 12px; }
+    .con-js .cabecera .boton-menu { display: inline-flex; }
+    .cabecera .boton-menu .icono { width: 20px; height: 20px; }
+    .cabecera .navegacion { order: 3; width: 100%; flex-direction: column; align-items: stretch; gap: 0; padding-top: 20px; }
+    .con-js .cabecera .navegacion:not(.abierta) { display: none; }
+    .cabecera .navegacion > a:not(.boton) { min-height: 45px; padding-block: 12px; font-size: 14px; border-top: 1px solid var(--borde); }
+    .cabecera .navegacion .boton { margin-top: 9px; font-size: 13px; justify-content: space-between; padding-inline: 14px; }
+}
+@media (max-width: 600px) {
+    .cabecera .marca > span { font-size: 20px; }
+    .cabecera .marca small { font-size: 6px; letter-spacing: 1.5px; }
+    .cabecera .marca img { width: 35px; height: 35px; }
 }

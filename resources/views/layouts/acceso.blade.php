@@ -15,10 +15,7 @@
     <main class="acceso-distribucion">
         {{-- Esta imagen y el texto conservan la identidad de la portada, sin consultar el catálogo. --}}
         <aside class="acceso-paisaje" aria-label="Mil Cumbres, naturaleza y conexión">
-            <picture>
-                <source media="(max-width: 650px)" srcset="{{ asset('imagenes/bosque-portada-movil.webp') }}">
-                <img src="{{ asset('imagenes/bosque-portada.webp') }}" alt="" width="1600" height="1066">
-            </picture>
+            <picture><x-fotografia :foto="app(\App\Services\Contenido\BibliotecaFotografica::class)->espacio('acceso')" espacio="acceso" loading="eager" /></picture>
             <div class="acceso-paisaje-sombra"></div>
             <x-marca class="marca-clara" />
             <div class="acceso-relato" data-entrada>
@@ -34,8 +31,10 @@
             <div class="acceso-formulario" data-entrada>
                 @yield('contenido')
             </div>
+            <x-control-movimiento />
             <p class="acceso-pie">Naturaleza. Comunidad. Propósito.</p>
         </section>
     </main>
+    <x-vista-editor-fotos />
 </body>
 </html>

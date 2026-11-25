@@ -1,5 +1,11 @@
 import './transiciones.js';
+import './movimiento.js';
 import './fechas.js';
+import { activarBuscadoresRemotos } from './autocompletar.js';
+
+activarBuscadoresRemotos();
+
+if (document.querySelector('[data-fotos-administracion]')) import('./administracion-fotografias.js');
 
 const territorioCalendario = document.querySelector('#programar-salida #servicio_reg_id');
 if (territorioCalendario) {

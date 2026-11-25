@@ -1,0 +1,14 @@
+.vista-fotos-banda { position: fixed; top: 0; inset-inline: 0; z-index: 10050; min-height: 34px; display: flex; align-items: center; justify-content: center; gap: 15px; padding: 6px 15px; color: #fff8de; background: #294a35; font: 11px/1.5 'Segoe UI',sans-serif; }
+.vista-fotos-banda span { opacity: .8; font-size: 10px; }
+html.vista-editor-fotos body { padding-top: 34px; cursor: auto; }
+html.vista-editor-fotos .cabecera { top: 34px; }
+html.vista-editor-fotos .revelar-al-recorrer { opacity: 1 !important; }
+html.vista-editor-fotos *, html.vista-editor-fotos *::before, html.vista-editor-fotos *::after { animation: none !important; }
+.editor-fotos-capa { position: fixed; inset: 0; z-index: 50; pointer-events: none; }
+.editor-foto-boton { position: absolute; pointer-events: auto; margin: 0; padding: 0; border: 2px dashed #f8fff0a6; border-radius: 4px; background: transparent; cursor: pointer; overflow: hidden; }
+.editor-foto-boton > span { position: absolute; right: 10px; top: 10px; max-width: calc(100% - 20px); padding: 8px 12px; background: #f9fcefec; color: #24482f; font: 600 11px/1.4 'Segoe UI',sans-serif; border: 1px solid #62765360; border-radius: 20px; box-shadow: 0 2px 12px #183a2530; }
+.editor-foto-boton:hover, .editor-foto-boton:focus-visible { background: #eff8db20; border-color: #eaf7c2; }
+.editor-foto-boton.modificada { background: #ffd44f80; border: 3px solid #ba8c12; }
+.editor-foto-boton.se-oculta { background: #e8a09180; border: 3px solid #b46347; }
+.editor-foto-boton.se-publica { background: #92bd8280; border: 3px solid #537d3c; }
+@media (max-width: 600px) { .vista-fotos-banda { justify-content: start; font-size: 10px; } .vista-fotos-banda span { display: none; } }

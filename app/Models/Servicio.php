@@ -9,10 +9,10 @@ class Servicio extends Model
 {
     protected $table = 'servicios';
 
-    // Son exclusivamente los campos disponibles en la migración recibida.
+    // El precio puede quedar pendiente; la unidad distingue personas, grupos y servicios completos.
     protected $fillable = [
         'categoria_id', 'nombre_servicio', 'descripcion', 'precio_base',
-        'itinerario', 'duracion_estimada', 'estado_servicio',
+        'itinerario', 'duracion_estimada', 'estado_servicio', 'tipo_precio', 'unidad_cobro', 'moneda',
     ];
 
     protected function casts(): array

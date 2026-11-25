@@ -20,6 +20,11 @@ class DatosDemostracionSeeder extends Seeder
         }
 
         if ($registro->leer()) {
+            // Completa la unidad de las cinco rutas de prueba sin cambiar precios ni acuerdos existentes.
+            foreach ($registro->leer()['ids']['servicios'] ?? [] as $clave => $id) {
+                DB::table('servicios')->where('id', $id)->where('nombre_servicio', config('demostracion.servicios.'.$clave.'.nombre_servicio'))
+                    ->whereNull('unidad_cobro')->update(['unidad_cobro' => 'persona']);
+            }
             $this->command?->info('La demostración ya está cargada; se conservaron sus datos y modificaciones.');
 
             return;
@@ -36,7 +41,7 @@ class DatosDemostracionSeeder extends Seeder
             foreach (config('demostracion.servicios') as $clave => $datos) {
                 $servicio = $this->insertar('servicios', $clave, [
                     ...Arr::only($datos, ['nombre_servicio', 'descripcion', 'itinerario', 'precio_base', 'duracion_estimada']),
-                    'categoria_id' => $categoria, 'estado_servicio' => 'activo',
+                    'categoria_id' => $categoria, 'estado_servicio' => 'activo', 'unidad_cobro' => 'persona', 'tipo_precio' => 'fijo', 'moneda' => 'MXN',
                 ]);
                 $relacion = $this->insertar('servicio_regiones', $clave, ['servicio_id' => $servicio, 'region_id' => $this->id('regiones', (string) $datos['region']), 'cupo_maximo' => $datos['cupo']]);
                 foreach ([0, 1] as $semana) {

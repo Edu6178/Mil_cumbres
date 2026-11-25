@@ -7,13 +7,11 @@
     <meta name="description" content="Mil Cumbres: naturaleza, comunidades y turismo regenerativo. Conoce nuestra propuesta de experiencias y consultoría.">
     <title>Mil Cumbres · Viajar para reconectar</title>
     <link rel="icon" href="{{ asset('imagenes/simbolo.svg') }}" type="image/svg+xml">
-    {{-- El teléfono descarga una portada más ligera; las demás imágenes se cargan al acercarse a su sección. --}}
-    <link rel="preload" as="image" href="{{ asset('imagenes/bosque-portada.webp') }}" media="(min-width: 651px)" fetchpriority="high">
-    <link rel="preload" as="image" href="{{ asset('imagenes/bosque-portada-movil.webp') }}" media="(max-width: 650px)" fetchpriority="high">
-    <x-entrada-pagina />
+    <x-entrada-pagina :bosque="true" />
     @vite(['resources/css/app.css', 'resources/css/publico.css', 'resources/js/app.js'])
 </head>
-<body>
+<body data-sonidos-interaccion>
+    <x-bienvenida-bosque />
     <a class="saltar-contenido" href="#contenido">Saltar al contenido</a>
 
     {{-- La navegación lleva a apartados de esta misma página; no requiere conexión a la base de datos. --}}
@@ -31,19 +29,16 @@
                 <a href="{{ route('publico.nosotros') }}">Nuestra esencia</a>
                 <a href="{{ route('publico.comunidades') }}">Comunidades</a>
                 <a href="{{ route('publico.guias') }}">Guías</a>
+                <a href="{{ route('publico.galeria') }}">Galería</a>
                 <a class="enlace-acceso" href="{{ route('cuenta') }}"><x-icono nombre="usuario" /> Mi cuenta</a>
-                <a class="boton boton-pequeno boton-bosque" href="{{ route('publico.consultoria') }}">Para organizaciones <x-icono nombre="flecha-diagonal" /></a>
+                <a class="boton boton-pequeno boton-bosque" href="{{ route('publico.consultoria') }}#contacto">Contacto para empresas <x-icono nombre="flecha-diagonal" /></a>
             </nav>
         </div>
     </header>
 
     <main id="contenido">
         <section class="portada" id="inicio" aria-labelledby="titulo-portada">
-            {{-- Las fotografías son referencias visuales; no representan servicios o sedes ya publicados. --}}
-            <picture>
-                <source media="(max-width: 650px)" srcset="{{ asset('imagenes/bosque-portada-movil.webp') }}">
-                <img class="portada-fondo" src="{{ asset('imagenes/bosque-portada.webp') }}" alt="Luz del sol entre los árboles de un bosque" width="1600" height="1066" fetchpriority="high">
-            </picture>
+            <x-fotografia :foto="app(\App\Services\Contenido\BibliotecaFotografica::class)->espacio('inicio-portada')" espacio="inicio-portada" class="portada-fondo" loading="eager" fetchpriority="high" />
             <div class="portada-sombra"></div>
             <div class="contenedor portada-interior">
                 <div class="portada-texto">
@@ -53,7 +48,7 @@
                     <a class="boton boton-tierra" href="{{ route('publico.catalogo') }}">Descubre Mil Cumbres <x-icono nombre="flecha" /></a>
                 </div>
                 <div class="portada-pie">
-                    <p><span>Una manera distinta de viajar</span>Operación turística y consultoría con sentido.</p>
+                    <p><span>Una manera distinta de viajar</span>Experiencias, talleres y cursos con sentido.</p>
                     <a href="{{ route('publico.nosotros') }}" class="enlace-bajar"><span>El camino empieza aquí</span><x-icono nombre="abajo" /></a>
                 </div>
                 <div class="sello-portada" aria-hidden="true"><x-icono nombre="montana" /><span>Menos prisa.<br>Más conexión.</span></div>
@@ -76,7 +71,7 @@
                     <p>En Mil Cumbres, el turismo regenerativo es el punto de partida para pensar nuestra relación con los lugares que visitamos y con quienes los habitan.</p>
                     <div class="vertientes">
                         <article><span class="numero-seccion">01 / Explorar</span><h3>Operadora turística</h3><p>Experiencias para acercarnos a la naturaleza y mirar el entorno con otros ojos.</p><a class="enlace-texto" href="{{ route('publico.catalogo') }}">Conocer la propuesta <x-icono nombre="flecha" /></a></article>
-                        <article><span class="numero-seccion">02 / Acompañar</span><h3>Consultoría</h3><p>Un espacio para impulsar proyectos junto a organizaciones y comunidades.</p><a class="enlace-texto" href="{{ route('publico.consultoria') }}">Explorar esta vertiente <x-icono nombre="flecha" /></a></article>
+                        <article><span class="numero-seccion">02 / Acompañar</span><h3>Talleres y cursos</h3><p>Trabajo con núcleos agrarios para la conservación y el desarrollo regenerativo a través del turismo.</p><a class="enlace-texto" href="{{ route('publico.consultoria') }}">Explorar esta vertiente <x-icono nombre="flecha" /></a></article>
                     </div>
                 </div>
             </div>
@@ -85,21 +80,19 @@
         <section class="seccion lineas" id="propuesta" aria-labelledby="titulo-lineas">
             <div class="contenedor lineas-cuadricula">
                 <figure class="imagen-senderismo">
-                    <img src="{{ asset('imagenes/senderismo.webp') }}" alt="Personas recorriendo un sendero de montaña" width="1000" height="1333" loading="lazy" decoding="async">
+                    <x-fotografia :foto="app(\App\Services\Contenido\BibliotecaFotografica::class)->espacio('inicio-propuesta')" espacio="inicio-propuesta" sizes="(max-width: 800px) 90vw, 42vw" />
                     <div class="etiqueta-imagen"><x-icono nombre="ruta" /><span>El paisaje se descubre<br><strong>paso a paso.</strong></span></div>
                     <figcaption>Una mirada a lo que nos mueve</figcaption>
                 </figure>
                 <div class="lineas-contenido">
                     <p class="antetitulo"><span></span> Nuestra propuesta</p><h2 id="titulo-lineas">Cinco caminos.<br><em>Un mismo propósito.</em></h2>
-                    <p class="introduccion-lineas">Distintas formas de encontrarnos con la naturaleza. Una propuesta que sigue tomando forma.</p>
+                    <p class="introduccion-lineas">Distintas formas de encontrarnos con nosotros mismos, con la naturaleza y con los demás.</p>
                     <div class="lista-lineas">
-                        <details class="linea-servicio" open>
-                            <summary><span class="numero-linea">01</span><span>Senderismo</span><x-icono nombre="mas" /></summary>
-                            <div class="detalle-linea"><p>Caminar, observar y reconectar con el entorno. Aquí presentaremos las distintas rutas, sus recorridos y la información para elegir tu experiencia.</p><a class="enlace-texto" href="{{ route('publico.catalogo') }}" data-ver-senderismo>Explorar las rutas <x-icono nombre="flecha" /></a></div>
-                        </details>
-                        {{-- Son espacios de presentación, no registros del catálogo; los otros cuatro nombres están pendientes. --}}
-                        @foreach (['02', '03', '04', '05'] as $numero)
-                            <div class="linea-pendiente"><span class="numero-linea">{{ $numero }}</span><span>Línea por confirmar</span><span class="etiqueta-pendiente">Próximamente</span></div>
+                        @foreach(config('propuesta.lineas') as $linea)
+                            <details class="linea-servicio" @if($loop->first) open @endif>
+                                <summary><span class="numero-linea">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span><span>{{ $linea['nombre'] }}</span><x-icono nombre="mas" /></summary>
+                                <div class="detalle-linea"><p>{{ $linea['descripcion'] }}</p><a class="enlace-texto" href="{{ route('publico.catalogo', ['linea' => $linea['clave']]) }}">Explorar experiencias <x-icono nombre="flecha" /></a></div>
+                            </details>
                         @endforeach
                     </div>
                 </div>
@@ -174,13 +167,14 @@
                         @endif
                     </aside>
                 </div>
+                @unless($disponibilidadInterrumpida ?? false)<x-publico.calendario :fechas="$fechasCalendario ?? collect()" />@endunless
                 <x-publico.pre-reservacion :programaciones="$programaciones" :disponibilidad-interrumpida="$disponibilidadInterrumpida ?? false" />
 
             </div>
         </section>
 
         <section class="comunidades" id="comunidades" aria-labelledby="titulo-comunidades">
-            <img class="comunidades-fondo" src="{{ asset('imagenes/bosque-comunidades.webp') }}" alt="Árboles y vegetación de un bosque" width="1100" height="733" loading="lazy" decoding="async"><div class="comunidades-sombra"></div>
+            <x-fotografia :foto="app(\App\Services\Contenido\BibliotecaFotografica::class)->espacio('inicio-comunidades')" espacio="inicio-comunidades" class="comunidades-fondo" /><div class="comunidades-sombra"></div>
             <div class="contenedor comunidades-interior">
                 <div><p class="antetitulo antetitulo-claro"><span></span> Territorio y comunidad</p><h2 id="titulo-comunidades">Detrás de cada paisaje,<br><em>hay una historia.</em></h2></div>
                 <div class="comunidades-texto">
@@ -212,12 +206,14 @@
                 <div class="organizaciones-opciones">
                     <article><span class="numero-linea">01</span><div><h3>Experiencias para grupos</h3><p>Una propuesta que considere a las personas, sus intereses y el sentido de su encuentro.</p></div><x-icono nombre="personas" /></article>
                     <article><span class="numero-linea">02</span><div><h3>Agencias y colaboraciones</h3><p>Un punto de encuentro para acercar nuestra propuesta a nuevos viajeros.</p></div><x-icono nombre="brujula" /></article>
-                    <article><span class="numero-linea">03</span><div><h3>Consultoría y proyectos</h3><p>Acompañamiento para organizaciones y comunidades que buscan construir desde su territorio.</p></div><x-icono nombre="hoja" /></article>
+                    <article><span class="numero-linea">03</span><div><h3>Talleres y cursos</h3><p>Formación en turismo con núcleos agrarios para la conservación y el desarrollo regenerativo.</p></div><x-icono nombre="hoja" /></article>
                     {{-- No se envían formularios ni se abre WhatsApp hasta confirmar los canales oficiales. --}}
                     <p class="aviso-contacto"><x-icono nombre="informacion" /><span><strong>Atención personalizada, próximamente.</strong> Compartiremos aquí los canales oficiales de contacto.</span></p>
                 </div>
             </div>
         </section>
+
+        <x-publico.carrusel-fotografias />
 
         <section class="seccion preguntas" aria-labelledby="titulo-preguntas">
             <div class="contenedor preguntas-cuadricula">
@@ -225,7 +221,7 @@
                 <div class="lista-preguntas">
                     <details><summary>¿Qué propone el turismo regenerativo?<x-icono nombre="mas" /></summary><p>Una forma de relacionarnos con los destinos que invita a cuidar la naturaleza, escuchar a las comunidades y pensar en cómo contribuimos a los lugares que visitamos.</p></details>
                     <details><summary>¿Dónde podré conocer las rutas y sus detalles?<x-icono nombre="mas" /></summary><p>En el apartado de experiencias. Cuando se publiquen las rutas de senderismo, ahí podrás consultar la información de cada recorrido. Por ahora no hay rutas ni fechas disponibles.</p></details>
-                    <details><summary>¿Habrá atención para grupos y organizaciones?<x-icono nombre="mas" /></summary><p>Sí, la propuesta contempla experiencias para grupos y una vertiente de consultoría. El apartado para organizaciones reunirá los canales oficiales cuando estén confirmados.</p></details>
+                    <details><summary>¿Habrá atención para grupos y organizaciones?<x-icono nombre="mas" /></summary><p>Sí. Las agencias y empresas reciben atención personalizada para definir su actividad, las características del grupo y una propuesta comercial. Puedes contactar al equipo desde el apartado para empresas.</p></details>
                 </div>
             </div>
         </section>
@@ -240,12 +236,14 @@
         <div class="contenedor">
             <div class="pie-superior">
                 <div><a class="marca" href="#inicio"><img src="{{ asset('imagenes/simbolo.svg') }}" alt="" width="47" height="47"><span>Mil Cumbres<small>Turismo regenerativo</small></span></a><p>Naturaleza que inspira.<br>Conexiones que permanecen.</p><x-redes-sociales /></div>
-                <nav aria-label="Explorar Mil Cumbres"><span>Descubre</span><a href="{{ route('publico.catalogo') }}">Experiencias</a><a href="#propuesta">Nuestra propuesta</a><a href="{{ route('publico.guias') }}">Nuestros guías</a></nav>
-                <nav aria-label="Conocer Mil Cumbres"><span>Conecta</span><a href="{{ route('publico.nosotros') }}">Nuestra esencia</a><a href="{{ route('publico.comunidades') }}">Territorio y comunidad</a><a href="{{ route('publico.consultoria') }}">Para organizaciones</a></nav>
+                <nav aria-label="Explorar Mil Cumbres"><span>Descubre</span><a href="{{ route('publico.catalogo') }}">Experiencias</a><a href="#propuesta">Nuestra propuesta</a><a href="{{ route('publico.guias') }}">Nuestros guías</a><a href="{{ route('publico.galeria') }}">Galería de momentos</a></nav>
+                <nav aria-label="Conocer Mil Cumbres"><span>Conecta</span><a href="{{ route('publico.nosotros') }}">Nuestra esencia</a><a href="{{ route('publico.comunidades') }}">Territorio y comunidad</a><a href="{{ route('publico.consultoria') }}#contacto">Contacto para empresas</a></nav>
                 <div class="pie-nota"><span>Un proyecto que sigue creciendo</span><p>Estamos preparando las primeras experiencias. Gracias por ser parte del comienzo.</p><a class="enlace-texto" href="#inicio">Volver al inicio <x-icono nombre="arriba" /></a></div>
             </div>
+            <x-control-movimiento />
             <div class="pie-inferior"><p>© {{ date('Y') }} Mil Cumbres. Todos los derechos reservados.</p><a href="{{ route('publico.creditos') }}">Créditos fotográficos</a><span>Hecho para volver a lo esencial.</span></div>
         </div>
     </footer>
+    <x-vista-editor-fotos />
 </body>
 </html>

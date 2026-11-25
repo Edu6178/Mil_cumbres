@@ -1,6 +1,12 @@
 import './pre-reservacion.js';
+import './calendario-publico.js';
 import './fechas.js';
 import './transiciones.js';
+import './movimiento.js';
+import './ambiente-bosque.js';
+import './bienvenida-bosque.js';
+import './fotografias.js';
+if (document.querySelector('[data-editor-fotos-vista]')) import('./editor-vista-fotos.js');
 
 // El carrusel comparte los perfiles existentes y se descarga solo donde se muestra.
 if (document.querySelector('[data-carrusel-guias]')) {
@@ -15,7 +21,7 @@ document.body.classList.add('con-js');
 const cabecera = document.querySelector('#cabecera');
 const botonMenu = document.querySelector('.boton-menu');
 const navegacion = document.querySelector('#navegacion-principal');
-const pantallaMovil = window.matchMedia('(max-width: 920px)');
+const pantallaMovil = window.matchMedia('(max-width: 1180px)');
 
 // Abre el menú en teléfonos y sincroniza su descripción para lectores de pantalla.
 function cambiarMenu(abierto) {
@@ -138,10 +144,8 @@ document.querySelectorAll('[data-formulario-cuenta]').forEach((formulario) => {
 });
 
 // La entrada inicial vive en CSS; Anime.js solo acompaña el recorrido y las interacciones.
-if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    import('./animaciones.js').then(({ iniciarAnimaciones }) => {
-        iniciarAnimaciones();
-    }).catch(() => {
-        // Si la animación no carga, los formularios y la navegación continúan funcionando.
-    });
-}
+import('./animaciones.js').then(({ iniciarAnimaciones }) => {
+    iniciarAnimaciones();
+}).catch(() => {
+    // Si la animación no carga, los formularios y la navegación continúan funcionando.
+});

@@ -1,6 +1,8 @@
 <?php
 use App\Http\Controllers\Admin\CalendarioAdminController; 
 use App\Http\Controllers\Admin\CategoriaController;
+use App\Http\Controllers\Admin\BusquedaController;
+use App\Http\Controllers\Admin\FotografiaController;
 use App\Http\Controllers\Admin\GuiaController;
 use App\Http\Controllers\Admin\PanelController;
 use App\Http\Controllers\Admin\PerfilController;
@@ -16,6 +18,12 @@ Route::prefix('administracion')->name('administracion.')
     ->middleware(['auth', 'can:administrar', 'cache.headers:no_store;private;max_age=0'])
     ->group(function () {
         Route::get('/', [PanelController::class, 'index'])->name('inicio');
+        Route::get('/buscar', [BusquedaController::class, 'index'])->name('buscar');
+        Route::get('/fotografias', [FotografiaController::class, 'index'])->name('fotografias');
+        Route::post('/fotografias', [FotografiaController::class, 'subir'])->name('fotografias.subir');
+        Route::patch('/fotografias/cambios', [FotografiaController::class, 'aplicar'])->name('fotografias.aplicar');
+        Route::put('/fotografias/portadas', [FotografiaController::class, 'asignar'])->name('fotografias.portadas');
+        Route::put('/fotografias/{foto}', [FotografiaController::class, 'actualizar'])->where('foto', '[a-z0-9-]+')->name('fotografias.actualizar');
         Route::get('/finanzas', [FinanzaController::class, 'index'])->name('finanzas');
         Route::get('/ventas', [VentaController::class, 'index'])->name('ventas.indice');
         Route::get('/ventas/{reservacion}', [VentaController::class, 'mostrar'])->whereNumber('reservacion')->name('ventas.mostrar');

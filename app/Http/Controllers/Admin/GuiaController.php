@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\Administracion\AgendaGuias;
+use App\Services\Busqueda\TextoBusqueda;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,9 +12,13 @@ use Illuminate\View\View;
 
 class GuiaController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        return view('administracion.guias', ['guias' => AgendaGuias::guias()->orderBy('personas.nombre')->paginate(12)]);
+        $datos = $request->validate(['buscar' => ['nullable', 'string', 'max:100']]);
+        $consulta = AgendaGuias::guias();
+        TextoBusqueda::filtrar($consulta, ['personas.nombre', 'personas.apellido_paterno', 'personas.apellido_materno', 'personal.formacion', 'personal.talentos', 'personal.tipo_rol'], $datos['buscar'] ?? '');
+
+        return view('administracion.guias', ['guias' => $consulta->orderBy('personas.nombre')->paginate(12)->withQueryString()]);
     }
 
     public function programaciones(): View

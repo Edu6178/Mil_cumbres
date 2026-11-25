@@ -17,6 +17,7 @@ class Reservacion extends Model
         'estado_reservacion_id',
         'fecha_solicitud',
         'numero_personas',
+        'edad_responsable',
         'tipo_grupo',
         'proposito_visita',
         'personalizacion',
@@ -24,12 +25,16 @@ class Reservacion extends Model
         'moneda',
         'fecha_confirmacion',
         'confirmada_por',
+        'tarifa_publicada', 'importe_publicado', 'unidad_cobro', 'tipo_precio', 'moneda_publicada',
     ];
 
     protected $casts = [
         'fecha_solicitud' => 'datetime',
         'numero_personas' => 'integer',
+        'edad_responsable' => 'integer',
         'monto_total' => 'decimal:2',
+        'tarifa_publicada' => 'decimal:2',
+        'importe_publicado' => 'decimal:2',
         'cobrado' => 'decimal:2',
         'fecha_confirmacion' => 'datetime',
     ];
@@ -62,12 +67,24 @@ class Reservacion extends Model
     public function acompanantes()
     {
         return $this->belongsToMany(Persona::class, 'asigna_reservacion_invitados', 'reservacion_id', 'persona_id')
+            ->withPivot('edad')
             ->orderBy('asigna_reservacion_invitados.id');
     }
 
     public function getFolioAttribute(): string
     {
         return 'MC-'.$this->fecha_solicitud->format('Y').'-'.str_pad((string) $this->id, 6, '0', STR_PAD_LEFT);
+    }
+
+    public function getTarifaCatalogoAttribute(): array
+    {
+        if ($this->moneda_publicada !== null) {
+            return ['precio' => $this->tarifa_publicada, 'importe' => $this->importe_publicado,
+                'unidad' => $this->unidad_cobro, 'tipo' => $this->tipo_precio, 'moneda' => $this->moneda_publicada, 'guardada' => true];
+        }
+
+        // Una solicitud anterior puede mostrar una sugerencia actual, sin inventarle un precio histórico.
+        return [...\App\Services\Finanzas\TarifaReserva::calcular($this->programacion?->servicioRegion?->servicio, $this->numero_personas), 'guardada' => false];
     }
 
     public function scopeConCobros($consulta)

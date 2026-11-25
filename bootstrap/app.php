@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->web(append: [\App\Http\Middleware\VistaFotografica::class]);
         $middleware->trimStrings(except: ['contrasena', 'contrasena_confirmation']);
         $middleware->redirectGuestsTo(fn (Request $request) => route('acceso'));
         $middleware->redirectUsersTo(fn (Request $request) => route(

@@ -13,6 +13,9 @@ Route::post('/pre-reservaciones', [PreReservacionController::class, 'guardar'])
 Route::get('/pre-reservaciones/{reservacion}/comprobante.pdf', [ComprobantePreReservacionController::class, 'descargar'])
     ->whereNumber('reservacion')->middleware(['signed', 'throttle:10,1'])
     ->name('pre-reservaciones.pdf');
+Route::get('/pre-reservaciones/{reservacion}/resumen', [\App\Http\Controllers\Cliente\ResumenPreReservacionController::class, 'ver'])
+    ->whereNumber('reservacion')->middleware(['signed', 'throttle:20,1'])
+    ->name('pre-reservaciones.resumen');
 // Los formularios públicos solo se muestran a visitantes sin una sesión iniciada.
 Route::middleware(['guest', 'cache.headers:no_store;private;max_age=0'])->group(function () {
     Route::get('/acceso', [AutenticacionController::class, 'acceso'])->name('acceso');

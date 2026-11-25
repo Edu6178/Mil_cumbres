@@ -2,14 +2,15 @@
 @php
     // Reutiliza las mismas fichas y conserva la búsqueda cuando JavaScript no está disponible.
     $guias = collect($guias)->values();
-    $normalizar = fn ($texto) => \Illuminate\Support\Str::lower(\Illuminate\Support\Str::ascii((string) $texto));
 @endphp
 <div class="publico-carrusel {{ $individual ? 'publico-carrusel-individual' : 'publico-carrusel-equipo' }}" data-carrusel-guias role="region" aria-roledescription="carrusel" aria-label="{{ $individual ? 'Conoce a nuestros guías' : 'Perfiles del equipo' }}">
     <div class="publico-carrusel-ventana" data-carrusel-ventana>
         <div class="publico-guias-cuadricula" id="{{ $identificador }}-fichas" data-carrusel-pista>
             @foreach($guias as $indice => $guia)
-                @php($texto = $guia['nombre'].' '.($guia['especialidad'] ?? '').' '.($guia['talentos'] ?? ''))
-                <div data-guia data-carrusel-ficha data-indice="{{ $indice }}" data-nombre="{{ $guia['nombre'] }}" data-busqueda="{{ $texto }}" @if(!str_contains($normalizar($texto), $normalizar(trim($buscar)))) hidden @endif>
+                @php
+                    $texto = $guia['nombre'].' '.($guia['especialidad'] ?? '').' '.($guia['talentos'] ?? '').' '.($guia['formacion'] ?? '');
+                @endphp
+                <div data-guia data-carrusel-ficha data-indice="{{ $indice }}" data-nombre="{{ $guia['nombre'] }}" data-resumen="{{ ($guia['formacion'] ?? '').' '.($guia['talentos'] ?? '') }}" data-busqueda="{{ $texto }}" @if(!\App\Services\Busqueda\TextoBusqueda::coincide($texto, $buscar)) hidden @endif>
                     <x-publico.guia :guia="$guia" />
                 </div>
             @endforeach

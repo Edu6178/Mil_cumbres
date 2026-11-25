@@ -7,8 +7,7 @@
         // La publicación se decide en el backend. No se extraen datos de personal ni personas desde la vista.
         $guias = collect($guias ?? [])->filter(fn ($guia) => ($guia['publicado'] ?? false) === true)->values();
         $buscar = is_string(request('buscar')) ? request('buscar') : '';
-        $normalizar = fn ($valor) => \Illuminate\Support\Str::lower(\Illuminate\Support\Str::ascii((string) $valor));
-        $coincide = fn ($guia) => str_contains($normalizar($guia['nombre'].' '.($guia['especialidad'] ?? '').' '.($guia['talentos'] ?? '')), $normalizar(trim($buscar)));
+        $coincide = fn ($guia) => \App\Services\Busqueda\TextoBusqueda::coincide($guia['nombre'].' '.($guia['especialidad'] ?? '').' '.($guia['talentos'] ?? '').' '.($guia['formacion'] ?? ''), $buscar);
     @endphp
     <x-publico.hero actual="Guías" antetitulo="Personas que hacen diferente el camino" titulo="El territorio se conoce mejor cuando alguien te lo comparte." descripcion="Detrás de cada recorrido hay una mirada, una historia y una forma de acompañar. Conoce a quienes compartirán contigo la experiencia." imagen="bosque-comunidades.webp" alternativo="Vegetación y árboles de un bosque" sello="Compartir también es una forma de aprender" />
     <section class="contenedor publico-equipo" data-equipo-publico>

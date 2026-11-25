@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Categoria;
 use App\Models\Servicio;
+use App\Services\Busqueda\TextoBusqueda;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -21,7 +22,7 @@ class ServicioController extends Controller
         ]);
 
         $servicios = Servicio::with('categoria')
-            ->when($filtros['buscar'] ?? null, fn ($consulta, $texto) => $consulta->whereRaw('LOWER(nombre_servicio) LIKE ?', ['%'.mb_strtolower($texto).'%']))
+            ->when($filtros['buscar'] ?? null, function ($consulta, $texto) { TextoBusqueda::filtrar($consulta, ['nombre_servicio', 'descripcion'], $texto); })
             ->when($filtros['estado'] ?? null, fn ($consulta, $estado) => $consulta->where('estado_servicio', $estado))
             ->when($filtros['categoria'] ?? null, fn ($consulta, $categoria) => $consulta->where('categoria_id', $categoria))
             ->latest()->paginate(12)->withQueryString();
@@ -34,7 +35,7 @@ class ServicioController extends Controller
 
     public function crear(): View
     {
-        return $this->formulario(new Servicio(['estado_servicio' => 'activo']));
+        return $this->formulario(new Servicio(['estado_servicio' => 'activo', 'tipo_precio' => 'fijo', 'moneda' => 'MXN']));
     }
 
     public function editar(Servicio $servicio): View
@@ -80,7 +81,10 @@ class ServicioController extends Controller
             'nombre_servicio' => ['required', 'string', 'max:200'],
             'categoria_id' => ['required', 'integer', 'exists:categorias,id'],
             'descripcion' => ['nullable', 'string', 'max:10000'],
-            'precio_base' => ['required', 'numeric', 'decimal:0,2', 'min:0', 'max:9999999999.99'],
+            'precio_base' => ['nullable', 'numeric', 'decimal:0,2', 'min:0', 'max:9999999999.99'],
+            'tipo_precio' => ['sometimes', 'required', Rule::in(['fijo', 'desde'])],
+            'unidad_cobro' => ['nullable', Rule::in(array_keys(\App\Services\Finanzas\TarifaReserva::UNIDADES))],
+            'moneda' => ['sometimes', 'required', Rule::in(\App\Services\Finanzas\Dinero::MONEDAS)],
             'duracion_estimada' => ['nullable', 'integer', 'min:1', 'max:2147483647'],
             'itinerario' => ['nullable', 'string', 'max:20000'],
             'estado_servicio' => ['required', Rule::in(['activo', 'oculto'])],

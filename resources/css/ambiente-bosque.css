@@ -1,0 +1,52 @@
+.ambiente-control { min-height: 38px; padding: 7px 12px; border: 1px solid #bdc9b6; border-radius: 20px; background: #fffefa; color: #193e34; font: inherit; }
+.ambiente-control[aria-pressed="true"] { background: #e5ebdc; border-color: #859e72; }
+.ambiente-estado { flex-basis: 100%; color: #657168; font-size: 11px; }
+.ambiente-estado:empty { display: none; }
+.ambiente-cursor { display: none; }
+.reserva-whatsapp { margin-block: 22px 32px; padding: 30px; background: #edf1e7; border: 1px solid #cedbc1; border-radius: 6px; }
+.reserva-whatsapp h3 { font: 30px/1.25 var(--serif); margin: 10px 0; }
+.reserva-whatsapp p, .reserva-whatsapp small { font-size: 12px; line-height: 1.9; color: var(--texto-suave); }
+.reserva-whatsapp-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-block: 22px; }
+.reserva-whatsapp-acciones > .boton:not(.boton-bosque) { border-color: #a0b18f; }
+.reserva-whatsapp summary { font-size: 12px; padding-block: 10px; }
+.reserva-whatsapp .reserva-mensaje-previo { white-space: pre-wrap; overflow-wrap: anywhere; padding: 18px; background: #fffdf5; border-radius: 4px; margin-block: 10px; }
+.resumen-personal { max-width: 960px; padding-block: 65px 90px; }
+.resumen-personal-saludo { text-align: center; margin-bottom: 40px; }
+.resumen-personal-saludo > .icono { width: 45px; height: 45px; color: #7d925f; margin-bottom: 18px; }
+.resumen-personal-saludo .antetitulo { justify-content: center; }
+.resumen-personal h1 { font: 46px/1.12 var(--serif); letter-spacing: -1.7px; margin-bottom: 23px; }
+.resumen-personal h1 em { color: #70865a; }
+.resumen-personal-saludo > p:last-child { font-size: 13px; color: var(--texto-suave); }
+.resumen-personal-tarjeta { padding: 38px; background: white; border: 1px solid var(--borde); border-radius: 50px 5px 5px; }
+.resumen-personal-tarjeta h2 { font-size: 32px; margin-top: 15px; letter-spacing: -.7px; }
+.resumen-personal-tarjeta dl { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 30px; margin-block: 30px; }
+.resumen-personal-tarjeta dt { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--texto-suave); }
+.resumen-personal-tarjeta dd { margin: 7px 0 0; font-size: 14px; }
+.resumen-personal-tarjeta .enlace-texto { margin: 15px 0 0 20px; }
+.resumen-personal-pasos { padding: 45px 25px 0; }
+.resumen-personal-pasos h2 { font-size: 36px; }
+.resumen-personal-pasos ol { padding-left: 20px; font-size: 13px; color: var(--texto-suave); }
+.resumen-personal-pasos li { padding: 10px 0 10px 10px; }
+.resumen-personal-pasos strong { display: block; color: var(--bosque); }
+@media (max-width: 600px) {
+    .reserva-whatsapp { padding: 22px; } .reserva-whatsapp-acciones { align-items: stretch; flex-direction: column; }
+    .resumen-personal { padding-block: 40px 60px; } .resumen-personal h1 { font-size: 36px; }
+    .resumen-personal-tarjeta { padding: 25px; } .resumen-personal-tarjeta dl { grid-template-columns: 1fr; }
+    .resumen-personal-tarjeta .enlace-texto { margin-left: 0; }
+}
+@media (hover: hover) and (pointer: fine) and (min-width: 921px) and (forced-colors: none) {
+    .ambiente-cursor { display: inline-block; }
+    html.cursor-bosque body { cursor: url('/imagenes/cursor-hoja.svg') 3 2, auto; }
+    html.cursor-bosque :is(a[href], button, summary, select, label[for], [role="button"], input[type="checkbox"], input[type="radio"], input[type="submit"]) { cursor: url('/imagenes/cursor-hoja-enlace.svg') 3 2, pointer; }
+    html.cursor-bosque :is(input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]), textarea, [contenteditable="true"]) { cursor: text; }
+    html.cursor-bosque :is(:disabled, [aria-disabled="true"]) { cursor: not-allowed !important; }
+    html.cursor-bosque [aria-busy="true"], html.cursor-bosque [aria-busy="true"] * { cursor: progress !important; }
+}
+/* Las respuestas acompañan la intención del visitante; ninguna se repite en bucle. */
+@media (prefers-reduced-motion: no-preference) {
+    html[data-movimiento="completas"] .boton { transition: background .25s, transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s; }
+    html[data-movimiento="completas"] .boton:hover { box-shadow: 0 8px 20px #183d341c; }
+    html[data-movimiento="completas"] .boton:active { transform: translateY(0) scale(.98); }
+    html[data-movimiento="completas"] .navegacion > a:not(.boton) { background-image: linear-gradient(#b95634,#b95634); background-position: bottom 5px left; background-size: 0 1px; background-repeat: no-repeat; transition: color .3s, background-size .35s; }
+    html[data-movimiento="completas"] .navegacion > a:not(.boton):is(:hover,:focus-visible) { background-size: 100% 1px; }
+}

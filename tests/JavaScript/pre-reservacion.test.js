@@ -1,6 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { iniciarPreReservacion } from '../../resources/js/pre-reservacion.js';
+import { iniciarPreReservacion, resumirTarifa } from '../../resources/js/pre-reservacion.js';
+
+test('muestra precio por persona, por grupo y desde sin convertir cotizaciones en cero', () => {
+    const base = { precioCentavos: '78000', unidadCobro: 'persona', tipoPrecio: 'fijo', moneda: 'MXN' };
+    assert.equal(resumirTarifa(base, 3).total, '$2,340.00 MXN');
+    assert.equal(resumirTarifa({ ...base, unidadCobro: 'grupo' }, 3).total, '$780.00 MXN');
+    assert.equal(resumirTarifa({ ...base, tipoPrecio: 'desde' }, 3).total, 'Desde $2,340.00 MXN');
+    assert.equal(resumirTarifa({ ...base, unidadCobro: '' }, 3).total, 'Cotización personalizada');
+    assert.equal(resumirTarifa({ ...base, precioCentavos: '' }, 3).precio, 'Por cotizar');
+    assert.equal(resumirTarifa({ ...base, precioCentavos: '29' }, 3).total, '$0.87 MXN');
+});
 
 // Superficie DOM mínima para comprobar la conservación de datos sin instalar dependencias.
 class Elemento {
@@ -90,17 +100,18 @@ test('limita los campos al cupo seleccionado y limpia el aviso al corregir la ca
     assert.equal(contenedor.children.length, 1);
 });
 
-test('los campos nuevos tienen etiquetas y usan la fecha máxima entregada por el servidor', () => {
+test('los campos nuevos piden nombre completo y edad sin exigir nacimiento ni correo', () => {
     const { cantidad, contenedor } = formulario();
     cantidad.value = '3';
     cantidad.emitir('input');
     const grupo = contenedor.children[1];
     const entradas = descendientes(grupo).filter((elemento) => elemento.etiqueta === 'input');
-    assert.equal(entradas.length, 4);
+    assert.equal(entradas.length, 2);
     for (const entrada of entradas) {
         assert.ok(descendientes(grupo).some((etiqueta) => etiqueta.htmlFor === entrada.id));
     }
-    const fecha = entradas.find((entrada) => entrada.type === 'date');
-    assert.equal(fecha.max, '2026-11-16');
-    assert.equal(fecha.required, true);
+    const edad = entradas.find((entrada) => entrada.type === 'number');
+    assert.equal(edad.min, '0');
+    assert.equal(edad.max, '120');
+    assert.equal(edad.required, true);
 });

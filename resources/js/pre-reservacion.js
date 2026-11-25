@@ -1,3 +1,23 @@
+// El cálculo visible es informativo; el servidor vuelve a leer la tarifa al guardar la solicitud.
+export function resumirTarifa(datos, personas) {
+    const precio = datos?.precioCentavos === '' || datos?.precioCentavos == null ? null : Number(datos.precioCentavos);
+    const unidades = { persona: 'por persona', grupo: 'por grupo', servicio: 'por servicio' };
+    const moneda = ['MXN', 'USD', 'EUR'].includes(datos?.moneda) ? datos.moneda : 'MXN';
+    const desde = datos?.tipoPrecio === 'desde' ? 'Desde ' : '';
+    const formato = (centavos) => '$' + new Intl.NumberFormat('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(centavos / 100) + ' ' + moneda;
+    const valido = Number.isSafeInteger(precio) && precio >= 0;
+    const total = valido && unidades[datos?.unidadCobro] && Number.isSafeInteger(personas) && personas > 0
+        ? precio * (datos.unidadCobro === 'persona' ? personas : 1) : null;
+    const calculable = total !== null && Number.isSafeInteger(total) && total <= 999999999999;
+    return {
+        precio: valido ? desde + formato(precio) + ' ' + (unidades[datos?.unidadCobro] || '· unidad por confirmar') : 'Por cotizar',
+        total: calculable ? desde + formato(total) : 'Cotización personalizada',
+        'precio-nota': calculable
+            ? (datos.unidadCobro === 'persona' ? `${personas} ${personas === 1 ? 'persona' : 'personas'} × ${formato(precio)}. ` : 'Importe para el grupo completo. ') + 'Cualquier ajuste se acuerda contigo antes de confirmar.'
+            : 'El importe final se acuerda con Mil Cumbres antes de confirmar la visita.',
+    };
+}
+
 // Conserva los campos existentes al cambiar de fecha o ajustar el tamaño del grupo.
 export function iniciarPreReservacion(raiz = document) {
     const cantidad = raiz.getElementById('numero_personas');
@@ -8,8 +28,7 @@ export function iniciarPreReservacion(raiz = document) {
     const grupos = new Map([...contenedor.querySelectorAll('[data-acompanante]')]
         .map((grupo) => [Number(grupo.dataset.acompanante), grupo]));
     const campos = {
-        nombre: 'Nombre(s)', apellido_paterno: 'Apellido paterno',
-        apellido_materno: 'Apellido materno', fecha_nacimiento: 'Fecha de nacimiento',
+        nombre: 'Nombre completo', edad: 'Edad al realizar la visita',
     };
 
     function crearAcompanante(indice) {
@@ -27,10 +46,10 @@ export function iniciarPreReservacion(raiz = document) {
             const entrada = raiz.createElement('input');
             entrada.id = `acompanante-${indice}-${nombre}`;
             entrada.name = `acompanantes[${indice}][${nombre}]`;
-            entrada.type = nombre === 'fecha_nacimiento' ? 'date' : 'text';
-            entrada.required = nombre !== 'apellido_materno';
-            if (nombre === 'fecha_nacimiento') entrada.max = contenedor.dataset.fechaMaxima;
-            else entrada.maxLength = 255;
+            entrada.type = nombre === 'edad' ? 'number' : 'text';
+            entrada.required = true;
+            if (nombre === 'edad') { entrada.min = '0'; entrada.max = '120'; entrada.step = '1'; entrada.inputMode = 'numeric'; entrada.placeholder = 'Años cumplidos'; }
+            else { entrada.maxLength = 120; entrada.placeholder = 'Nombre y apellidos'; }
             etiqueta.htmlFor = entrada.id;
             etiqueta.textContent = texto + (nombre === 'apellido_materno' ? ' (opcional)' : '');
             campo.appendChild(etiqueta);
@@ -68,6 +87,7 @@ export function iniciarPreReservacion(raiz = document) {
             fecha: opcion?.dataset.fecha || 'Elige una fecha en el formulario',
             region: opcion?.dataset.region || 'Por seleccionar',
             cupos: cupos ? `${cupos} ${cupos === 1 ? 'lugar disponible' : 'lugares disponibles'}` : 'Consulta los lugares al elegir tu salida',
+            ...resumirTarifa(opcion?.dataset, total),
         };
         for (const [clave, valor] of Object.entries(resumen)) {
             const destino = raiz.querySelector?.(`[data-reserva-${clave}]`);

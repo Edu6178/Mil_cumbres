@@ -1,4 +1,5 @@
 import { animate } from 'animejs';
+import { nivelMovimiento } from './movimiento.js';
 
 export function iniciarCarruseles() {
     document.querySelectorAll('[data-carrusel-guias]').forEach(prepararCarrusel);
@@ -13,7 +14,7 @@ function prepararCarrusel(carrusel) {
     const puntos = [...carrusel.querySelectorAll('[data-carrusel-ir]')];
     const pausa = carrusel.querySelector('[data-carrusel-pausa]');
     const progreso = carrusel.querySelector('[data-carrusel-progreso]');
-    const preferencia = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const sinMovimiento = () => nivelMovimiento() === 'sin';
     let animacion, reloj, copia;
     let visible = false, encima = false, foco = false, pausado = false, moviendo = false;
     let gesto, omitirClicHasta = 0;
@@ -31,7 +32,7 @@ function prepararCarrusel(carrusel) {
     // El avance se detiene fuera de pantalla, al leer con ratón o teclado y al ocultar la pestaña.
     function programar() {
         detenerReloj();
-        if (!visible || encima || foco || pausado || moviendo || document.hidden || preferencia.matches || originalesVisibles().length < 2) return;
+        if (!visible || encima || foco || pausado || moviendo || document.hidden || sinMovimiento() || originalesVisibles().length < 2) return;
         reloj = animate(progreso, {
             strokeDashoffset: [100, 0], duration: 6500, ease: 'linear',
             onComplete: () => mover(1),
@@ -62,11 +63,11 @@ function prepararCarrusel(carrusel) {
             else punto.removeAttribute('aria-current');
         });
         if (anunciar && orden[0]) carrusel.querySelector('[data-carrusel-aviso]').textContent = orden[0].dataset.nombre;
-        pausa.disabled = preferencia.matches;
+        pausa.disabled = sinMovimiento();
         pausa.setAttribute('aria-pressed', String(pausado));
-        pausa.setAttribute('aria-label', preferencia.matches ? 'Rotación automática desactivada' : (pausado ? 'Reanudar carrusel' : 'Pausar carrusel'));
-        pausa.querySelector('[data-icono-pausa]').toggleAttribute('hidden', pausado || preferencia.matches);
-        pausa.querySelector('[data-icono-reproducir]').toggleAttribute('hidden', !pausado && !preferencia.matches);
+        pausa.setAttribute('aria-label', sinMovimiento() ? 'Rotación automática desactivada' : (pausado ? 'Reanudar carrusel' : 'Pausar carrusel'));
+        pausa.querySelector('[data-icono-pausa]').toggleAttribute('hidden', pausado || sinMovimiento());
+        pausa.querySelector('[data-icono-reproducir]').toggleAttribute('hidden', !pausado && !sinMovimiento());
     }
 
     function terminar() {
@@ -108,13 +109,13 @@ function prepararCarrusel(carrusel) {
             if (enfocarFicha) ordenVisible()[0]?.querySelector('h2 a')?.focus({ preventScroll: true });
             programar();
         };
-        if (preferencia.matches) {
+        if (sinMovimiento()) {
             completar();
             return;
         }
         animacion = animate(pista, {
             x: direccion > 0 ? [0, -paso] : [-paso, 0],
-            duration: 720, ease: 'inOutCubic', onComplete: completar,
+            duration: nivelMovimiento() === 'suaves' ? 360 : 720, ease: 'inOutCubic', onComplete: completar,
         });
     }
 
@@ -127,7 +128,7 @@ function prepararCarrusel(carrusel) {
         detenerReloj();
         while (ordenVisible()[0] !== destino) pista.append(ordenVisible()[0]);
         sincronizar(true);
-        if (!preferencia.matches) {
+        if (!sinMovimiento()) {
             moviendo = true;
             animacion = animate(pista, { opacity: [0.45, 1], duration: 350, ease: 'outCubic', onComplete: () => { terminar(); programar(); } });
         } else programar();
@@ -165,7 +166,7 @@ function prepararCarrusel(carrusel) {
         pista.replaceChildren(...fichas);
         sincronizar(); programar();
     });
-    preferencia.addEventListener('change', () => { detenerReloj(); terminar(); programar(); });
+    window.addEventListener('milcumbres:movimiento', () => { detenerReloj(); terminar(); programar(); });
     document.addEventListener('visibilitychange', programar);
     window.addEventListener('pagehide', () => { detenerReloj(); terminar(); });
     window.addEventListener('pageshow', programar);

@@ -8,15 +8,15 @@
         $servicios = collect($servicios ?? [])->filter(fn ($servicio) => ($servicio['estado_servicio'] ?? '') === 'activo')->values();
         $buscar = is_string(request('buscar')) ? request('buscar') : '';
         $lineaActiva = is_string(request('linea')) ? request('linea') : '';
+        if ($lineaActiva === 'senderismo') $lineaActiva = 'experiencias-turisticas';
         $duracionActiva = in_array(request('duracion'), ['corta', 'media', 'larga'], true) ? request('duracion') : '';
-        $normalizar = fn ($valor) => \Illuminate\Support\Str::lower(\Illuminate\Support\Str::ascii((string) $valor));
-        $coincide = function ($servicio) use ($buscar, $lineaActiva, $duracionActiva, $normalizar) {
+        $coincide = function ($servicio) use ($buscar, $lineaActiva, $duracionActiva) {
             $texto = ($servicio['nombre_servicio'] ?? '').' '.($servicio['descripcion'] ?? '').' '.($servicio['nombre_region'] ?? '');
             $minutos = $servicio['duracion_estimada'] ?? null;
             $duracion = $duracionActiva === '' || ($minutos !== null && match ($duracionActiva) {
                 'corta' => $minutos <= 180, 'media' => $minutos > 180 && $minutos <= 360, 'larga' => $minutos > 360,
             });
-            return ($buscar === '' || str_contains($normalizar($texto), $normalizar(trim($buscar))))
+            return \App\Services\Busqueda\TextoBusqueda::coincide($texto, $buscar)
                 && ($lineaActiva === '' || ($servicio['linea_clave'] ?? '') === $lineaActiva) && $duracion;
         };
         $totalVisible = $servicios->filter($coincide)->count();
@@ -42,5 +42,5 @@
         </x-publico.vacio>
         <div class="publico-aviso"><x-icono nombre="informacion" /><p>Las fechas y los cupos se mostrarán en cada experiencia cuando se publiquen sus programaciones. La disponibilidad se confirma al solicitar una reservación.</p></div>
     </section>
-    <section class="publico-franja"><div class="contenedor"><div><p class="antetitulo"><span></span> Otra manera de encontrarse</p><h2>¿Viajan en grupo?</h2><p>Conoce la propuesta para agencias, empresas y organizaciones.</p></div><a class="boton boton-bosque" href="{{ route('publico.consultoria') }}">Para organizaciones <x-icono nombre="flecha-diagonal" /></a></div></section>
+    <section class="publico-franja"><div class="contenedor"><div><p class="antetitulo"><span></span> Otra manera de encontrarse</p><h2>¿Viajan en grupo?</h2><p>Conoce la propuesta para agencias, empresas y organizaciones.</p></div><a class="boton boton-bosque" href="{{ route('publico.consultoria') }}#contacto">Contacto para empresas <x-icono nombre="flecha-diagonal" /></a></div></section>
 @endsection

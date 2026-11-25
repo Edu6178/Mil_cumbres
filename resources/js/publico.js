@@ -1,5 +1,6 @@
 // Los filtros mejoran el formulario GET: sin JavaScript, Buscar y las líneas siguen enviando los mismos campos.
-const normalizar = (texto) => String(texto).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es').trim();
+import { normalizarBusqueda as normalizar, coincideBusqueda, sugerenciasLocales } from './texto-busqueda.js';
+import { autocompletar } from './autocompletar.js';
 const catalogo = document.querySelector('[data-catalogo-publico]');
 
 if (catalogo) {
@@ -15,18 +16,27 @@ if (catalogo) {
     const vacio = catalogo.querySelector('[data-vacio-catalogo]');
     const total = catalogo.querySelector('[data-total-servicios]');
     const etiqueta = catalogo.querySelector('[data-etiqueta-resultados]');
+    const coincideDuracion = (servicio) => duracion.value === '' || (servicio.minutos !== null && (
+        (duracion.value === 'corta' && servicio.minutos <= 180) ||
+        (duracion.value === 'media' && servicio.minutos > 180 && servicio.minutos <= 360) ||
+        (duracion.value === 'larga' && servicio.minutos > 360)
+    ));
+
+    autocompletar(buscar, {
+        titulo: 'Experiencias que puedes descubrir',
+        obtener: (texto) => sugerenciasLocales(servicios.filter((servicio) => (!lineaActual.value || servicio.linea === lineaActual.value) && coincideDuracion(servicio)).map(({ elemento }) => ({
+            tipo: 'Experiencia', titulo: elemento.querySelector('h2').textContent.trim(),
+            contexto: elemento.querySelector('.publico-etiqueta').textContent.trim(),
+            resumen: elemento.querySelector('.publico-servicio-descripcion').textContent.trim(), busqueda: elemento.dataset.busqueda,
+        })), texto),
+    });
 
     function filtrar() {
         const consulta = normalizar(buscar.value);
         const linea = lineaActual.value;
         let visibles = 0;
         for (const servicio of servicios) {
-            const tiempo = duracion.value === '' || (servicio.minutos !== null && (
-                (duracion.value === 'corta' && servicio.minutos <= 180) ||
-                (duracion.value === 'media' && servicio.minutos > 180 && servicio.minutos <= 360) ||
-                (duracion.value === 'larga' && servicio.minutos > 360)
-            ));
-            const visible = servicio.texto.includes(consulta) && (!linea || servicio.linea === linea) && tiempo;
+            const visible = coincideBusqueda(servicio.texto, consulta) && (!linea || servicio.linea === linea) && coincideDuracion(servicio);
             servicio.elemento.hidden = !visible;
             if (visible) visibles++;
         }
@@ -43,6 +53,7 @@ if (catalogo) {
             if (valor) url.searchParams.set(clave, valor); else url.searchParams.delete(clave);
         }
         window.history.replaceState(null, '', url);
+        catalogo.dispatchEvent(new CustomEvent('catalogo:filtrado', { bubbles: true }));
     }
 
     formulario.addEventListener('submit', (evento) => { evento.preventDefault(); filtrar(); });
@@ -60,6 +71,7 @@ if (catalogo) {
     catalogo.querySelectorAll('[data-vista-catalogo]').forEach((boton) => boton.addEventListener('click', () => {
         catalogo.querySelector('[data-lista-servicios]').classList.toggle('publico-vista-lista', boton.dataset.vistaCatalogo === 'lista');
         catalogo.querySelectorAll('[data-vista-catalogo]').forEach((opcion) => opcion.setAttribute('aria-pressed', String(opcion === boton)));
+        catalogo.dispatchEvent(new CustomEvent('catalogo:filtrado', { bubbles: true }));
     }));
 }
 
@@ -68,11 +80,19 @@ if (equipo) {
     const entrada = equipo.querySelector('[data-buscar-guia]');
     const formulario = entrada.closest('form');
     const guias = [...equipo.querySelectorAll('[data-guia]')].map((elemento) => ({ elemento, texto: normalizar(elemento.dataset.busqueda) }));
+    autocompletar(entrada, {
+        titulo: 'Personas que comparten el camino',
+        obtener: (texto) => sugerenciasLocales(guias.map(({ elemento }) => ({
+            tipo: 'Guía', titulo: elemento.dataset.nombre,
+            contexto: elemento.querySelector('.numero-seccion')?.textContent.trim() ?? 'Guía de experiencias',
+            resumen: elemento.dataset.resumen, busqueda: elemento.dataset.busqueda,
+        })), texto),
+    });
     const filtrar = () => {
         const texto = normalizar(entrada.value);
         let visibles = 0;
         guias.forEach((guia) => {
-            guia.elemento.hidden = !guia.texto.includes(texto);
+            guia.elemento.hidden = !coincideBusqueda(guia.texto, texto);
             if (!guia.elemento.hidden) visibles++;
         });
         equipo.querySelector('[data-total-guias]').textContent = String(visibles);

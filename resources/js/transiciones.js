@@ -1,5 +1,5 @@
 // Se anima la navegación real; los formularios conservan sus tokens, validaciones y redirecciones.
-const preferenciaMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)');
+import { nivelMovimiento } from './movimiento.js';
 const transicionNativa = 'onpagereveal' in window && 'onpageswap' in window;
 let salida;
 let navegando = false;
@@ -15,11 +15,13 @@ function restaurarPagina() {
 document.addEventListener('click', (evento) => {
     const enlace = evento.target.closest?.('a[href]');
     if (!enlace || evento.defaultPrevented || evento.button !== 0 || evento.ctrlKey || evento.metaKey || evento.shiftKey || evento.altKey) return;
+    if (enlace.hasAttribute('data-abrir-foto')) return;
     if (enlace.hasAttribute('download') || (enlace.target && enlace.target !== '_self')) return;
     const destino = new URL(enlace.href, window.location.href);
     if (!['http:', 'https:'].includes(destino.protocol) || destino.origin !== window.location.origin) return;
     if (destino.pathname === window.location.pathname && destino.search === window.location.search) return;
-    if (transicionNativa || preferenciaMovimiento.matches) return;
+    if (nivelMovimiento() !== 'sin') document.dispatchEvent(new CustomEvent('milcumbres:transicion', { detail: { destino: destino.href } }));
+    if (transicionNativa || nivelMovimiento() === 'sin') return;
     const contenido = document.querySelector('main');
     if (!contenido?.animate) return;
     evento.preventDefault();
@@ -38,6 +40,6 @@ window.addEventListener('pageshow', () => {
     // Volver con el historial restaura la página sin repetir la entrada ni borrar formularios.
     restaurarPagina();
 });
-preferenciaMovimiento.addEventListener('change', () => {
-    if (preferenciaMovimiento.matches) restaurarPagina();
+window.addEventListener('milcumbres:movimiento', () => {
+    if (nivelMovimiento() === 'sin') restaurarPagina();
 });

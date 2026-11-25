@@ -20,6 +20,7 @@
             <a href="{{ route('administracion.inicio') }}" @if(request()->routeIs('administracion.inicio')) aria-current="page" @endif><x-icono nombre="panel" /><span>Resumen general</span></a>
             <a href="{{ route('administracion.servicios.indice') }}" @if(request()->routeIs('administracion.servicios.*')) aria-current="page" @endif><x-icono nombre="brujula" /><span>Servicios y precios</span></a>
             <a href="{{ route('administracion.categorias.indice') }}" @if(request()->routeIs('administracion.categorias.*')) aria-current="page" @endif><x-icono nombre="carpetas" /><span>Categorías</span></a>
+            <a href="{{ route('administracion.fotografias') }}" @if(request()->routeIs('administracion.fotografias*')) aria-current="page" @endif><x-icono nombre="paisaje" /><span>Fotografías y portadas</span></a>
             <p class="adm-grupo">Operación</p>
             <a href="{{ route('administracion.finanzas') }}" @if(request()->routeIs('administracion.finanzas')) aria-current="page" @endif><x-icono nombre="panel" /><span>Resumen financiero</span></a>
             <a href="{{ route('administracion.ventas.indice') }}" @if(request()->routeIs('administracion.ventas.*')) aria-current="page" @endif><x-icono nombre="lista" /><span>Solicitudes y ventas</span></a>
@@ -46,7 +47,7 @@
                 <div class="adm-ruta"><span>Administración</span><x-icono nombre="chevron" /><strong>@yield('titulo')</strong></div>
             </div>
             <div class="adm-cabecera-derecha">
-                <form class="adm-buscar-cabecera" method="GET" action="{{ route('administracion.servicios.indice') }}" role="search"><x-icono nombre="buscar" /><input type="search" name="buscar" maxlength="100" aria-label="Buscar servicios" placeholder="Buscar un servicio…"><button type="submit" aria-label="Realizar búsqueda"><x-icono nombre="flecha" /></button></form>
+                <form class="adm-buscar-cabecera" method="GET" action="{{ route('administracion.buscar') }}" role="search" aria-label="Búsqueda general"><x-icono nombre="buscar" /><input type="search" name="buscar" maxlength="100" aria-label="Buscar en todo el sistema" placeholder="Buscar en el sistema…" value="{{ request()->routeIs('administracion.buscar') ? ($buscar ?? '') : '' }}" data-buscador-remoto="todo" data-url-sugerencias="{{ route('administracion.buscar') }}"><button type="submit" aria-label="Ver resultados de la búsqueda general"><x-icono nombre="flecha" /></button></form>
                 <details class="adm-menu-perfil">
                     <summary aria-label="Abrir opciones de mi cuenta"><x-administracion.avatar /><span><strong>{{ \Illuminate\Support\Str::before(auth()->user()->name, ' ') }}</strong><small>Administración</small></span><x-icono nombre="chevron" /></summary>
                     <div class="adm-opciones-perfil"><div><strong>{{ auth()->user()->name }}</strong><span>{{ auth()->user()->email }}</span></div><a href="{{ route('administracion.perfil') }}"><x-icono nombre="usuario" /> Mi perfil</a><a href="{{ route('cuenta') }}"><x-icono nombre="ojo" /> Mi cuenta personal</a><form method="POST" action="{{ route('salir') }}">@csrf<button type="submit"><x-icono nombre="salir" /> Cerrar sesión</button></form></div>
@@ -60,7 +61,7 @@
             @endif
             @yield('contenido')
         </main>
-        <footer class="adm-pie"><span>Mil Cumbres · Administración</span><span>Turismo regenerativo</span></footer>
+        <footer class="adm-pie"><span>Mil Cumbres · Administración</span><x-control-movimiento /></footer>
     </div>
 </body>
 </html>

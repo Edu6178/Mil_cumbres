@@ -79,6 +79,9 @@
     .reserva-resumen h3 { font-size: 27px; }
     .reserva-resumen dl { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-block: 20px 0; }
 }
+.reserva-resumen .reserva-total { padding-top: 16px; border-top: 1px solid #a5b29a55; }
+.reserva-total dd { color: #f4dfc0; font-family: var(--serif); font-size: 25px; }
+.reserva-precio-nota { font-size: 11px; color: #e2e7d9; margin-top: 16px; line-height: 1.7; }
 @media (max-width: 600px) {
     .formulario-prereserva { margin-top: 48px; padding-top: 36px; }
     .reserva-encabezado h2 { font-size: 35px; letter-spacing: -1.3px; }

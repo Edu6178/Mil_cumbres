@@ -1,0 +1,36 @@
+.visitas-calendario { margin-top: 65px; padding-top: 45px; border-top: 1px solid var(--borde); scroll-margin-top: 110px; }
+.visitas-distribucion { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 28px; }
+.visitas-distribucion[hidden] { display: none; }
+.visitas-mes { padding: 25px; background: #fffefa; border: 1px solid #d6dfcc; border-radius: 10px; }
+.visitas-mes-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px; color: #fff9e9; background: #193e34; border-radius: 6px; }
+.visitas-mes-cabecera h3 { font-family: var(--serif); font-size: 23px; text-transform: capitalize; }
+.visitas-mes-cabecera button { display: grid; place-items: center; min-width: 36px; min-height: 36px; background: transparent; border: 0; color: inherit; cursor: pointer; }
+.visitas-mes-cabecera button:disabled { opacity: .3; cursor: default; }
+.visitas-mes-cabecera .icono { width: 18px; height: 18px; }
+.visitas-semana, .visitas-dias { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); text-align: center; gap: 5px; }
+.visitas-semana { margin-block: 21px 10px; color: #6c7f5e; font-size: 11px; }
+.visitas-dias button { position: relative; min-width: 0; min-height: 43px; padding: 6px; border-radius: 6px; border: 1px solid transparent; color: #193e34; font-size: 13px; font-weight: 600; cursor: pointer; }
+.visitas-dias button:disabled { background: transparent; color: #a5af9b; font-weight: 400; cursor: default; }
+.visitas-dias .es-disponible, .visitas-leyenda .es-disponible { background: #e0ead4; }
+.visitas-dias .es-bloqueada, .visitas-leyenda .es-bloqueada { background: repeating-linear-gradient(135deg, #f5e6dc, #f5e6dc 5px, #ecd7c9 5px, #ecd7c9 6px); color: #8b492f; }
+.visitas-dias .es-completa, .visitas-leyenda .es-completa { background: #e9eae3; color: #68745d; }
+.visitas-dias button[aria-pressed='true'] { border-color: #193e34; box-shadow: 0 0 0 2px #193e3420; }
+.visitas-leyenda { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; padding-top: 17px; border-top: 1px solid #e0e6d7; font-size: 10px; color: #607354; }
+.visitas-leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+.visitas-leyenda i { width: 12px; height: 12px; border: 1px solid #cdd7c2; border-radius: 3px; }
+.visitas-detalle { padding: 30px; border-radius: 10px; background: #edf0e4; min-width: 0; }
+.visitas-detalle > h3 { margin-block: 14px 20px; font-family: var(--serif); font-size: 29px; line-height: 1.3; }
+.visitas-detalle [data-salidas-del-dia] > p { color: #697960; font-size: 13px; line-height: 1.8; }
+.visitas-salida { padding-block: 18px; border-top: 1px solid #ccd7be; }
+.visitas-salida > strong { display: block; font-size: 15px; }
+.visitas-salida > p { margin-block: 7px; font-size: 12px; color: #5e7153; }
+.visitas-estado { display: block; font-size: 11px; color: #8e5133; }
+.visitas-salida > a { margin-top: 17px; }
+.visitas-listado { margin-top: 20px; font-size: 12px; }
+.visitas-listado summary { cursor: pointer; color: #657955; }
+.visitas-listado ul { padding: 18px 0; list-style: none; }
+.visitas-listado li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-block: 14px; border-bottom: 1px solid #d8dfce; }
+.visitas-listado small { display: block; margin-top: 5px; color: #6c7c60; }
+.visitas-listado a { color: #9d4f31; }
+.contacto-empresas-enlaces { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-top: 24px; }
+@media (max-width: 650px) { .visitas-distribucion { grid-template-columns: minmax(0, 1fr); gap: 18px; } .visitas-mes { padding: 15px; } .visitas-detalle { padding: 23px; } .visitas-mes-cabecera h3 { font-size: 21px; } .visitas-dias { gap: 3px; } }

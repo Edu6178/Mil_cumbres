@@ -77,7 +77,7 @@ class ComprobantePreReservacionTest extends TestCase
         DB::table('asigna_reservacion_invitados')->update(['notas_medicas' => 'NOTA-INTERNA-NO-PUBLICAR']);
         $solicitud = Reservacion::with(['cliente.persona', 'acompanantes', 'estado', 'programacion.servicioRegion.servicio', 'programacion.servicioRegion.region'])->first();
         $html = view('pdf.pre-reservacion', ['solicitud' => $solicitud, 'simbolo' => ''])->render();
-        foreach (['Álvarez', 'Lucía', 'Familiar', 'Sendero del bosque', 'Compartir una caminata', 'Correo electrónico (opcional)', 'No proporcionado', 'Propósito de la visita', 'Comentarios para el recorrido'] as $texto) {
+        foreach (['Álvarez', 'Lucía', 'Familiar', 'Sendero del bosque', 'Compartir una caminata', 'Nombre completo', 'Edad al realizar la visita', 'Propósito de la visita', 'Comentarios para el recorrido'] as $texto) {
             $this->assertStringContainsString($texto, $html);
         }
         $this->assertStringContainsString('&lt;script&gt;', $html);
