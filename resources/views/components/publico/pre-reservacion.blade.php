@@ -26,15 +26,13 @@
             <a class="boton boton-bosque" href="{{ $ultimoAcuse['pdf'] }}" download rel="noreferrer">Descargar mi pre-reserva <x-icono nombre="descargar" /></a>
         </div>
     @endif
-    @if($acuseDisponible && !empty($ultimoAcuse['whatsapp']['elegir']))
-        <div class="reserva-whatsapp" aria-labelledby="titulo-whatsapp-prueba">
-            <div><p class="numero-seccion">Tu pre-reserva en WhatsApp</p><h3 id="titulo-whatsapp-prueba">Comparte esta nueva experiencia.</h3>
-            @if(($ultimoAcuse['whatsapp_estado'] ?? '') === 'aceptado')<p role="status">WhatsApp aceptó el envío a tu teléfono. La entrega depende de WhatsApp y de la disponibilidad del destinatario.</p>
-            @elseif(in_array($ultimoAcuse['whatsapp_estado'] ?? '', ['fallido', 'no_configurado'], true))<p role="status">Tu pre-reserva está guardada. El envío automático no se completó; puedes compartir el resumen con los botones siguientes.</p>
-            @else<p>Tu solicitud está guardada. Abre WhatsApp para enviar el mensaje personalizado a tu teléfono o a otra persona.</p>@endif</div>
-            <div class="reserva-whatsapp-acciones">@if(!empty($ultimoAcuse['whatsapp']['propio']))<a class="boton boton-bosque" href="{{ $ultimoAcuse['whatsapp']['propio'] }}" target="_blank" rel="noopener noreferrer">Abrir WhatsApp con mi número</a>@endif<a class="boton" href="{{ $ultimoAcuse['whatsapp']['elegir'] }}" target="_blank" rel="noopener noreferrer">Elegir destinatario <x-icono nombre="personas" /></a><a class="enlace-texto" href="{{ $ultimoAcuse['whatsapp']['resumen'] }}" rel="noreferrer">Ver el resumen</a></div>
-            <details><summary>Vista previa del mensaje</summary><p class="reserva-mensaje-previo">{{ $ultimoAcuse['whatsapp']['mensaje'] }}</p></details>
-            <small>Estos botones abren WhatsApp con el texto listo: debes pulsar Enviar dentro de WhatsApp. El enlace personal vence en 24 horas.</small>
+    @if($acuseDisponible && in_array($ultimoAcuse['whatsapp_estado'] ?? '', ['aceptado', 'fallido', 'no_configurado', 'enviando'], true))
+        <div class="reserva-aviso {{ ($ultimoAcuse['whatsapp_estado'] ?? '') === 'aceptado' ? 'reserva-aviso-correcto' : '' }}" role="status">
+            <x-icono nombre="informacion" /><div>
+            @if($ultimoAcuse['whatsapp_estado'] === 'aceptado')<strong>WhatsApp aceptó el envío a tu teléfono.</strong><p>El aviso se envió automáticamente desde Mil Cumbres. No necesitas abrir un chat ni enviar el mensaje. La entrega depende de WhatsApp y de la disponibilidad del destinatario.</p>
+            @elseif($ultimoAcuse['whatsapp_estado'] === 'enviando')<strong>Tu pre-reserva está guardada.</strong><p>El resultado del aviso automático por WhatsApp todavía no está confirmado. Conserva tu comprobante.</p>
+            @else<strong>Tu pre-reserva está guardada.</strong><p>No se pudo enviar el aviso automático por WhatsApp. Puedes descargar tu comprobante; el equipo conserva tu solicitud.</p>@endif
+            </div>
         </div>
     @endif
     @if($errors->any())
@@ -135,7 +133,7 @@
                         <div class="reserva-campo"><label for="personalizacion">Comentarios para el recorrido <span>Opcional</span></label><textarea id="personalizacion" name="personalizacion" rows="4" placeholder="¿Hay algo más que debamos considerar?">{{ is_string(old('personalizacion')) ? old('personalizacion') : '' }}</textarea></div>
                     </div>
                 </fieldset>
-                @if(app(\App\Services\Contenido\WhatsAppPreReserva::class)->configurado())<label class="reserva-consentimiento"><input type="checkbox" name="whatsapp_acepta" value="1" @checked(old('whatsapp_acepta'))><span>Quiero recibir el resumen de esta pre-reservación por WhatsApp en el teléfono que indiqué.</span></label>@endif
+                @if(app(\App\Services\Contenido\WhatsAppPreReserva::class)->configurado())<label class="reserva-consentimiento"><input type="checkbox" name="whatsapp_acepta" value="1" @checked(old('whatsapp_acepta'))><span>Quiero recibir automáticamente el resumen de esta pre-reservación por WhatsApp en el teléfono que indiqué.</span></label>@endif
                 <div class="reserva-enviar"><p><x-icono nombre="informacion" /><span>Enviar la solicitud genera una <strong>pre-reservación</strong>. La confirmación se acuerda después con Mil Cumbres.</span></p><button type="submit" class="boton boton-bosque">Enviar mi solicitud <x-icono nombre="flecha" /></button></div>
             </form>
 

@@ -30,7 +30,7 @@ class WhatsAppPreReserva
         if ($estado === 'no_configurado') return $estado;
 
         $solicitud->loadMissing(['cliente.persona', 'programacion.servicioRegion.servicio']);
-        $numero = CompartirPreReserva::normalizarNumero($solicitud->cliente->persona->telefono ?? '');
+        $numero = NumeroWhatsApp::normalizar($solicitud->cliente->persona->telefono ?? '');
         if (! $numero) return $this->resultado($solicitud, 'fallido', 'numero_invalido');
         $texto = fn ($valor) => Str::limit(preg_replace('/\s+/u', ' ', (string) $valor), 200, '');
         $valores = [$solicitud->cliente->persona->nombre, $solicitud->folio,

@@ -18,29 +18,23 @@ class WhatsAppPreReservaTest extends TestCase
     {
         parent::setUp();
         $this->withoutVite();
-        config(['whatsapp.compartir' => true, 'whatsapp.pruebas' => true, 'whatsapp.numero_prueba' => '5500000000', 'whatsapp.habilitado' => false]);
+        config(['whatsapp.habilitado' => false]);
         Http::preventStrayRequests();
         Bus::fake();
     }
 
-    public function test_prepara_solo_la_nueva_solicitud_sin_enviar_mensajes_ni_confirmar(): void
+    public function test_sin_consentimiento_no_envia_ni_ofrece_mandar_un_mensaje_manualmente(): void
     {
         $datos = $this->datos();
-        config(['whatsapp.compartir' => false]);
         $this->post('/pre-reservaciones', $datos)->assertRedirect();
         $anterior = session('ultima_pre_reserva');
-        $this->assertSame([], $anterior['whatsapp']);
-        config(['whatsapp.compartir' => true]);
         $this->post('/pre-reservaciones', $datos)->assertRedirect();
         $acuse = session('ultima_pre_reserva');
-        $enlaces = $acuse['whatsapp'];
-        $this->assertStringStartsWith('https://wa.me/525500000000?text=', $enlaces['prueba']);
-        $this->assertStringStartsWith('https://wa.me/?text=', $enlaces['elegir']);
-        $this->assertStringContainsString('Hola, Ana', $enlaces['mensaje']);
-        $this->assertStringContainsString('Paseo del bosque', $enlaces['mensaje']);
-        $this->assertStringContainsString($acuse['folio'], $enlaces['mensaje']);
-        $this->assertStringNotContainsString($anterior['folio'], $enlaces['mensaje']);
-        $this->get('/')->assertSee('Vista previa del mensaje')->assertSee('Elegir destinatario');
+        $this->assertNotSame($anterior['folio'], $acuse['folio']);
+        $this->assertSame('sin_solicitar', $acuse['whatsapp_estado']);
+        $this->assertArrayNotHasKey('whatsapp', $acuse);
+        $this->get('/')->assertSee('Descargar mi pre-reserva')->assertDontSee('https://wa.me/')
+            ->assertDontSee('Abrir WhatsApp con mi número')->assertDontSee('Elegir destinatario');
         Http::assertNothingSent();
         Bus::assertNothingDispatched();
         $this->assertDatabaseCount('reservaciones', 2);
@@ -54,7 +48,7 @@ class WhatsAppPreReservaTest extends TestCase
         $datos['nombre'] = 'Ana <script>alert(1)</script>';
         $this->post('/pre-reservaciones', $datos);
         $acuse = session('ultima_pre_reserva');
-        $url = $acuse['whatsapp']['resumen'];
+        $url = $acuse['resumen'];
         $respuesta = $this->get($url)->assertOk()->assertSee('Medios de pago por confirmar')
             ->assertSee('Ver los siguientes pasos')->assertSee('Descargar mi pre-reserva')
             ->assertDontSee('<script>alert(1)</script>', false)->assertDontSee('DATO-PRIVADO')
@@ -68,18 +62,14 @@ class WhatsAppPreReservaTest extends TestCase
         $this->assertDatabaseCount('pagos', 0);
     }
 
-    public function test_comparte_en_produccion_sin_exponer_el_destino_de_prueba_personal(): void
+    public function test_los_acuses_antiguos_tampoco_reactivan_los_botones_manuales(): void
     {
-        $datos = $this->datos();
-        config(['whatsapp.numero_prueba' => 'incorrecto']);
-        $this->post('/pre-reservaciones', $datos)->assertRedirect();
-        $this->assertArrayNotHasKey('prueba', session('ultima_pre_reserva.whatsapp'));
-        config(['whatsapp.numero_prueba' => '5500000000']);
         $this->app['env'] = 'production';
-        $enlaces = app(\App\Services\Contenido\CompartirPreReserva::class)->preparar(Reservacion::first(), now()->addDay());
-        $this->assertArrayNotHasKey('prueba', $enlaces);
-        $this->assertStringStartsWith('https://wa.me/525500000000?text=', $enlaces['propio']);
-        $this->get('/')->assertSee('Abrir WhatsApp con mi número')->assertSee('debes pulsar Enviar');
+        $this->withSession(['ultima_pre_reserva' => [
+            'folio' => 'MC-ANTERIOR', 'vence' => now()->addDay()->timestamp, 'pdf' => '/comprobante.pdf',
+            'whatsapp' => ['elegir' => 'https://wa.me/?text=prueba', 'propio' => 'https://wa.me/525500000000'],
+        ]])->get('/')->assertOk()->assertSee('MC-ANTERIOR')->assertDontSee('https://wa.me/')
+            ->assertDontSee('debes pulsar Enviar')->assertDontSee('WhatsApp aceptó el envío');
         Http::assertNothingSent();
     }
 
@@ -100,9 +90,10 @@ class WhatsAppPreReservaTest extends TestCase
             && $request['to'] === '525500000000' && $request['type'] === 'template'
             && $request['template']['components'][0]['parameters'][1]['text'] === $nueva->folio
             && str_contains($request['template']['components'][1]['parameters'][0]['text'], '/resumen?'));
-        $resumen = session('ultima_pre_reserva.whatsapp.resumen');
+        $resumen = session('ultima_pre_reserva.resumen');
         app(\App\Services\Contenido\WhatsAppPreReserva::class)->enviarNueva($nueva, true, $resumen);
-        $this->get('/')->assertSee('WhatsApp aceptó el envío');
+        $this->get('/')->assertSee('WhatsApp aceptó el envío')->assertDontSee('https://wa.me/')
+            ->assertDontSee('Elegir destinatario');
         Http::assertSentCount(1);
         $this->assertDatabaseCount('pagos', 0);
     }
@@ -123,8 +114,8 @@ class WhatsAppPreReservaTest extends TestCase
         $this->post('/pre-reservaciones', [...$this->datos(), 'whatsapp_acepta' => '1']);
         $this->assertDatabaseHas('reservaciones', ['whatsapp_estado' => 'no_configurado']);
         Http::assertNothingSent();
-        $this->assertSame('525500000000', \App\Services\Contenido\CompartirPreReserva::normalizarNumero('+52 1 550 000 0000'));
-        $this->assertSame('525500000000', \App\Services\Contenido\CompartirPreReserva::normalizarNumero('5500000000'));
+        $this->assertSame('525500000000', \App\Services\Contenido\NumeroWhatsApp::normalizar('+52 1 550 000 0000'));
+        $this->assertSame('525500000000', \App\Services\Contenido\NumeroWhatsApp::normalizar('5500000000'));
     }
 
     private function configurarApi(): void

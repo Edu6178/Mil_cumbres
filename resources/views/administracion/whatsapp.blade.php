@@ -4,9 +4,9 @@
 @php
     $lista = app(\App\Services\Contenido\WhatsAppPreReserva::class)->configurado();
 @endphp
-<header class="adm-encabezado"><div><p class="adm-antetitulo">Mensajes de pre-reservación</p><h1>Conexión de WhatsApp</h1><p>Un enlace para abrir un chat y un envío automático son acciones diferentes.</p></div><span class="adm-insignia {{ $lista ? 'adm-insignia-verde' : '' }}">{{ $lista ? 'Datos de API completos' : 'API pendiente de configurar' }}</span></header>
+<header class="adm-encabezado"><div><p class="adm-antetitulo">Mensajes de pre-reservación</p><h1>Conexión de WhatsApp</h1><p>El servidor envía el aviso automáticamente al registrar una solicitud nueva con consentimiento.</p></div><span class="adm-insignia {{ $lista ? 'adm-insignia-verde' : '' }}">{{ $lista ? 'Datos de API completos' : 'API pendiente de configurar' }}</span></header>
 <div class="adm-roles-resumen">
-<section class="adm-panel adm-whatsapp-panel"><h2>Compartir manualmente</h2><p>Disponible en la página pública: al crear una pre-reserva, sus botones abren WhatsApp con el mensaje personalizado. La persona debe pulsar Enviar dentro de WhatsApp.</p></section>
+<section class="adm-panel adm-whatsapp-panel"><h2>Pruebas con tu WhatsApp personal</h2><p>Tu número personal puede recibir las pruebas. Meta proporciona un remitente de prueba para la API; añade tu teléfono como destinatario en su panel. La web enviará el aviso al guardar la solicitud, sin abrir WhatsApp.</p><a class="adm-enlace" href="https://developers.facebook.com/apps/" target="_blank" rel="noopener noreferrer">Abrir el panel de Meta</a></section>
 <section class="adm-panel adm-whatsapp-panel"><h2>Envío automático</h2><p>Requiere un número de WhatsApp Business conectado a Meta, su token, el identificador del teléfono y una plantilla de utilidad aprobada. Completar estos datos no verifica la entrega: el resultado se registra al enviar una solicitud nueva con consentimiento.</p><p>Solo se intenta una vez para cada solicitud nueva. No se recorren ni se reenvían las pre-reservaciones anteriores.</p></section>
 </div>
 <section class="adm-panel adm-whatsapp-panel"><h2>Configuración en el VPS</h2><p>El responsable del servidor debe completar estas variables en su archivo <code>.env</code>. El token permanece en el servidor y no se muestra en este panel.</p>
